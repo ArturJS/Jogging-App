@@ -4,6 +4,8 @@ import Loadable from 'react-loadable';
 import {report} from 'import-inspector';
 import path from 'path';
 
+import RedirectAlreadyLogin from './client/common/components/RedirectAlreadyLogin';
+import AuthRoute from './client/common/components/AuthRoute';
 import SignUpPage from './client/pages/SignUpPage';
 
 
@@ -20,35 +22,39 @@ const routes = [
   {
     path: '/sign-up',
     exact: true,
-    component: SignUpPage
+    component: () => <RedirectAlreadyLogin to="/sign-up" component={SignUpPage}/>
   },
   {
     path: '/records',
     exact: true,
-    component: Loadable({
-      loader: () => report(
-        System.import(/* webpackChunkName: 'RecordsPage' */'./client/pages/RecordsPage/RecordsPage'),
-        {
-          serverSideRequirePath: path.resolve(__dirname, './client/pages/RecordsPage/RecordsPage'),
-          webpackRequireWeakId: () => require.resolveWeak('./client/pages/RecordsPage/RecordsPage')
-        }
-      ),
-      loading: <div>Loading...</div>
-    })
+    component: () => (
+      <AuthRoute path="/records" component={Loadable({
+        loader: () => report(
+          System.import(/* webpackChunkName: 'RecordsPage' */'./client/pages/RecordsPage/RecordsPage'),
+          {
+            serverSideRequirePath: path.resolve(__dirname, './client/pages/RecordsPage/RecordsPage'),
+            webpackRequireWeakId: () => require.resolveWeak('./client/pages/RecordsPage/RecordsPage')
+          }
+        ),
+        loading: <div>Loading...</div>
+      })}/>
+    )
   },
   {
     path: '/reports',
     exact: true,
-    component: Loadable({
-      loader: () => report(
-        System.import(/* webpackChunkName: 'ReportsPage' */'./client/pages/ReportsPage/ReportsPage'),
-        {
-          serverSideRequirePath: path.resolve(__dirname, './client/pages/ReportsPage/ReportsPage'),
-          webpackRequireWeakId: () => require.resolveWeak('./client/pages/ReportsPage/ReportsPage')
-        }
-      ),
-      loading: <div>Loading...</div>
-    })
+    component: () => (
+      <AuthRoute path="/reports" component={Loadable({
+        loader: () => report(
+          System.import(/* webpackChunkName: 'ReportsPage' */'./client/pages/ReportsPage/ReportsPage'),
+          {
+            serverSideRequirePath: path.resolve(__dirname, './client/pages/ReportsPage/ReportsPage'),
+            webpackRequireWeakId: () => require.resolveWeak('./client/pages/ReportsPage/ReportsPage')
+          }
+        ),
+        loading: <div>Loading...</div>
+      })}/>
+    )
   },
   {
     path: '/*',

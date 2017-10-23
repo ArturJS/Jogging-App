@@ -6,22 +6,22 @@ import {inject, observer} from 'mobx-react';
 @inject('userStore')
 @observer
 export default class AuthRoute extends Component {
-	static propTypes = {
+  static propTypes = {
     userStore: PropTypes.object.isRequired,
-    component: PropTypes.object.isRequired,
-		path: PropTypes.string.isRequired
-	};
+    component: PropTypes.func.isRequired,
+    path: PropTypes.string.isRequired
+  };
 
-	render() {
-		const {userStore, component, path} = this.props;
-		const {isInitialized, isLoggedIn} = userStore;
+  render() {
+    const {userStore, component, path} = this.props;
+    const {isInitialized, isLoggedIn} = userStore;
 
-		if (!isInitialized) return null;
+    if (!isInitialized) return null;
 
-		if (!isLoggedIn) {
+    if (!isLoggedIn) {
       return <Redirect to={{pathname: '/sign-up', state: {backUrl: path}}}/>;
-		}
+    }
 
     return <Route {...this.props} component={component}/>;
-	}
+  }
 }

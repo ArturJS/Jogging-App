@@ -177,7 +177,7 @@ export default class FormStore {
   }
 
   resetFormData() {
-    for (let [name, ctrl] of this._ctrls) {
+    for (let [, ctrl] of this._ctrls) {
       ctrl.value = '';
     }
   }

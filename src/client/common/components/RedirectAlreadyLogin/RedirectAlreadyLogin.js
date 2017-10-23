@@ -8,26 +8,26 @@ import {inject, observer} from 'mobx-react';
 @inject('userStore')
 @observer
 export default class RedirectAlreadyLogin extends Component {
-	static propTypes = {
-		userStore: PropTypes.object.isRequired,
-    component: PropTypes.object.isRequired,
+  static propTypes = {
+    userStore: PropTypes.object.isRequired,
+    component: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired
-	};
+  };
 
-	render() {
-		const {userStore, component, location} = this.props;
-		const {isLoggedIn, isInitialized} = userStore;
-		const {state} = location;
+  render() {
+    const {userStore, component, location} = this.props;
+    const {isLoggedIn, isInitialized} = userStore;
+    const {state} = location;
 
-		if (!isInitialized) return null;
+    if (!isInitialized) return null;
 
-		if (isLoggedIn) {
-			if (state && state.backUrl) {
-				return <Redirect to={state.backUrl}/>;
-			}
-			return <Redirect to={'/records'}/>;
-		}
+    if (isLoggedIn) {
+      if (state && state.backUrl) {
+        return <Redirect to={state.backUrl}/>;
+      }
+      return <Redirect to={'/records'}/>;
+    }
 
-		return <Route {...this.props} component={component}/>;
-	}
+    return <Route {...this.props} component={component}/>;
+  }
 }
