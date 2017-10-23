@@ -1,0 +1,37 @@
+@import "../../../../styles/references/references";
+
+.nav-sub-header {
+  $c-link: $c-midnight-blue;
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+
+  .nav-item {
+    display: inline-block;
+  }
+
+  .nav-link {
+    color: $c-link;
+  }
+
+  .nav-link {
+    color: $c-link;
+    display: inline-flex;
+    line-height: 40px;
+    height: 40px;
+    padding: 0 15px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 0 solid $c-link;
+    transition:  border-bottom-width 0.15s ease;
+    will-change:  border-bottom-width;
+
+    &:focus, &:active {
+      text-decoration: none;
+    }
+
+    &:hover,
+    &.active {
+      border-bottom-width: 2px;
+    }
+  }
+}

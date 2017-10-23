@@ -7,11 +7,14 @@
   display: flex;
   width: 100%;
   background-color: $c-header-bg;
-  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
   padding: 15px 10px;
   flex-direction: column;
 
   @media (min-width: $min-desktop-width) {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     flex-direction: row;
     height: 60px;
   }
