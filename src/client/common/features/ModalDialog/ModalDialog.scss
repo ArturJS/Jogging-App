@@ -1,0 +1,144 @@
+@import "./../../../styles/references/references";
+
+.modal {
+	$c-modal-bg: $c-desert-storm;
+	$c-modal-header-error-bg: $c-bittersweet;
+	$c-modal-header-error-text: $c-desert-storm;
+	$c-modal-shadow: $c-boulder;
+	$c-modal-close-color: $c-midnight-blue;
+	$c-modal-text: $c-mine-shaft;
+	$c-close-hover: $c-lynch;
+
+	outline: 0;
+
+	.modal-dialog {
+		pointer-events: auto;
+		width: auto;
+
+		@media (min-width: $tablet-width) {
+			display: flex;
+			justify-content: center;
+		}
+		@media (max-width: $tablet-width) {
+			min-width: 100%;
+		}
+		@media (max-width: $min-mobile-width) {
+			min-width: $min-mobile-width;
+		}
+	}
+
+	.modal-content {
+		position: relative; // to position close button
+		background-color: $c-modal-bg;
+		box-shadow: 0 3px 9px $c-modal-shadow;
+		outline: 0;
+		background-clip: padding-box;
+		padding: 40px;
+
+		@media (min-width: $tablet-width) {
+			box-shadow: 0 5px 15px $c-modal-shadow;
+		}
+	}
+
+	.modal-header {
+		color: $c-modal-text;
+	}
+
+	&-error {
+		.modal-header {
+			background-color: $c-modal-header-error-bg;
+			color: $c-modal-header-error-text;
+		}
+	}
+
+	.modal-title {
+		color: $c-modal-text;
+		font-size: 24px;
+		font-weight: 300;
+		margin: 0;
+		text-align: center;
+	}
+
+	.close {
+		position: absolute;
+		top: 10px;
+		right: 15px;
+		color: $c-modal-close-color;
+		padding: 0;
+		margin: 0;
+		cursor: pointer;
+		background: none;
+		border: 0;
+		float: right;
+		font-size: 34px;
+		font-weight: 200;
+		line-height: 1em;
+
+		&:focus {
+			outline: 0;
+		}
+
+		&:hover {
+			color: $c-close-hover;
+		}
+	}
+
+	.modal-body {
+		padding: 40px 0;
+		color: $c-modal-text;
+
+		p {
+			margin: 0;
+			text-align: center;
+		}
+	}
+
+	.modal-footer {
+		.btn {
+			width: 100%;
+			margin: 5px 0;
+		}
+	}
+}
+
+.modal-info {
+	font-size: 16px;
+	@media (min-width: $tablet-width) {
+		max-width: 450px;
+	}
+	.modal-body {
+		max-width: 400px;
+		text-align: center;
+	}
+}
+
+.modal-custom {
+	max-height: 100%; // necessary for IE11
+
+	@media (max-width: $tablet-width) {
+		width: 100%;
+	}
+
+	.buttons-group {
+		.btn {
+			width: 100%;
+			margin: 5px 0;
+		}
+	}
+}
+
+.ReactModal__Overlay {
+	z-index: 999;
+	overflow-y: auto;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	@media (min-width: $tablet-width) {
+		align-items: center;
+	}
+}
+
+.ReactModal__Body--open {
+	overflow-y: hidden;
+}

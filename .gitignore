@@ -1,0 +1,10 @@
+.idea/
+node_modules/
+static/
+static-build/
+coverage/
+*.iml
+webpack-assets.json
+webpack-stats.json
+npm-debug.log
+*.swp

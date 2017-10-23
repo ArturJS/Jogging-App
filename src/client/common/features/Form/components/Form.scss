@@ -1,0 +1,26 @@
+@import "../../../styles/references/_references";
+
+$c-field-error-border: $c-bittersweet;
+$c-field-error-color: $c-bittersweet;
+$c-input-border-focus: $c-mine-shaft;
+
+.field-error {
+	input[type=text],
+	.form-control,
+	.custom-select,
+	select {
+		border-color: $c-field-error-border;
+	}
+
+	input[type=text]:focus,
+	.form-control:focus {
+		border-color: $c-input-border-focus;
+		outline: 0;
+		-moz-appearance: none;
+		box-shadow: none;
+	}
+}
+
+.field-error-text {
+	color: $c-field-error-color;
+}

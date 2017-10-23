@@ -1,0 +1,55 @@
+@import "../../../../styles/references/references";
+
+.header {
+  $c-header-bg: $c-white;
+
+  display: flex;
+  width: 100%;
+  background-color: $c-header-bg;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3);
+  padding: 15px 10px;
+  flex-direction: column;
+
+  @media (min-width: $tablet-width) {
+    flex-direction: row;
+    height: 60px;
+  }
+
+  &-brand {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+  }
+
+  &-auth {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    width: 100%;
+
+    @media (min-width: $tablet-width) {
+      width: auto;
+    }
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    @media (min-width: $tablet-width) {
+      flex-direction: row;
+      width: auto;
+    }
+
+    .control-field,
+    .btn-submit {
+      margin-top: 15px;
+
+      @media (min-width: $tablet-width) {
+        margin-top: 0;
+        margin-right: 15px;
+      }
+    }
+  }
+}

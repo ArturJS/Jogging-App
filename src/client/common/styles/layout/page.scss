@@ -1,0 +1,61 @@
+@import "../references/references";
+
+$c-bg: $c-desert-storm;
+
+.page-title {
+	text-align: center;
+	font-weight: 300;
+	font-size: 24px;
+	width: 100%;
+}
+
+.page-subtitle {
+	text-align: center;
+}
+
+.shell-content {
+	height: auto;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	-ms-flex-pack: justify;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.shell-footer {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	flex-direction: column-reverse;
+	align-items: center;
+	margin-top: 20px;
+	padding: 10px 15px;
+
+	@media (min-width: $tablet-width) {
+		flex-direction: row;
+		height: 100px;
+	}
+
+	.btn {
+		width: 200px;
+	}
+}
+
+.sticky-fixed {
+	left: 0;
+}
+
+@supports (-ms-ime-align:auto) {
+	.sticky-wrap {
+		width: 100%;
+		margin-bottom: 20px;
+	}
+}
+
+@media all and (-ms-high-contrast: none) {
+	.sticky-wrap {
+		width: 100%;
+		margin-bottom: 20px;
+	}
+}
