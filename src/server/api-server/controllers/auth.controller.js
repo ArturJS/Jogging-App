@@ -1,5 +1,11 @@
 import passport from 'passport';
+
 import db from '../models';
+import {jsonValidatorsUtils} from '../utils/json-validators.utils';
+import {signUpSchema} from './sign-up.schema';
+
+
+const signUpValidator = jsonValidatorsUtils.getValidatorBySchema(signUpSchema);
 
 
 export const authController = {
@@ -25,6 +31,13 @@ export const authController = {
   },
 
   doSignUp: async(req, res) => {
+    const valid = signUpValidator(req.body);
+    if (!valid) {
+      res.status(400).json({error: signUpValidator.errors});
+      return;
+    }
+
+
     const {
       firstName,
       lastName,
@@ -33,32 +46,31 @@ export const authController = {
       repeatPassword
     } = req.body;
 
-    if (password === repeatPassword) {
-      const user = {
-        firstName,
-        lastName,
-        email
-      };
+    const user = {
+      firstName,
+      lastName,
+      email
+    };
 
-      try {
-        await db.User.create({
-          ...user,
-          password
-        });
+    try {
+      if (password !== repeatPassword) {
+        throw new Error('Password and repeat password do not match!');
+      }
 
-        req.login(user, {}, (err) => {
-          if (err) {
-            return res.status(400).json({error: err});
-          }
-          return res.json(user);
-        });
-      }
-      catch (err) {
-        res.status(400).json({error: err});
-      }
+      await db.User.create({
+        ...user,
+        password
+      });
+
+      req.login(user, {}, (err) => {
+        if (err) {
+          return res.status(400).json({error: err});
+        }
+        return res.json(user);
+      });
     }
-    else {
-      res.status(400).json('Password and repeat password do not match!');
+    catch (err) {
+      res.status(400).json({error: err});
     }
   },
 
