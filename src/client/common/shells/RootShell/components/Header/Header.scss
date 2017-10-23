@@ -2,6 +2,7 @@
 
 .header {
   $c-header-bg: $c-white;
+  $min-desktop-width: 900px;
 
   display: flex;
   width: 100%;
@@ -10,7 +11,7 @@
   padding: 15px 10px;
   flex-direction: column;
 
-  @media (min-width: $tablet-width) {
+  @media (min-width: $min-desktop-width) {
     flex-direction: row;
     height: 60px;
   }
@@ -35,7 +36,7 @@
     margin-left: auto;
     width: 100%;
 
-    @media (min-width: $tablet-width) {
+    @media (min-width: $min-desktop-width) {
       width: auto;
     }
   }
@@ -45,7 +46,7 @@
     flex-direction: column;
     width: 100%;
 
-    @media (min-width: $tablet-width) {
+    @media (min-width: $min-desktop-width) {
       flex-direction: row;
       width: auto;
     }
@@ -54,7 +55,7 @@
     .btn-submit {
       margin-top: 15px;
 
-      @media (min-width: $tablet-width) {
+      @media (min-width: $min-desktop-width) {
         margin-top: 0;
         margin-right: 15px;
       }

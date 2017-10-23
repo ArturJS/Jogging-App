@@ -47,6 +47,7 @@ export default class Header extends Component {
         email: authEmail,
         password: authPassword
       });
+      this.formStore.resetFormData();
       this.setState({error: null});
     }
     catch (err) {

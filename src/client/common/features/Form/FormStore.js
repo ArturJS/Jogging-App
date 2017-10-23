@@ -176,6 +176,12 @@ export default class FormStore {
     return false;
   }
 
+  resetFormData() {
+    for (let [name, ctrl] of this._ctrls) {
+      ctrl.value = '';
+    }
+  }
+
   _asyncValidatingDone(error, ctrl) {
     ctrl.error = error;
     ctrl.options.isAsyncValidatingInProgress = false;
