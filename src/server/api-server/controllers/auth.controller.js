@@ -24,7 +24,7 @@ export const authController = {
     res.json('Ok');
   },
 
-  doSignUp: (req, res) => {
+  doSignUp: async(req, res) => {
     const {
       firstName,
       lastName,
@@ -33,19 +33,29 @@ export const authController = {
       repeatPassword
     } = req.body;
 
-    if (password !== repeatPassword) {
+    if (password === repeatPassword) {
       const user = {
         firstName,
         lastName,
         email
       };
 
-      req.login(user, {}, (err) => {
-        if (err) {
-          return res.json({error: err});
-        }
-        return res.json(user);
-      });
+      try {
+        await db.User.create({
+          ...user,
+          password
+        });
+
+        req.login(user, {}, (err) => {
+          if (err) {
+            return res.status(400).json({error: err});
+          }
+          return res.json(user);
+        });
+      }
+      catch (err) {
+        res.status(400).json({error: err});
+      }
     }
     else {
       res.status(400).json('Password and repeat password do not match!');

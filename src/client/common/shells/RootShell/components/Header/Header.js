@@ -2,15 +2,18 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {inject, observer} from 'mobx-react';
 import classNames from 'classnames';
+import {withRouter} from 'react-router';
 
 import {FormStore, Form, Field, Controls, Validators} from '../../../../features/Form';
 import './Header.scss';
 
 @inject('userStore')
+@withRouter
 @observer
 export default class Header extends Component {
   static propTypes = {
-    userStore: PropTypes.object.isRequired
+    userStore: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
   };
 
   state = {
@@ -57,6 +60,7 @@ export default class Header extends Component {
 
   onSignOut = () => {
     this.props.userStore.doSignOut();
+    this.props.history.push('/sign-up');
   };
 
   processAjaxError = (err) => {

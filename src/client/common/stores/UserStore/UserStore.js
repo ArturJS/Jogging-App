@@ -69,7 +69,7 @@ class UserStore {
     password,
     repeatPassword
   }) {
-    const userData = loginApi.doSignUp({
+    const userData = await loginApi.doSignUp({
       firstName,
       lastName,
       email,

@@ -2,15 +2,22 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import {inject, observer} from 'mobx-react';
+import {withRouter} from 'react-router';
 
 import {FormStore, Form, Field, Validators, Controls} from '../../common/features/Form';
 import './SignUpPage.scss';
 
 @inject('userStore')
+@withRouter
 @observer
 export default class SignUpPage extends Component {
   static propTypes = {
-    userStore: PropTypes.object.isRequired
+    userStore: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
+  };
+
+  state = {
+    error: null
   };
 
   componentWillMount() {
@@ -65,7 +72,7 @@ export default class SignUpPage extends Component {
     });
   }
 
-  onSubmit = () => {
+  onSubmit = async() => {
     if (!this.formStore.validate().valid) {
       this.formStore.setFocusFirstInvalid();
       return;
@@ -79,13 +86,26 @@ export default class SignUpPage extends Component {
       repeatPassword
     } = this.formStore.values;
 
-    this.props.userStore.doSignUp({
-      firstName,
-      lastName,
-      email,
-      password,
-      repeatPassword
-    });
+    try {
+      await this.props.userStore.doSignUp({
+        firstName,
+        lastName,
+        email,
+        password,
+        repeatPassword
+      });
+      this.formStore.resetFormData();
+      this.setState({error: null});
+      this.props.history.push('/records');
+    }
+    catch (err) {
+      this.processAjaxError(err);
+    }
+  };
+
+  processAjaxError = (err) => {
+    const {error} = err.response.data;
+    this.setState({error});
   };
 
   render() {
