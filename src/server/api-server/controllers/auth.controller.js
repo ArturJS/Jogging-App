@@ -54,7 +54,13 @@ export const authController = {
 
     try {
       if (password !== repeatPassword) {
-        throw new Error('Password and repeat password do not match!');
+        throw 'Password and repeat password do not match!';
+      }
+
+      const userWithSameEmail = await db.User.find({where: {email}});
+
+      if (userWithSameEmail) {
+        throw 'User with the same email already exists!';
       }
 
       await db.User.create({

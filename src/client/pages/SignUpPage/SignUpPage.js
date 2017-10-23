@@ -109,6 +109,7 @@ export default class SignUpPage extends Component {
   };
 
   render() {
+    const {error} = this.state;
     const {
       inputTextCtrl,
       inputPasswordCtrlWithShowBnt
@@ -179,6 +180,11 @@ export default class SignUpPage extends Component {
               name="repeatPassword"
               control={inputPasswordCtrlWithShowBnt}/>
           </div>
+          {error &&
+          <div className="sign-up-error-summary field-error-text">
+            {error}
+          </div>
+          }
           <div className="buttons-group">
             <button
               type="submit"
