@@ -6,7 +6,9 @@ export const authController = {
   doSignIn: async(req, res) => {
     passport.authenticate('local', (err, user) => {
       if (err || !user) {
-        res.status(401).end();
+        res.status(401).json({
+          error: 'Invalid email or password'
+        });
         return;
       }
       req.login(user, {}, (err) => {

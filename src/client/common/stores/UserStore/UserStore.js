@@ -52,7 +52,7 @@ class UserStore {
   }
 
   async doSignIn({email, password}) {
-    const userData = loginApi.doSignIn({email, password});
+    const userData = await loginApi.doSignIn({email, password});
     this._setUserData(userData);
     return userData;
   }

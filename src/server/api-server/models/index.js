@@ -8,13 +8,12 @@ const testUser = {
 export default { // todo integrate with sequelizejs
   User: {
     find: ({where}) => {
-      console.log('SEARCH USER');
-      console.dir(where);
       const {id, email, token} = where;
       if (id || token || email === testUser.email) {
         return Promise.resolve({id, ...testUser});
       }
-      return Promise.reject(`Wrong user ${JSON.stringify(where)}`);
+      console.log(`Wrong user ${JSON.stringify(where)}`);
+      return Promise.resolve(null);
     },
 
     update: (data, {where}) => {
@@ -22,9 +21,6 @@ export default { // todo integrate with sequelizejs
     },
 
     validPassword: (password, userPassword, done, user) => {
-      console.log('password', password);
-      console.log('userPassword', userPassword);
-      console.log('user', user);
       if (password === userPassword) {
         done(null, user);
       }
