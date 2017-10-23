@@ -5,9 +5,7 @@ export default {
   inputTextCtrl,
   textAreaCtrl,
   inputPasswordCtrl,
-  inputPasswordCtrlWithShowBnt,
-  inputNumberCtrl,
-  inputDateCtrl
+  inputPasswordCtrlWithShowBnt
 };
 
 function inputTextCtrl({name, value, maxLength, placeholder, onFocus, onChange, onBlur, onEnter, disabled, tabIndex, ctrl}) {
@@ -142,45 +140,5 @@ function inputPasswordCtrlWithShowBnt({name, value, placeholder, onFocus, onChan
         onTouchEnd={hidePassword}
         onMouseLeave={hidePassword}/>
     </div>
-  );
-}
-
-function inputNumberCtrl({name, value, placeholder, onFocus, onChange, onBlur, disabled, tabIndex, ctrl}) {
-  return (
-    <input
-      tabIndex={tabIndex}
-      type="number"
-      id={name}
-      name={name}
-      value={value}
-      disabled={disabled}
-      placeholder={placeholder}
-      className="form-control field-anchor"
-      onChange={onChange}
-      onBlur={onBlur}
-      ref={(input) => {
-        ctrl.ref = input;
-      }}
-      onFocus={onFocus}/>
-  );
-}
-
-function inputDateCtrl({name, value, placeholder, onFocus, onChange, onBlur, disabled, tabIndex, ctrl}) {
-  return (
-    <input
-      tabIndex={tabIndex}
-      type="date"
-      id={name}
-      name={name}
-      value={value}
-      disabled={disabled}
-      placeholder={placeholder}
-      className="form-control field-anchor"
-      onChange={onChange}
-      onBlur={onBlur}
-      onFocus={onFocus}
-      ref={(input) => {
-        ctrl.ref = input;
-      }}/>
   );
 }

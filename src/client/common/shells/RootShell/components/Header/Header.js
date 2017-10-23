@@ -14,13 +14,13 @@ export default class Header extends Component {
 
   componentWillMount() {
     this.formStore = new FormStore({
-      email: {
+      authEmail: {
         value: '',
         validators: [
           Validators.required(true)
         ]
       },
-      password: {
+      authPassword: {
         value: '',
         validators: [
           Validators.required(true)
@@ -35,11 +35,11 @@ export default class Header extends Component {
       return;
     }
 
-    const {email, password} = this.formStore.values;
+    const {authEmail, authPassword} = this.formStore.values;
 
     this.props.userStore.doSignIn({
-      email,
-      password
+      email: authEmail,
+      password: authPassword
     });
   };
 
@@ -76,12 +76,12 @@ export default class Header extends Component {
               onSubmit={this.onSignIn}>
               <Field
                 className="control-field"
-                name="email"
+                name="authEmail"
                 control={inputTextCtrl}
                 placeholder={'Email'}/>
               <Field
                 className="control-field"
-                name="password"
+                name="authPassword"
                 control={inputPasswordCtrl}
                 placeholder={'Password'}/>
               <button
