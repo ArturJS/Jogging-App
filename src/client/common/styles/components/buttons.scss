@@ -93,6 +93,10 @@ a.btn {
 			color: $c-btn-primary-text;
 			background-color: $c-btn-disabled-bg;
 		}
+
+    .fa {
+      color: $c-btn-primary-text;
+    }
 	}
 
 	&-link {
@@ -103,8 +107,6 @@ a.btn {
 		color: $c-btn-text;
 		font-weight: 400;
 		outline: none !important;
-		height: 1em;
-		line-height: 1em;
 		font-family: 'Gotham', sans-serif;
 		vertical-align: baseline;
 		height: auto;
@@ -115,6 +117,10 @@ a.btn {
 	&-default {
 		background-color: transparent;
 		color: $c-btn-border;
+
+    .fa {
+      color: $c-btn-border;
+    }
 	}
 
 	&-sm {
@@ -128,4 +134,5 @@ a.btn {
 	justify-content: center;
 	flex-wrap: wrap;
 	width: 100%;
+  padding: 0 15px;
 }

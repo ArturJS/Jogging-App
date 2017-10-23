@@ -34,7 +34,7 @@ module.exports = {
       {test: /\.jsx?$/, exclude: /node_modules/, loaders: [strip.loader('debug'), 'babel-loader']},
       {test: /\.json$/, loader: 'json-loader'},
       {
-        test: /\.scss$/,
+        test: /\.s?css$/,
         loader: ExtractTextPlugin.extract({
           fallback: "style-loader",
           use: 'css-loader?importLoaders=2&minimize=true!postcss-loader?parser=postcss-scss!sass-loader?outputStyle=expanded'

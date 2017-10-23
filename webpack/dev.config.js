@@ -58,7 +58,7 @@ module.exports = {
       },
       {test: /\.json$/, loader: 'json-loader'},
       {
-        test: /\.scss$/,
+        test: /\.s?css$/,
         loader: 'style-loader!css-loader?importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]!postcss-loader?parser=postcss-scss&sourceMap=true!sass-loader?outputStyle=expanded&sourceMap'
       },
       {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff"},

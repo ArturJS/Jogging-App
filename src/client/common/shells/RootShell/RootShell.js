@@ -5,6 +5,7 @@ import {inject} from 'mobx-react';
 
 import Header from './components/Header';
 import NavSubHeader from './components/NavSubHeader';
+import {ModalDialog} from '../../features/ModalDialog';
 import config from '../../../../config';
 import '../../styles/base.scss';
 import './RootShell.scss';
@@ -31,6 +32,7 @@ export default class RootShell extends Component {
         <div className="page-container">
           {children}
         </div>
+        <ModalDialog/>
       </div>
     );
   }

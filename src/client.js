@@ -11,11 +11,13 @@ import {Provider} from 'mobx-react';
 import rootRoutes from './routes';
 import RootShell from './client/common/shells/RootShell';
 import {userStore} from './client/common/stores';
+import {modalStore} from './client/common/features/ModalDialog';
 
 let dest;
 
 const stores = {
-  userStore
+  userStore,
+  modalStore
 };
 
 const Client = ({children}) => (
