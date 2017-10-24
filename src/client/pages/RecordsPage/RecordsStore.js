@@ -1,11 +1,20 @@
 import {
   observable,
-  computed
+  action,
+  computed,
+  extendObservable
 } from 'mobx';
 import {recordsApi} from '../../common/api/recordsApi';
 
+const MAX_DATE = 8640000000000000;
+const MIN_DATE = -MAX_DATE;
+
 class RecordsStore {
   @observable recordsList = [];
+  @observable _filter = observable({
+    startDate: null,
+    endDate: null
+  });
 
   async init() {
     const recordsList = await recordsApi.getAllRecords();
@@ -43,6 +52,10 @@ class RecordsStore {
     );
   }
 
+  @action setFilter({startDate, endDate}) {
+    extendObservable(this._filter, {startDate, endDate});
+  }
+
   getRecordById(recordId) {
     return this.recordsList.find(record => record.id === recordId);
   }
@@ -53,8 +66,27 @@ class RecordsStore {
     );
   }
 
+  @computed get noRecords() {
+    return this.recordsList.length === 0;
+  }
+
+  @computed get noFilteredRecords() {
+    return this.recordsGridData.length === 0;
+  }
+
   @computed get recordsGridData() {
-    return this.recordsList.map(_formatRecordToDisplay);
+    return this._getFilteredRecords().map(_formatRecordToDisplay);
+  }
+
+  _getFilteredRecords() {
+    let {startDate, endDate} = this._filter;
+    startDate = startDate || MIN_DATE;
+    endDate = endDate || MAX_DATE;
+
+    return this.recordsList.filter(record => {
+      const date = record.date.valueOf();
+      return date >= startDate && date <= endDate;
+    });
   }
 }
 

@@ -161,13 +161,9 @@ export default class RecordsPage extends Component {
   };
 
   onDatesChange = ({startDate, endDate}) => {
-    console.log(startDate); // todo reset time for correct filtering
-    console.log(endDate);
-    this.setState({
-      dateRangeFilter: {
-        startDate,
-        endDate
-      }
+    this.props.recordsStore.setFilter({
+      startDate: startDate && startDate.startOf('day'),
+      endDate: endDate && endDate.startOf('day')
     });
   };
 
@@ -175,7 +171,11 @@ export default class RecordsPage extends Component {
     const {
       recordsGrid
     } = this.state;
-    const {recordsGridData} = this.props.recordsStore;
+    const {
+      recordsGridData,
+      noRecords,
+      noFilteredRecords
+    } = this.props.recordsStore;
 
     return (
       <div className="page records-page">
@@ -183,14 +183,20 @@ export default class RecordsPage extends Component {
         <h1>Records</h1>
         <DateRangeFilter onDatesChange={this.onDatesChange}/>
 
-        {recordsGridData.length === 0 &&
+        {noRecords &&
         <div className="no-records-placeholder">
           <p>Your records list is empty...</p>
           <p>Feel free to create new record!</p>
         </div>
         }
 
-        {recordsGridData.length > 0 &&
+        {!noRecords && noFilteredRecords &&
+        <div className="no-records-placeholder">
+          <p>There are no records in selected date range...</p>
+        </div>
+        }
+
+        {!noFilteredRecords &&
         <ReactTable
           className={'records-table'}
           data={recordsGridData}
