@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {inject} from 'mobx-react';
 import moment from 'moment';
 
-import {Form, FormStore, Controls, Validators, Field} from '../../../../common/features/Form';
+import {Form, FormStore, Controls, Validators, Field, Transformers} from '../../../../common/features/Form';
 import './EditRecordModal.scss';
 
 
@@ -29,6 +29,7 @@ export default class EditRecordModal extends Component {
       },
       distance: {
         value: '',
+        transform: Transformers.positiveNumberWithLength(10),
         validators: [
           Validators.required('Please enter distance')
         ]
