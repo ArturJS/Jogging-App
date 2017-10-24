@@ -67,7 +67,9 @@ export default class FormStore {
 
   @action setFormData(data) {
     _.forOwn(data, (value, name) => {
-      this._ctrls.get(name).value = value;
+      if (this._ctrls.get(name)) {
+        this._ctrls.get(name).value = value;
+      }
     });
   }
 

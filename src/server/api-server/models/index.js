@@ -40,6 +40,17 @@ export default { // todo integrate with sequelizejs
   },
 
   Record: {
+    find: ({where}) => {
+      const {email, id} = where;
+      const relatedRecord = _recordsStorage[id];
+
+      if (relatedRecord && relatedRecord.email === email) {
+        return Promise.resolve(relatedRecord);
+      }
+
+      return Promise.resolve(null);
+    },
+
     findAll: ({where}) => {
       const {email} = where;
       const recordsList = Object.values(_recordsStorage).filter(record => record.email === email);
@@ -65,5 +76,11 @@ export default { // todo integrate with sequelizejs
 
       return Promise.resolve(record);
     },
+
+    destroy: ({where}) => {
+      const {id} = where;
+      delete _recordsStorage[id];
+      return Promise.resolve(true);
+    }
   }
 }

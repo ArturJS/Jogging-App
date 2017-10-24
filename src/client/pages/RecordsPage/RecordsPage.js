@@ -73,14 +73,22 @@ export default class RecordsPage extends Component {
                 <div>(Km/hr)</div>
               </div>
             ),
+            width: 150,
             accessor: 'averageSpeed',
             sortable: false
           },
           {
             Header: 'Edit',
-            Cell: () => {
+            Cell: (cellInfo) => {
+              const {id} = cellInfo.original;
+              const onEditClick = () => this.showEditRecordModal(id);
+              cellInfo.onEditClick = cellInfo.onEditClick || onEditClick;
               return (
-                <button type="button" className="btn btn-default fa fa-pencil"/>
+                <button
+                  type="button"
+                  className="btn btn-default fa fa-pencil"
+                  onClick={cellInfo.onEditClick}
+                />
               );
             },
             width: 60,
@@ -89,9 +97,15 @@ export default class RecordsPage extends Component {
           },
           {
             Header: 'Delete',
-            Cell: () => {
+            Cell: (cellInfo) => {
+              const {id} = cellInfo.original;
+              const onDeleteClick = () => this.showRemoveRecordModal(id);
+              cellInfo.onDeleteClick = cellInfo.onDeleteClick || onDeleteClick;
               return (
-                <button type="button" className="btn btn-default fa fa-trash-o"/>
+                <button
+                  type="button"
+                  className="btn btn-default fa fa-trash-o"
+                  onClick={cellInfo.onDeleteClick}/>
               );
             },
             width: 60,
@@ -111,6 +125,38 @@ export default class RecordsPage extends Component {
     this.props.modalStore.showCustom({
       title: 'Add new record',
       component: <EditRecordModal isAddMode={true}/>
+    });
+  };
+
+  showEditRecordModal = (recordId) => {
+    const relatedRecord = this.props.recordsStore.getRecordById(recordId);
+    this.props.modalStore.showCustom({
+      title: 'Edit record',
+      component: <EditRecordModal record={relatedRecord}/>
+    });
+  };
+
+  showRemoveRecordModal = (recordId) => {
+    const record = this.props.recordsStore.getFormattedRecordById(recordId);
+    this.props.modalStore.showConfirm({
+      title: 'Confirm your action',
+      body: (
+        <div>
+          <div>Are you sure you want to delete this record?</div>
+          <div>
+            {
+              `Date: ${record.date};
+              Distance: ${record.distance};
+              Time: ${record.time};
+              Average speed: ${record.averageSpeed}.`
+            }
+          </div>
+        </div>
+      )
+    }).then((result) => {
+      if (!result) return;
+
+      this.props.recordsStore.removeRecord(recordId);
     });
   };
 

@@ -6,7 +6,6 @@ export const recordsController = {
     const record = req.body;
 
     record.email = req.user.email;
-    console.log('record.email', record.email);
     record.averageSpeed = _calcAverageSpeed(record);
 
     const createdRecord = await db.Record.create(record);
@@ -22,6 +21,17 @@ export const recordsController = {
       ...record
     });
     res.json(updatedRecord);
+  },
+
+  removeRecord: async(req, res) => {
+    const {recordId} = req.params;
+    const {email} = req.user;
+    const relatedRecord = await db.Record.find({where: {email, id: recordId}});
+    if (relatedRecord) {
+      await db.Record.destroy({where: {id: recordId}});
+      res.json('Ok');
+    }
+    res.status(404).json('NOT FOUND! There is no such record...');
   },
 
   getAllRecords: async(req, res) => {

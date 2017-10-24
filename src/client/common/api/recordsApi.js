@@ -16,7 +16,6 @@ export const recordsApi = {
       .then(_mapGetRecord);
   },
 
-
   updateRecord({
     id, date, distance, time
   }) {
@@ -27,6 +26,14 @@ export const recordsApi = {
     })
       .then(res => res.data)
       .then(_mapGetRecord);
+  },
+
+  removeRecord(id) {
+    return baseApi.ajax({
+      method: 'delete',
+      url: `/records/${id}`
+    })
+      .then(res => res.data);
   },
 
   getAllRecords() {

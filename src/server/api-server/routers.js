@@ -19,6 +19,7 @@ router.post('/sign-out', authUtils.destroySession, authController.doSignOut);
 router.get('/records', authUtils.IsAuthenticated, recordsController.getAllRecords);
 router.post('/records', authUtils.IsAuthenticated, recordsController.createRecord);
 router.put('/records/:recordId', authUtils.IsAuthenticated, recordsController.createRecord);
+router.delete('/records/:recordId', authUtils.IsAuthenticated, recordsController.removeRecord);
 
 
 export default router;

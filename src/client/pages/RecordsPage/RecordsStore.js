@@ -36,15 +36,36 @@ class RecordsStore {
     }
   }
 
+  async removeRecord(id) {
+    await recordsApi.removeRecord(id);
+    this.recordsList.replace(
+      this.recordsList.filter(record => record.id !== id)
+    );
+  }
+
+  getRecordById(recordId) {
+    return this.recordsList.find(record => record.id === recordId);
+  }
+
+  getFormattedRecordById(recordId) {
+    return _formatRecordToDisplay(
+      this.getRecordById(recordId)
+    );
+  }
+
   @computed get recordsGridData() {
-    return this.recordsList.map(record => ({
-      id: record.id,
-      date: record.date.format('DD.MM.YYYY'),
-      distance: record.distance,
-      time: record.time.format('HH:mm:ss'),
-      averageSpeed: record.averageSpeed
-    }));
+    return this.recordsList.map(_formatRecordToDisplay);
   }
 }
 
 export default new RecordsStore();
+
+function _formatRecordToDisplay(record) {
+  return {
+    id: record.id,
+    date: record.date.format('DD.MM.YYYY'),
+    distance: record.distance,
+    time: record.time.format('HH:mm:ss'),
+    averageSpeed: record.averageSpeed
+  };
+}
