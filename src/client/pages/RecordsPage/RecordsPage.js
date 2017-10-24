@@ -136,6 +136,15 @@ export default class RecordsPage extends Component {
         <Helmet title="Records"/>
         <h1>Records</h1>
         <DateRangeFilter onDatesChange={this.onDatesChange}/>
+
+        {recordsGridData.length === 0 &&
+        <div className="no-records-placeholder">
+          <p>Your records list is empty...</p>
+          <p>Feel free to create new record!</p>
+        </div>
+        }
+
+        {recordsGridData.length > 0 &&
         <ReactTable
           className={'records-table'}
           data={recordsGridData}
@@ -143,6 +152,8 @@ export default class RecordsPage extends Component {
           pageSize={recordsGridData.length}
           showPageSizeOptions={false}
           showPagination={false}/>
+        }
+
         <div className="buttons-group">
           <button
             type="button"
