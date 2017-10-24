@@ -39,6 +39,17 @@
 		input[type="checkbox"] {
 			width: auto;
 		}
+
+    .SingleDatePickerInput {
+      background-color: transparent;
+      border: 0;
+    }
+
+    .DateInput {
+      width: 100%;
+      padding: 0;
+      background-color: transparent;
+    }
 	}
 
 	&.inverse-form-group {

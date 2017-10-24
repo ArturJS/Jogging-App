@@ -64,10 +64,13 @@ export default class Field extends Component {
     }
   };
 
-  onFocus = () => {
+  onFocus = ({focused}) => {
     let ctrl = this.getCtrl();
     ctrl.value = ctrl.onFocusTransform(ctrl.value, ctrl);
     ctrl.touched = true;
+    if (_.isBoolean(focused)) {
+      ctrl.focused = focused;
+    }
   };
 
   onEnter = (e) => {

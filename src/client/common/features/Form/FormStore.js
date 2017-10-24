@@ -24,6 +24,7 @@ export default class FormStore {
       ctrl.disabled = ctrl.disabled || false;
       ctrl.onEnter = ctrl.onEnter || _.noop;
       ctrl.isDifirenceExist = false;
+      ctrl.focused = false;
       let onChanged = ctrl.onChanged || _.noop;
       if (onChangedMixins) {
         ctrl.onChanged = (control, controls, formStore) => {
@@ -63,6 +64,12 @@ export default class FormStore {
     });
     return newCtrls;
   };
+
+  @action setFormData(data) {
+    _.forOwn(data, (value, name) => {
+      this._ctrls.get(name).value = value;
+    });
+  }
 
   @action
   validate() {

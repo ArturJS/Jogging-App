@@ -12,12 +12,14 @@ import rootRoutes from './routes';
 import RootShell from './client/common/shells/RootShell';
 import {userStore} from './client/common/stores';
 import {modalStore} from './client/common/features/ModalDialog';
+import {recordsStore} from './client/pages/RecordsPage';
 
 let dest;
 
 const stores = {
   userStore,
-  modalStore
+  modalStore,
+  recordsStore
 };
 
 const Client = ({children}) => (

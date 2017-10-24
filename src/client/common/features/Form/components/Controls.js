@@ -1,11 +1,19 @@
 import React from 'react';
 import classNames from 'classnames';
+import 'rc-time-picker/assets/index.css';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
+import {SingleDatePicker} from 'react-dates';
+import TimePicker from 'rc-time-picker';
+import moment from 'moment';
 
 export default {
   inputTextCtrl,
   textAreaCtrl,
   inputPasswordCtrl,
-  inputPasswordCtrlWithShowBnt
+  inputPasswordCtrlWithShowBnt,
+  singleDatePickerCtrl,
+  timePickerCtrl
 };
 
 function inputTextCtrl({name, value, maxLength, placeholder, onFocus, onChange, onBlur, onEnter, disabled, tabIndex, ctrl}) {
@@ -140,5 +148,30 @@ function inputPasswordCtrlWithShowBnt({name, value, placeholder, onFocus, onChan
         onTouchEnd={hidePassword}
         onMouseLeave={hidePassword}/>
     </div>
+  );
+}
+
+function singleDatePickerCtrl({name, value, onChange, onFocus, ctrl}) {
+  return (
+    <SingleDatePicker
+      id={name}
+      date={value}
+      onDateChange={onChange}
+      focused={ctrl.focused}
+      onFocusChange={onFocus}
+    />
+  );
+}
+
+function timePickerCtrl({name, value, onChange}) {
+  return (
+    <TimePicker
+      name={name}
+      value={value}
+      showSecond={true}
+      defaultValue={moment().startOf('day')}
+      className="form-control"
+      onChange={onChange}
+    />
   );
 }

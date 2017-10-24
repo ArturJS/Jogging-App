@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
 import {DateRangePicker} from 'react-dates';
 
 import './DateRangeFilter.scss';
@@ -42,7 +40,7 @@ export default class DateRangeFilter extends Component {
     return (
       <div className="date-range-filter">
         <div className="date-range-filter-title">
-          Selected date range:
+          Filter by date range:
         </div>
         <DateRangePicker
           startDate={startDate}

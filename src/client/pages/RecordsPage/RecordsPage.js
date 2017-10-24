@@ -9,12 +9,13 @@ import EditRecordModal from './components/EditRecordModal';
 import DateRangeFilter from './components/DateRangeFilter';
 import './RecordsPage.scss';
 
-@inject('userStore', 'modalStore')
+@inject('userStore', 'modalStore', 'recordsStore')
 @observer
 export default class RecordsPage extends Component {
   static propTypes = {
     userStore: PropTypes.object.isRequired,
-    modalStore: PropTypes.object.isRequired
+    modalStore: PropTypes.object.isRequired,
+    recordsStore: PropTypes.object.isRequired
   };
 
   state = {
@@ -51,7 +52,12 @@ export default class RecordsPage extends Component {
             sortable: true
           },
           {
-            Header: 'Distance',
+            Header: () => (
+              <div>
+                <div>Distance</div>
+                <div>(Metres)</div>
+              </div>
+            ),
             accessor: 'distance',
             sortable: false
           },
@@ -61,13 +67,18 @@ export default class RecordsPage extends Component {
             sortable: false
           },
           {
-            Header: 'Average speed',
+            Header: () => (
+              <div>
+                <div>Average speed</div>
+                <div>(Km/hr)</div>
+              </div>
+            ),
             accessor: 'averageSpeed',
             sortable: false
           },
           {
             Header: 'Edit',
-            Cell: (cellInfo) => {
+            Cell: () => {
               return (
                 <button type="button" className="btn btn-default fa fa-pencil"/>
               );
@@ -78,7 +89,7 @@ export default class RecordsPage extends Component {
           },
           {
             Header: 'Delete',
-            Cell: (cellInfo) => {
+            Cell: () => {
               return (
                 <button type="button" className="btn btn-default fa fa-trash-o"/>
               );
@@ -92,10 +103,14 @@ export default class RecordsPage extends Component {
     });
   }
 
+  componentDidMount() {
+    this.props.recordsStore.init();
+  }
+
   showAddRecordModal = () => {
     this.props.modalStore.showCustom({
       title: 'Add new record',
-      component: <EditRecordModal/>
+      component: <EditRecordModal isAddMode={true}/>
     });
   };
 
@@ -114,6 +129,7 @@ export default class RecordsPage extends Component {
     const {
       recordsGrid
     } = this.state;
+    const {recordsGridData} = this.props.recordsStore;
 
     return (
       <div className="page records-page">
@@ -122,9 +138,9 @@ export default class RecordsPage extends Component {
         <DateRangeFilter onDatesChange={this.onDatesChange}/>
         <ReactTable
           className={'records-table'}
-          data={recordsGrid.data}
+          data={recordsGridData}
           columns={recordsGrid.columns}
-          pageSize={recordsGrid.data.length}
+          pageSize={recordsGridData.length}
           showPageSizeOptions={false}
           showPagination={false}/>
         <div className="buttons-group">

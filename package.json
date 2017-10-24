@@ -129,6 +129,7 @@
     "passport": "0.4.0",
     "passport-local": "1.0.0",
     "piping": "1.0.0-rc.4",
+    "rc-time-picker": "3.0.0",
     "react": "15.5.4",
     "react-addons-shallow-compare": "15.6.2",
     "react-dates": "13.0.6",

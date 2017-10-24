@@ -19,7 +19,8 @@ select:-moz-focusring {
 }
 
 .form-control,
-.geosuggest__input {
+.geosuggest__input,
+.SingleDatePicker {
 	display: block;
 	width: 100%;
 	padding: 6px 12px;
@@ -29,7 +30,7 @@ select:-moz-focusring {
 	background-image: none;
 	border: $border-size solid $c-input-border;
 	border-radius: 3px;
-	font-family: 'Gotham';
+  font-family: sans-serif;
 	-webkit-appearance: none;
 	height: $input-height;
 
@@ -120,10 +121,9 @@ input:disabled + .prefix-input-label {
 	list-style-type: none;
 	color: $c-input-color;
 	background-color: $c-input-bg;
-	background-image: none;
 	border: $border-size solid $c-input-border;
 	border-radius: 3px;
-	font-family: 'Gotham';
+  font-family: sans-serif;
 	-webkit-appearance: none;
 	height: $input-height;
 	overflow: hidden;
