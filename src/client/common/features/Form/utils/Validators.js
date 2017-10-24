@@ -21,7 +21,7 @@ export default {
 
 function required(error) {
   function _required(value) {
-    if (_.isEmpty(value) || _.isString(value) && _.isEmpty(value.trim())) {
+    if (_.isEmpty(value) && !_.isNumber(value) || _.isString(value) && _.isEmpty(value.trim())) {
       return error;
     }
     return null;

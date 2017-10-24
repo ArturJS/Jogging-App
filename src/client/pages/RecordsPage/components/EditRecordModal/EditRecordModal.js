@@ -36,7 +36,12 @@ export default class EditRecordModal extends Component {
       time: {
         value: moment().startOf('day'),
         validators: [
-          Validators.required('Please enter time')
+          Validators.required('Please enter time'),
+          (value) => {
+            if (!value || value.format('HH:mm:ss') === '00:00:00') {
+              return 'Time should be more than "00:00:00"';
+            }
+          }
         ]
       }
     });
