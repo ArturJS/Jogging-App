@@ -5,12 +5,14 @@ import 'babel-polyfill';
 import React from 'react';
 import {Switch, Route} from 'react-router';
 import {render} from 'react-dom';
-import {BrowserRouter} from 'react-router-dom';
+import {Router} from 'react-router';
 import {Provider} from 'mobx-react';
+import createBrowserHistory from 'history/createBrowserHistory';
+import {syncHistoryWithStore} from 'mobx-react-router';
 
 import rootRoutes from './routes';
 import RootShell from './client/common/shells/RootShell';
-import {userStore} from './client/common/stores';
+import {userStore, routerStore} from './client/common/stores';
 import {modalStore} from './client/common/features/ModalDialog';
 import {recordsStore} from './client/pages/RecordsPage';
 
@@ -19,7 +21,8 @@ let dest;
 const stores = {
   userStore,
   modalStore,
-  recordsStore
+  recordsStore,
+  routerStore
 };
 
 const Client = ({children}) => (
@@ -31,11 +34,15 @@ const Client = ({children}) => (
 );
 
 if (__CLIENT__) {
+  const browserHistory = createBrowserHistory();
+  const history = syncHistoryWithStore(browserHistory, routerStore);
+
   dest = document.getElementById('content');
+
   render(
-    <BrowserRouter>
+    <Router history={history}>
       <Client />
-    </BrowserRouter>,
+    </Router>,
     dest
   );
 }

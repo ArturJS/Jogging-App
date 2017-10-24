@@ -8,18 +8,33 @@ import {MODAL_TYPES} from './ModalStore';
 import './ModalDialog.scss';
 
 
-@inject('modalStore')
+@inject('modalStore', 'routerStore')
 @observer
 export default class ModalDialog extends Component {
   static propTypes = {
-    modalStore: PropTypes.object.isRequired
+    modalStore: PropTypes.object.isRequired,
+    routerStore: PropTypes.object.isRequired
   };
+
+  componentDidMount() {
+    this.unlisten = this.props.routerStore.history.listen(this.onLocationChange);
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
+  }
 
   static noBackdropStyle = {
     overlay: {
       backgroundColor: 'transparent',
       pointerEvents: 'none',
       zIndex: 1080
+    }
+  };
+
+  onLocationChange = () => {
+    if (!this.props.modalStore.noCloseOnRedirect) {
+      this.props.modalStore.close(false);
     }
   };
 

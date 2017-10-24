@@ -1,1 +1,1 @@
-export {default as default} from './UserStore';
+export {default} from './UserStore';
