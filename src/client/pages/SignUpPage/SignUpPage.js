@@ -4,20 +4,21 @@ import Helmet from 'react-helmet';
 import {inject, observer} from 'mobx-react';
 import {withRouter} from 'react-router';
 
+import processErrors from '../../common/components/ProcessErrors';
+import ErrorSummary from '../../common/components/ErrorSummary';
 import {FormStore, Form, Field, Validators, Controls} from '../../common/features/Form';
 import './SignUpPage.scss';
 
 @inject('userStore')
+@processErrors
 @withRouter
 @observer
 export default class SignUpPage extends Component {
   static propTypes = {
     userStore: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  };
-
-  state = {
-    error: null
+    history: PropTypes.object.isRequired,
+    error: PropTypes.string,
+    processAjaxError: PropTypes.func.isRequired
   };
 
   componentWillMount() {
@@ -99,17 +100,12 @@ export default class SignUpPage extends Component {
       this.props.history.push('/records');
     }
     catch (err) {
-      this.processAjaxError(err);
+      this.props.processAjaxError(err);
     }
   };
 
-  processAjaxError = (err) => {
-    const {error} = err.response.data;
-    this.setState({error});
-  };
-
   render() {
-    const {error} = this.state;
+    const {error} = this.props;
     const {
       inputTextCtrl,
       inputPasswordCtrlWithShowBnt
@@ -180,11 +176,7 @@ export default class SignUpPage extends Component {
               name="repeatPassword"
               control={inputPasswordCtrlWithShowBnt}/>
           </div>
-          {error &&
-          <div className="sign-up-error-summary field-error-text">
-            {error}
-          </div>
-          }
+          <ErrorSummary error={error}/>
           <div className="buttons-group">
             <button
               type="submit"

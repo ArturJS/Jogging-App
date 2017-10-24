@@ -3,20 +3,21 @@ import PropTypes from 'prop-types';
 import {inject} from 'mobx-react';
 import moment from 'moment';
 
+import processErrors from '../../../../common/components/ProcessErrors';
+import ErrorSummary from '../../../../common/components/ErrorSummary';
 import {Form, FormStore, Controls, Validators, Field, Transformers} from '../../../../common/features/Form';
 import './EditRecordModal.scss';
 
 
 @inject('modalStore', 'recordsStore')
+@processErrors
 export default class EditRecordModal extends Component {
   static propTypes = {
     modalStore: PropTypes.object.isRequired,
     record: PropTypes.object,
-    isAddMode: PropTypes.bool
-  };
-
-  state = {
-    error: null
+    isAddMode: PropTypes.bool,
+    error: PropTypes.string,
+    processAjaxError: PropTypes.func.isRequired
   };
 
   componentWillMount() {
@@ -90,14 +91,9 @@ export default class EditRecordModal extends Component {
       this.props.modalStore.close();
     }
     catch (err) {
-      this.processAjaxError(err);
+      this.props.processAjaxError(err);
     }
   };
-
-  processAjaxError(err) {
-    const {error} = err.response.data;
-    this.setState({error});
-  }
 
   render() {
     const {
@@ -105,7 +101,7 @@ export default class EditRecordModal extends Component {
       singleDatePickerCtrl,
       timePickerCtrl
     } = Controls;
-    const {error} = this.state;
+    const {error} = this.props;
 
     return (
       <Form
@@ -145,11 +141,7 @@ export default class EditRecordModal extends Component {
             name="time"
             control={timePickerCtrl}/>
         </div>
-        {error &&
-        <div className="field-error-text">
-          {error}
-        </div>
-        }
+        <ErrorSummary error={error}/>
         <div className="buttons-group">
           <button className="btn btn-primary modal-button pull-right">
             Submit

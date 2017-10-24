@@ -1,3 +1,5 @@
+@import "../../common/styles/references/references";
+
 .container {
   margin: 15px auto;
 }
@@ -11,13 +13,11 @@
 
   .buttons-group {
     .btn {
-      margin-right: 10px;
-    }
-  }
+      width: 100%;
 
-  .sign-up-error-summary {
-    padding: 0 15px 15px;
-    text-align: center;
-    font-size: 18px;
+      @media (min-width: $tablet-width) {
+        width: auto;
+      }
+    }
   }
 }
