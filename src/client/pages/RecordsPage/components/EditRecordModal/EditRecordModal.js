@@ -70,28 +70,28 @@ export default class EditRecordModal extends Component {
       time
     } = this.formStore.values;
 
-    // try {
-    if (isAddMode) {
-      await recordsStore.createRecord({
-        date,
-        distance,
-        time
-      });
-    }
-    else {
-      await recordsStore.updateRecord({
-        id: record.id,
-        date,
-        distance,
-        time
-      });
-    }
+    try {
+      if (isAddMode) {
+        await recordsStore.createRecord({
+          date,
+          distance,
+          time
+        });
+      }
+      else {
+        await recordsStore.updateRecord({
+          id: record.id,
+          date,
+          distance,
+          time
+        });
+      }
 
-    this.props.modalStore.close();
-    // }
-    // catch (err) {
-    //   this.processAjaxError(err);
-    // }
+      this.props.modalStore.close();
+    }
+    catch (err) {
+      this.processAjaxError(err);
+    }
   };
 
   processAjaxError(err) {

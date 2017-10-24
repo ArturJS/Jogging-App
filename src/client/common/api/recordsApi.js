@@ -58,7 +58,7 @@ function _mapGetRecord(record) {
 
 function _mapPostRecord({date, distance, time}) {
   return {
-    date: date.valueOf(),
+    date: date.startOf('day').valueOf(),
     distance: +distance,
     time: _getSecondsFromMidNight(time)
   };

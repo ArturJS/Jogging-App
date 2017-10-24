@@ -161,7 +161,7 @@ export default class RecordsPage extends Component {
   };
 
   onDatesChange = ({startDate, endDate}) => {
-    console.log(startDate);
+    console.log(startDate); // todo reset time for correct filtering
     console.log(endDate);
     this.setState({
       dateRangeFilter: {

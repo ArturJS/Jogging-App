@@ -18,7 +18,7 @@ router.post('/sign-out', authUtils.destroySession, authController.doSignOut);
 // Records
 router.get('/records', authUtils.IsAuthenticated, recordsController.getAllRecords);
 router.post('/records', authUtils.IsAuthenticated, recordsController.createRecord);
-router.put('/records/:recordId', authUtils.IsAuthenticated, recordsController.createRecord);
+router.put('/records/:recordId', authUtils.IsAuthenticated, recordsController.updateRecord);
 router.delete('/records/:recordId', authUtils.IsAuthenticated, recordsController.removeRecord);
 
 

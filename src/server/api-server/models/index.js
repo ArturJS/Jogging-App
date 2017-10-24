@@ -11,7 +11,7 @@ const _usersStorage = {
 
 const _recordsStorage = {};
 
-export default { // todo integrate with sequelizejs
+const db = { // todo integrate with sequelizejs
   User: {
     find: ({where}) => {
       const {email} = where;
@@ -40,15 +40,23 @@ export default { // todo integrate with sequelizejs
   },
 
   Record: {
-    find: ({where}) => {
-      const {email, id} = where;
+    find: async({where}) => {
+      const {email, id, date} = where;
       const relatedRecord = _recordsStorage[id];
 
-      if (relatedRecord && relatedRecord.email === email) {
-        return Promise.resolve(relatedRecord);
+      if (!date && relatedRecord && relatedRecord.email === email) {
+        return relatedRecord;
       }
 
-      return Promise.resolve(null);
+      if (date && email) {
+        const recordsByEmail = await db.Record.findAll({where:{email}});
+        const recordByDate = recordsByEmail.find(record => record.date === date);
+        if (recordByDate) {
+          return recordByDate;
+        }
+      }
+
+      return null;
     },
 
     findAll: ({where}) => {
@@ -83,4 +91,6 @@ export default { // todo integrate with sequelizejs
       return Promise.resolve(true);
     }
   }
-}
+};
+
+export default db;
