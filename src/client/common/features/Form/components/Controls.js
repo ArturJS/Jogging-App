@@ -159,6 +159,7 @@ function singleDatePickerCtrl({name, value, onChange, onFocus, ctrl}) {
       onDateChange={onChange}
       focused={ctrl.focused}
       onFocusChange={onFocus}
+      displayFormat="DD.MM.YYYY"
     />
   );
 }
