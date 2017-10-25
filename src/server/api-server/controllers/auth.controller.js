@@ -1,11 +1,8 @@
 import passport from 'passport';
 
 import db from '../models';
-import {jsonValidatorsUtils} from '../utils/json-validators.utils';
-import {signUpSchema} from './sign-up.schema';
-
-
-const signUpValidator = jsonValidatorsUtils.getValidatorBySchema(signUpSchema);
+import {validationUtils} from '../utils/validation.utils';
+import {signUpSchema} from './schemas/sign-up.schema';
 
 
 export const authController = {
@@ -31,19 +28,19 @@ export const authController = {
   },
 
   doSignUp: async(req, res) => {
-    const valid = signUpValidator(req.body);
-    if (!valid) {
-      res.status(400).json({error: signUpValidator.errors});
-      return;
-    }
+    const valid = await validationUtils.ensureValidation(req, res, [
+      _signUpJsonValidator,
+      _passwordValidator,
+      _emailUniquenessValidator
+    ]);
 
+    if (!valid) return;
 
     const {
       firstName,
       lastName,
       email,
-      password,
-      repeatPassword
+      password
     } = req.body;
 
     const user = {
@@ -53,16 +50,6 @@ export const authController = {
     };
 
     try {
-      if (password !== repeatPassword) {
-        throw 'Password and repeat password do not match!';
-      }
-
-      const userWithSameEmail = await db.User.find({where: {email}});
-
-      if (userWithSameEmail) {
-        throw 'User with the same email already exists!';
-      }
-
       await db.User.create({
         ...user,
         password
@@ -90,3 +77,34 @@ export const authController = {
     }
   },
 };
+
+// validators
+async function _signUpJsonValidator(req) {
+  const signUpValidator = validationUtils.getValidatorBySchema(signUpSchema);
+  const valid = signUpValidator(req.body);
+
+  if (!valid) {
+    return signUpValidator.errors;
+  }
+}
+
+async function _passwordValidator(req) {
+  const {
+    password,
+    repeatPassword
+  } = req.body;
+
+  if (password !== repeatPassword) {
+    return 'Password and repeat password do not match!';
+  }
+}
+
+async function _emailUniquenessValidator(req) {
+  const {email} = req.body;
+
+  const userWithSameEmail = await db.User.find({where: {email}});
+
+  if (userWithSameEmail) {
+    return 'User with the same email already exists!';
+  }
+}
