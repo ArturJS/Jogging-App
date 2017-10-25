@@ -95,7 +95,7 @@ export default new RecordsStore();
 function _formatRecordToDisplay(record) {
   return {
     id: record.id,
-    date: record.date.format('DD.MM.YYYY'),
+    date: record.date.valueOf(),
     distance: record.distance,
     time: record.time.format('HH:mm:ss'),
     averageSpeed: record.averageSpeed

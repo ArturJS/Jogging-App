@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import {inject, observer} from 'mobx-react';
 import ReactTable from 'react-table';
+import moment from 'moment';
 
 import EditRecordModal from './components/EditRecordModal';
 import DateRangeFilter from './components/DateRangeFilter';
@@ -17,103 +18,76 @@ export default class RecordsPage extends Component {
     recordsStore: PropTypes.object.isRequired
   };
 
-  state = {
-    recordsGrid: {}
-  };
-
   componentWillMount() {
-    this.setState({
-      recordsGrid: {
-        data: [
-          {
-            date: '123',
-            distance: '12',
-            time: '123',
-            averageSpeed: '12'
-          },
-          {
-            date: '234',
-            distance: '12',
-            time: '123',
-            averageSpeed: '12'
-          },
-          {
-            date: '345',
-            distance: '12',
-            time: '123',
-            averageSpeed: '12'
-          }
-        ],
-        columns: [
-          {
-            Header: 'Date',
-            accessor: 'date',
-            sortable: true
-          },
-          {
-            Header: () => (
-              <div>
-                <div>Distance</div>
-                <div>(Metres)</div>
-              </div>
-            ),
-            accessor: 'distance',
-            sortable: false
-          },
-          {
-            Header: 'Time',
-            accessor: 'time',
-            sortable: false
-          },
-          {
-            Header: () => (
-              <div>
-                <div>Average speed</div>
-                <div>(Km/hr)</div>
-              </div>
-            ),
-            width: 150,
-            accessor: 'averageSpeed',
-            sortable: false
-          },
-          {
-            Header: 'Edit',
-            Cell: (cellInfo) => {
-              const {id} = cellInfo.original;
-              const onEditClick = () => this.showEditRecordModal(id);
-              cellInfo.onEditClick = cellInfo.onEditClick || onEditClick;
-              return (
-                <button
-                  type="button"
-                  className="btn btn-default fa fa-pencil"
-                  onClick={cellInfo.onEditClick}
-                />
-              );
-            },
-            width: 60,
-            resizable: false,
-            sortable: false
-          },
-          {
-            Header: 'Delete',
-            Cell: (cellInfo) => {
-              const {id} = cellInfo.original;
-              const onDeleteClick = () => this.showRemoveRecordModal(id);
-              cellInfo.onDeleteClick = cellInfo.onDeleteClick || onDeleteClick;
-              return (
-                <button
-                  type="button"
-                  className="btn btn-default fa fa-trash-o"
-                  onClick={cellInfo.onDeleteClick}/>
-              );
-            },
-            width: 60,
-            resizable: false,
-            sortable: false
-          }
-        ]
+    this.recordsGridColumns = [
+      {
+        Header: 'Date',
+        accessor: 'date',
+        sortable: true,
+        Cell: ({value}) => moment(value).format('DD.MM.YYYY')
+      },
+      {
+        Header: () => (
+          <div>
+            <div>Distance</div>
+            <div>(Metres)</div>
+          </div>
+        ),
+        accessor: 'distance',
+        sortable: false
+      },
+      {
+        Header: 'Time',
+        accessor: 'time',
+        sortable: false
+      },
+      {
+        Header: () => (
+          <div>
+            <div>Average speed</div>
+            <div>(Km/hr)</div>
+          </div>
+        ),
+        width: 150,
+        accessor: 'averageSpeed',
+        sortable: false
+      },
+      {
+        Header: 'Edit',
+        Cell: (cellInfo) => {
+          const {id} = cellInfo.original;
+          const onEditClick = () => this.showEditRecordModal(id);
+          cellInfo.onEditClick = cellInfo.onEditClick || onEditClick;
+          return (
+            <button
+              type="button"
+              className="btn btn-default fa fa-pencil"
+              onClick={cellInfo.onEditClick}
+            />
+          );
+        },
+        width: 60,
+        resizable: false,
+        sortable: false
+      },
+      {
+        Header: 'Delete',
+        Cell: (cellInfo) => {
+          const {id} = cellInfo.original;
+          const onDeleteClick = () => this.showRemoveRecordModal(id);
+          cellInfo.onDeleteClick = cellInfo.onDeleteClick || onDeleteClick;
+          return (
+            <button
+              type="button"
+              className="btn btn-default fa fa-trash-o"
+              onClick={cellInfo.onDeleteClick}/>
+          );
+        },
+        width: 60,
+        resizable: false,
+        sortable: false
       }
-    });
+    ];
   }
 
   componentDidMount() {
@@ -144,7 +118,7 @@ export default class RecordsPage extends Component {
           <div>Are you sure you want to delete this record?</div>
           <div>
             {
-              `Date: ${record.date};
+              `Date: ${moment(record.date).format('DD.MM.YYYY')};
               Distance: ${record.distance};
               Time: ${record.time};
               Average speed: ${record.averageSpeed}.`
@@ -167,9 +141,6 @@ export default class RecordsPage extends Component {
   };
 
   render() {
-    const {
-      recordsGrid
-    } = this.state;
     const {
       recordsGridData,
       noRecords,
@@ -199,7 +170,7 @@ export default class RecordsPage extends Component {
         <ReactTable
           className={'records-table'}
           data={recordsGridData}
-          columns={recordsGrid.columns}
+          columns={this.recordsGridColumns}
           pageSize={recordsGridData.length}
           showPageSizeOptions={false}
           showPagination={false}/>
