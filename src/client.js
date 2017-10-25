@@ -9,6 +9,7 @@ import {Router} from 'react-router';
 import {Provider} from 'mobx-react';
 import createBrowserHistory from 'history/createBrowserHistory';
 import {syncHistoryWithStore} from 'mobx-react-router';
+import 'react-table/react-table.css';
 
 import rootRoutes from './routes';
 import RootShell from './client/common/shells/RootShell';

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import {inject, observer} from 'mobx-react';
 import ReactTable from 'react-table';
-import 'react-table/react-table.css';
 
 import EditRecordModal from './components/EditRecordModal';
 import DateRangeFilter from './components/DateRangeFilter';
