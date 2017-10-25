@@ -3,7 +3,8 @@ import express from 'express';
 import {authUtils} from './utils/auth.utils';
 import {
   authController,
-  recordsController
+  recordsController,
+  reportsController
 } from './controllers';
 
 
@@ -20,6 +21,9 @@ router.get('/records', authUtils.IsAuthenticated, recordsController.getAllRecord
 router.post('/records', authUtils.IsAuthenticated, recordsController.createRecord);
 router.put('/records/:recordId', authUtils.IsAuthenticated, recordsController.updateRecord);
 router.delete('/records/:recordId', authUtils.IsAuthenticated, recordsController.removeRecord);
+
+// Reports
+router.get('/reports', authUtils.IsAuthenticated, reportsController.getAllReports);
 
 
 export default router;

@@ -4,6 +4,7 @@ import Helmet from 'react-helmet';
 import {inject, observer} from 'mobx-react';
 import ReactTable from 'react-table';
 
+import {reportsApi} from '../../common/api/reportsApi';
 import './ReportsPage.scss';
 
 @inject('userStore')
@@ -67,6 +68,16 @@ export default class ReportsPage extends Component {
         ]
       }
     });
+  }
+
+  async componentDidMount() {
+    const reportsList = await reportsApi.getAllReports();
+    this.setState(({reportsGrid}) => ({
+      reportsGrid: {
+        data: reportsList,
+        columns: reportsGrid.columns
+      }
+    }));
   }
 
   render() {
