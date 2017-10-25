@@ -20,7 +20,7 @@ function _mapRecordsToReports(recordsList) {
   const minWeek = _.min(Object.keys(groupedByWeekRecords));
   groupedByWeekRecords = _.mapKeys(groupedByWeekRecords, (value, key) => key - minWeek + 1);
 
-  return _.map(groupedByWeekRecords, (records, key) => {
+  const reportsList = _.map(groupedByWeekRecords, (records, key) => {
     const averageDistance = _.sumBy(records, 'distance') / records.length;
     const averageSpeed = _.sumBy(records, 'averageSpeed') / records.length;
 
@@ -30,4 +30,6 @@ function _mapRecordsToReports(recordsList) {
       averageSpeed
     };
   });
+
+  return _.sortBy(reportsList, 'week');
 }

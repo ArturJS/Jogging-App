@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import db from '../models';
 import {validationUtils} from '../utils/validation.utils';
 import {recordsSchema} from './schemas/records.schema';
@@ -51,7 +53,7 @@ export const recordsController = {
 
   getAllRecords: async(req, res) => {
     const recordsList = await db.Record.findAll({where:{email: req.user.email}});
-    res.json(recordsList);
+    res.json(_.sortBy(recordsList, 'date'));
   }
 };
 
