@@ -13,7 +13,7 @@ import 'react-table/react-table.css';
 
 import rootRoutes from './routes';
 import RootShell from './client/common/shells/RootShell';
-import {userStore, routerStore} from './client/common/stores';
+import {userStore, routerStore, loadingStore} from './client/common/stores';
 import {modalStore} from './client/common/features/ModalDialog';
 import {recordsStore} from './client/pages/RecordsPage';
 
@@ -23,7 +23,8 @@ const stores = {
   userStore,
   modalStore,
   recordsStore,
-  routerStore
+  routerStore,
+  loadingStore
 };
 
 const Client = ({children}) => (

@@ -17,7 +17,7 @@ class UserStore {
 
   async init() {
     try {
-      const userData = await loginApi.getUserData();
+      const userData = await loginApi.getUserData({showLoading: true});
       this._setUserData(userData);
     }
     catch (err) {
@@ -51,15 +51,15 @@ class UserStore {
     });
   }
 
-  async doSignIn({email, password}) {
-    const userData = await loginApi.doSignIn({email, password});
+  async doSignIn({email, password}, params) {
+    const userData = await loginApi.doSignIn({email, password}, params);
     this._setUserData(userData);
     return userData;
   }
 
-  async doSignOut() {
+  async doSignOut(params) {
     this.resetUserData();
-    return loginApi.doSignOut();
+    return loginApi.doSignOut(params);
   }
 
   async doSignUp({
@@ -68,14 +68,14 @@ class UserStore {
     email,
     password,
     repeatPassword
-  }) {
+  }, params) {
     const userData = await loginApi.doSignUp({
       firstName,
       lastName,
       email,
       password,
       repeatPassword
-    });
+    }, params);
     this._setUserData(userData);
     return userData;
   }

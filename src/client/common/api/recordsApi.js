@@ -6,41 +6,41 @@ import baseApi from './baseApi';
 export const recordsApi = {
   createRecord({
     date, distance, time
-  }) {
+  }, params) {
     return baseApi.ajax({
       method: 'post',
       url: '/records',
       data: _mapPostRecord({date, distance, time})
-    })
+    }, params)
       .then(res => res.data)
       .then(_mapGetRecord);
   },
 
   updateRecord({
     id, date, distance, time
-  }) {
+  }, params) {
     return baseApi.ajax({
       method: 'put',
       url: `/records/${id}`,
       data: _mapPostRecord({date, distance, time})
-    })
+    }, params)
       .then(res => res.data)
       .then(_mapGetRecord);
   },
 
-  removeRecord(id) {
+  removeRecord(id, params) {
     return baseApi.ajax({
       method: 'delete',
       url: `/records/${id}`
-    })
+    }, params)
       .then(res => res.data);
   },
 
-  getAllRecords() {
+  getAllRecords(params) {
     return baseApi.ajax({
       method: 'get',
       url: '/records'
-    })
+    }, params)
       .then(res => res.data)
       .then(data => data.map(_mapGetRecord));
   }

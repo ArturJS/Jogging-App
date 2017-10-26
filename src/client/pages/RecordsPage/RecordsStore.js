@@ -16,28 +16,28 @@ class RecordsStore {
     endDate: null
   });
 
-  async init() {
-    const recordsList = await recordsApi.getAllRecords();
+  async init(params) {
+    const recordsList = await recordsApi.getAllRecords(params);
     this.recordsList.replace(recordsList);
   }
 
-  async createRecord({date, distance, time}) {
+  async createRecord({date, distance, time}, params) {
     const newRecord = await recordsApi.createRecord({
       date,
       distance,
       time
-    });
+    }, params);
 
     this.recordsList.push(newRecord);
   }
 
-  async updateRecord({id, date, distance, time}) {
+  async updateRecord({id, date, distance, time}, params) {
     const updatedRecord = await recordsApi.updateRecord({
       id,
       date,
       distance,
       time
-    });
+    }, params);
     const relatedRecordIndex = this.recordsList.findIndex(record => record.id === id);
 
     if (relatedRecordIndex > -1) {
@@ -45,8 +45,8 @@ class RecordsStore {
     }
   }
 
-  async removeRecord(id) {
-    await recordsApi.removeRecord(id);
+  async removeRecord(id, params) {
+    await recordsApi.removeRecord(id, params);
     this.recordsList.replace(
       this.recordsList.filter(record => record.id !== id)
     );

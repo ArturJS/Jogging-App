@@ -55,7 +55,7 @@ export default class ReportsPage extends Component {
   }
 
   async componentDidMount() {
-    const reportsList = await reportsApi.getAllReports();
+    const reportsList = await reportsApi.getAllReports({showLoading: true});
     this.setState(({reportsGrid}) => ({
       reportsGrid: {
         data: reportsList,

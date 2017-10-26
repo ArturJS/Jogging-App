@@ -2,11 +2,11 @@ import baseApi from './baseApi';
 
 
 export const reportsApi = {
-  getAllReports() {
+  getAllReports(params) {
     return baseApi.ajax({
       method: 'get',
       url: '/reports'
-    })
+    }, params)
       .then(res => res.data)
       .then(data => data.map(report => {
         return {

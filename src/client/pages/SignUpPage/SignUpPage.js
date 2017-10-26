@@ -94,7 +94,7 @@ export default class SignUpPage extends Component {
         email,
         password,
         repeatPassword
-      });
+      }, {showLoading: true});
       this.formStore.resetFormData();
       this.setState({error: null});
       this.props.history.push('/records');

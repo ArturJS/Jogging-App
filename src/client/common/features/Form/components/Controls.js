@@ -152,6 +152,7 @@ function inputPasswordCtrlWithShowBnt({name, value, placeholder, onFocus, onChan
 }
 
 function singleDatePickerCtrl({name, value, onChange, onFocus, ctrl}) {
+  const enableAnyDates = () => false;
   return (
     <SingleDatePicker
       id={name}
@@ -160,6 +161,7 @@ function singleDatePickerCtrl({name, value, onChange, onFocus, ctrl}) {
       focused={ctrl.focused}
       onFocusChange={onFocus}
       displayFormat="DD.MM.YYYY"
+      isOutsideRange={enableAnyDates}
     />
   );
 }

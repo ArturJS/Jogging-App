@@ -4,7 +4,7 @@ import {inject, observer} from 'mobx-react';
 import classNames from 'classnames';
 import {withRouter} from 'react-router';
 
-import {FormStore, Form, Field, Controls, Validators} from '../../../../features/Form';
+import {FormStore, Form, Field, Controls, Validators} from '../../features/Form';
 import './Header.scss';
 
 @inject('userStore')
@@ -49,7 +49,7 @@ export default class Header extends Component {
       await this.props.userStore.doSignIn({
         email: authEmail,
         password: authPassword
-      });
+      }, {showLoading: true});
       this.formStore.resetFormData();
       this.setState({error: null});
     }

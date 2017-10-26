@@ -1,7 +1,7 @@
 import baseApi from './baseApi';
 
 export const loginApi = {
-  doSignIn({email, password}) {
+  doSignIn({email, password}, params) {
     return baseApi.ajax({
       method: 'post',
       url: '/sign-in',
@@ -9,7 +9,7 @@ export const loginApi = {
         username: email,
         password
       }
-    })
+    }, params)
       .then(res => res.data)
       .then(data => {
         return {
@@ -20,11 +20,11 @@ export const loginApi = {
       });
   },
 
-  doSignOut() {
+  doSignOut(params) {
     return baseApi.ajax({
       method: 'post',
       url: '/sign-out'
-    })
+    }, params)
       .then(res => res.data)
       .then(data => {
         return {
@@ -41,7 +41,7 @@ export const loginApi = {
     email,
     password,
     repeatPassword
-  }) {
+  }, params) {
     return baseApi.ajax({
       method: 'post',
       url: '/sign-up',
@@ -52,7 +52,7 @@ export const loginApi = {
         password,
         repeatPassword
       }
-    })
+    }, params)
       .then(res => res.data)
       .then(data => {
         return {
@@ -63,11 +63,11 @@ export const loginApi = {
       });
   },
 
-  getUserData() {
+  getUserData(params) {
     return baseApi.ajax({
       method: 'get',
       url: '/user-data'
-    })
+    }, params)
       .then(res => res.data)
       .then(data => {
         return {

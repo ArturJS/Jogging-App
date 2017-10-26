@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import {inject} from 'mobx-react';
 
-import Header from './components/Header';
-import NavSubHeader from './components/NavSubHeader';
+import Header from '../../components/Header';
+import NavSubHeader from '../../components/NavSubHeader';
+import LoadingScreen from '../../components/LoadingScreen';
 import {ModalDialog} from '../../features/ModalDialog';
 import config from '../../../../config';
 import '../../styles/base.scss';
@@ -33,6 +34,7 @@ export default class RootShell extends Component {
           {children}
         </div>
         <ModalDialog/>
+        <LoadingScreen/>
       </div>
     );
   }

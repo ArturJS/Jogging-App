@@ -91,7 +91,7 @@ export default class RecordsPage extends Component {
   }
 
   componentDidMount() {
-    this.props.recordsStore.init();
+    this.props.recordsStore.init({showLoading: true});
   }
 
   showAddRecordModal = () => {
@@ -129,7 +129,7 @@ export default class RecordsPage extends Component {
     }).then((result) => {
       if (!result) return;
 
-      this.props.recordsStore.removeRecord(recordId);
+      this.props.recordsStore.removeRecord(recordId, {showLoading: true});
     });
   };
 
