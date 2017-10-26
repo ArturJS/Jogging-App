@@ -153,15 +153,20 @@ function inputPasswordCtrlWithShowBnt({name, value, placeholder, onFocus, onChan
 
 function singleDatePickerCtrl({name, value, onChange, onFocus, ctrl}) {
   const enableAnyDates = () => false;
+  const onChangeProxy = (...args) => {
+    onChange(...args);
+    ctrl.focused = false;
+  };
   return (
     <SingleDatePicker
       id={name}
       date={value}
-      onDateChange={onChange}
+      onDateChange={onChangeProxy}
       focused={ctrl.focused}
       onFocusChange={onFocus}
       displayFormat="DD.MM.YYYY"
       isOutsideRange={enableAnyDates}
+      numberOfMonths={1}
     />
   );
 }
