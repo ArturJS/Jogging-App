@@ -82,7 +82,7 @@ async function _dateUniquenessValidator(req) {
   const record = req.body;
   const recordWithSameDate = await db.Record.find({where: {userId: id, date: record.date}});
 
-  if (recordWithSameDate && recordWithSameDate.id !== recordId) {
+  if (recordWithSameDate && recordWithSameDate.id !== +recordId) {
     return 'Record with the same date already exists!';
   }
 }
