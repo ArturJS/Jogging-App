@@ -49,7 +49,7 @@ export const recordsApi = {
 function _mapGetRecord(record) {
   return {
     id: record.id,
-    date: moment(record.date),
+    date: moment(+record.date),
     distance: record.distance,
     time: _convertToMomentDate(record.time),
     averageSpeed: record.averageSpeed.toFixed(2)

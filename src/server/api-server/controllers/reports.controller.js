@@ -5,7 +5,7 @@ import db from '../models';
 
 export const reportsController = {
   getAllReports: async(req, res) => {
-    const recordsList = await db.Record.findAll({where: {email: req.user.email}});
+    const recordsList = await db.Record.findAll({where: {userId: req.user.id}});
     const reportsList = _mapRecordsToReports(recordsList);
     res.json(reportsList);
   }
@@ -15,7 +15,7 @@ export const reportsController = {
 
 function _mapRecordsToReports(recordsList) {
   let groupedByWeekRecords = _.groupBy(recordsList, (record) => {
-    return moment(record.date).week();
+    return moment(+record.date).week();
   });
   const minWeek = _.min(Object.keys(groupedByWeekRecords));
   groupedByWeekRecords = _.mapKeys(groupedByWeekRecords, (value, key) => key - minWeek + 1);

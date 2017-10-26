@@ -14,7 +14,7 @@ export const recordsController = {
 
     const record = req.body;
 
-    record.email = req.user.email;
+    record.userId = req.user.id;
     record.averageSpeed = _calcAverageSpeed(record);
 
     const createdRecord = await db.Record.create(record);
@@ -33,10 +33,12 @@ export const recordsController = {
     const record = req.body;
 
     record.averageSpeed = _calcAverageSpeed(record);
-    const updatedRecord = await db.Record.update({
-      id: recordId,
-      ...record
+    await db.Record.update(record, {
+      where: {
+        id: recordId
+      }
     });
+    const updatedRecord = await db.Record.findById(recordId);
     res.json(updatedRecord);
   },
 
@@ -52,7 +54,7 @@ export const recordsController = {
   },
 
   getAllRecords: async(req, res) => {
-    const recordsList = await db.Record.findAll({where:{email: req.user.email}});
+    const recordsList = await db.Record.findAll({where: {userId: req.user.id}});
     res.json(_.sortBy(recordsList, 'date'));
   }
 };
@@ -75,10 +77,10 @@ async function _recordsJsonValidator(req) {
 }
 
 async function _dateUniquenessValidator(req) {
-  const {email} = req.user;
+  const {id} = req.user;
   const {recordId} = req.params;
   const record = req.body;
-  const recordWithSameDate = await db.Record.find({where: {email, date: record.date}});
+  const recordWithSameDate = await db.Record.find({where: {userId: id, date: record.date}});
 
   if (recordWithSameDate && recordWithSameDate.id !== recordId) {
     return 'Record with the same date already exists!';
@@ -86,9 +88,9 @@ async function _dateUniquenessValidator(req) {
 }
 
 async function _hasAccessToRecordValidator(req) {
-  const {email} = req.user;
+  const {id} = req.user;
   const {recordId} = req.params;
-  const relatedRecord = await db.Record.find({where: {email, id: recordId}});
+  const relatedRecord = await db.Record.find({where: {userId: id, id: recordId}});
 
   if (!relatedRecord) return 'NOT FOUND! There is no such record...';
 }

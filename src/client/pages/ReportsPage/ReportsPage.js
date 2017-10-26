@@ -21,23 +21,7 @@ export default class ReportsPage extends Component {
   componentWillMount() {
     this.setState({
       reportsGrid: {
-        data: [
-          {
-            week: '1',
-            averageDistance: '11',
-            averageSpeed: '11'
-          },
-          {
-            week: '2',
-            averageDistance: '22',
-            averageSpeed: '22'
-          },
-          {
-            week: '3',
-            averageDistance: '33',
-            averageSpeed: '33'
-          }
-        ],
+        data: [],
         columns: [
           {
             Header: 'Week',

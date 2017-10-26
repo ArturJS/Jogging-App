@@ -24,16 +24,17 @@
   "main": "bin/server.js",
   "scripts": {
     "start": "npm run start-prod",
-    "start-prod": "better-npm-run start-prod",
+    "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start-dev\"",
+    "start-prod": "better-npm-run create-db-prod && sequelize db:migrate && better-npm-run start-prod",
+    "start-dev": "better-npm-run start-dev",
     "build": "better-npm-run build",
     "static-build": "npm run build && node ./bin/static-export.js",
     "postinstall": "npm run build",
     "lint": "eslint -c .eslintrc src api",
-    "start-dev": "better-npm-run start-dev",
     "watch-client": "better-npm-run watch-client",
-    "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start-dev\"",
     "test": "jest --env=jsdom",
-    "test:coverage": "jest --env=jsdom --coverage"
+    "test:coverage": "jest --env=jsdom --coverage",
+    "create-db-dev": "better-npm-run create-db-dev && sequelize db:migrate"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -87,6 +88,18 @@
       "env": {
         "NODE_ENV": "production"
       }
+    },
+    "create-db-dev": {
+      "command": "node ./bin/create-database-if-not-exists.js",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "create-db-prod": {
+      "command": "node ./bin/create-database-if-not-exists.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
     }
   },
   "dependencies": {
@@ -129,6 +142,8 @@
     "moment": "2.19.1",
     "passport": "0.4.0",
     "passport-local": "1.0.0",
+    "pg": "7.3.0",
+    "pg-hstore": "2.3.2",
     "piping": "1.0.0-rc.4",
     "rc-time-picker": "3.0.0",
     "react": "15.5.4",
@@ -193,6 +208,7 @@
     "webpack-hot-middleware": "^2.5.0"
   },
   "engines": {
-    "node": "7.5.0"
+    "npm": "5.4.2",
+    "node": "8.6.0"
   }
 }
