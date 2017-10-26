@@ -14,6 +14,8 @@ export const reportsController = {
 // private methods
 
 function _mapRecordsToReports(recordsList) {
+  if (recordsList.length === 0) return [];
+
   const sortedByDateRecords = _.sortBy(recordsList, 'date');
   const firstRecord = sortedByDateRecords[0];
 
