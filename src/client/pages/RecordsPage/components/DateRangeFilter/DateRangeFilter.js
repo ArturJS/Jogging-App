@@ -49,6 +49,7 @@ export default class DateRangeFilter extends Component {
           focusedInput={focusedInput}
           onFocusChange={this.onFocusChange}
           isOutsideRange={this.enableAnyDates}
+          displayFormat="DD.MM.YYYY"
           showClearDates={true}
         />
       </div>
