@@ -2,7 +2,9 @@
 
 .nav-sub-header {
   $c-link: $c-midnight-blue;
+  $sub-header-height: 40px;
   box-shadow: 0 0 2px rgba(0,0,0,0.2);
+  height: $sub-header-height;
 
   .nav-item {
     display: inline-block;
@@ -15,8 +17,8 @@
   .nav-link {
     color: $c-link;
     display: inline-flex;
-    line-height: 40px;
-    height: 40px;
+    line-height: $sub-header-height;
+    height: $sub-header-height;
     padding: 0 15px;
     cursor: pointer;
     text-decoration: none;

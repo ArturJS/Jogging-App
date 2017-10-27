@@ -1,3 +1,14 @@
-.ReactTable .rt-tbody .rt-td {
-  text-align: center;
+.ReactTable {
+  display: block;
+
+  .rt-tbody .rt-td {
+    text-align: center;
+  }
+
+  .-loading {
+    z-index: -1;
+  }
+  .-loading.-active {
+    z-index: 2;
+  }
 }
