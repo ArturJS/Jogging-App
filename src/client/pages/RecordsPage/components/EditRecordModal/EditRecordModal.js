@@ -77,7 +77,7 @@ export default class EditRecordModal extends Component {
           date,
           distance,
           time
-        });
+        }, {showLoading: true});
       }
       else {
         await recordsStore.updateRecord({
@@ -85,7 +85,7 @@ export default class EditRecordModal extends Component {
           date,
           distance,
           time
-        });
+        }, {showLoading: true});
       }
 
       this.props.modalStore.close();
