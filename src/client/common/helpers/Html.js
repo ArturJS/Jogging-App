@@ -17,11 +17,11 @@ export default class Html extends Component {
   static propTypes = {
     assets: PropTypes.object,
     component: PropTypes.node,
-    initialPageProps: PropTypes.any
+    initialAppState: PropTypes.object
   };
 
   render() {
-    const {assets, component, initialPageProps} = this.props;
+    const {assets, component, initialAppState} = this.props;
     const content = component ? ReactDOM.renderToString(component) : '';
     const head = Helmet.rewind();
 
@@ -54,10 +54,11 @@ export default class Html extends Component {
         </head>
         <body>
           <div id="content" dangerouslySetInnerHTML={{__html: content}}/>
-          {initialPageProps &&
+          {initialAppState &&
             <script
-              dangerouslySetInnerHTML={{__html: `window.__INITIAL_PAGE_PROPS__=${serialize(initialPageProps)};`}}
-              charSet="UTF-8"/>
+              id="initial_app_state"
+              type="application/json"
+              dangerouslySetInnerHTML={{__html: serialize(initialAppState)}}/>
           }
           <script src={assets.javascript.vendor} charSet="UTF-8"/>
           <script src={assets.javascript.main} charSet="UTF-8"/>

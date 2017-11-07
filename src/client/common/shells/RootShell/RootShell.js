@@ -18,8 +18,22 @@ export default class RootShell extends Component {
     children: PropTypes.object.isRequired
   };
 
-  componentDidMount() {
-    this.props.userStore.init();
+  componentWillMount() {
+    if (__CLIENT__) {
+      this.initGlobalInitialAppState();
+      this.props.userStore.init();
+    }
+  }
+
+  initGlobalInitialAppState() {
+    try {
+      window.__INITIAL_APP_STATE__ = JSON.parse(
+        document.getElementById('initial_app_state').innerHTML
+      );
+    }
+    catch (err) {
+      console.error(err);
+    }
   }
 
   render() {

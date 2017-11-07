@@ -8,6 +8,7 @@ import _ from 'lodash';
 import Html from '../../client/common/helpers/Html';
 import Client from '../../client';
 import routes from '../../routes';
+import {userStore} from '../../client/common/stores';
 
 
 export const initSSRServer = (app) => {
@@ -20,19 +21,12 @@ export const initSSRServer = (app) => {
       return false;
     }
 
-    const {fetchData} = branch[0].route.component;
-    let serverData;
+    const stores = _getInitialStoresData(req);
 
-    if (fetchData) {
-      try {
-        serverData = await fetchData();
-      }
-      catch (err) {
-        console.error(err);
-      }
-    }
+    await userStore.init(stores.userStore);
 
-    const pageComponent = getPageComponentFromMatchedRoutes(branch, serverData);
+    const initialPageData = await _getInitialPageData(branch);
+    const pageComponent = getPageComponentFromMatchedRoutes(branch, initialPageData);
 
     if (__DEVELOPMENT__) {
       // Do not cache webpack stats: the script file would change since
@@ -41,12 +35,12 @@ export const initSSRServer = (app) => {
     }
 
     res.send(
-      await renderPage(req.url, pageComponent, serverData)
+      await renderPage(req.url, pageComponent, {initialPageData, stores})
     );
   });
 };
 
-export async function renderPage(url, pageComponent, serverData) {
+export async function renderPage(url, pageComponent, {initialPageData, stores}) {
   const context = {};
   let lazyImports = [];
 
@@ -61,7 +55,7 @@ export async function renderPage(url, pageComponent, serverData) {
     let {html} = await renderToString(
       <Html
         assets={webpackIsomorphicTools.assets()}
-        initialPageProps={serverData}
+        initialAppState={{initialPageData, stores}}
         component={
           __DISABLE_SSR__ ? null :
             <StaticRouter context={context} location={url}>
@@ -83,9 +77,9 @@ export async function renderPage(url, pageComponent, serverData) {
   }
 }
 
-export function getPageComponentFromMatchedRoutes(branch, serverData) {
+export function getPageComponentFromMatchedRoutes(branch, initialPageData) {
   return _.reduceRight(branch, (componentPyramid, {route}) => (
-    React.createElement(route.component, {children: componentPyramid, serverData})
+    React.createElement(route.component, {children: componentPyramid, initialPageData})
   ), null); // collect components from the inside out of matched routes;
 }
 
@@ -93,6 +87,44 @@ export function getPageComponentFromMatchedRoutes(branch, serverData) {
 // private methods
 
 const lazyModulesCache = {};
+
+async function _getInitialPageData(branch) {
+  const {fetchData} = branch[0].route.component;
+  let initialPageData;
+
+  if (fetchData) {
+    try {
+      initialPageData = await fetchData();
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }
+
+  return initialPageData;
+}
+
+function _getInitialStoresData(req) {
+  let stores = {
+    userStore: null
+  };
+
+  if (req.isAuthenticated()) {
+    const {
+      firstName,
+      lastName,
+      email
+    } = req.user.dataValues;
+
+    stores.userStore = {
+      firstName,
+      lastName,
+      email
+    };
+  }
+
+  return stores;
+}
 
 function _resetGlobalChartsRenderQueue() {
   global.chartsRenderQueue = {
