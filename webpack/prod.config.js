@@ -95,6 +95,10 @@ module.exports = {
     }),
     new WebpackChunkHash(),
     webpackIsomorphicToolsPlugin,
+    new webpack.ContextReplacementPlugin(
+      /moment[\/\\]locale$/,
+      /en/
+    ),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: function (module) {

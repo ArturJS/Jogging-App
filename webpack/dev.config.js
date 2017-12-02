@@ -87,6 +87,10 @@ module.exports = {
       __PRODUCTION__: false
     }),
     webpackIsomorphicToolsPlugin.development(),
+    new webpack.ContextReplacementPlugin(
+      /moment[\/\\]locale$/,
+      /en/
+    ),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: function (module) {
