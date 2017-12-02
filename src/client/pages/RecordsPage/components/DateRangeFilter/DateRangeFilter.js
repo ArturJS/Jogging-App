@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {DateRangePicker} from 'react-dates';
+import DateRangePicker from 'react-dates/lib/components/DateRangePicker';
 
 import './DateRangeFilter.scss';
 

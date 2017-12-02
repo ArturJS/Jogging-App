@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import 'rc-time-picker/assets/index.css';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
-import {SingleDatePicker} from 'react-dates';
+import SingleDatePicker from 'react-dates/lib/components/SingleDatePicker';
 import TimePicker from 'rc-time-picker';
 import moment from 'moment';
 
