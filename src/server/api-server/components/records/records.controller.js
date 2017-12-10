@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-import db from '../models';
-import {validationUtils} from '../utils/validation.utils';
-import {recordsSchema} from './schemas/records.schema';
+import db from '../../models/index';
+import {validationUtils} from '../../utils/validation.utils';
+import {recordsSchema} from './records.schema';
 
 export const recordsController = {
   createRecord: async(req, res) => {

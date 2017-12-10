@@ -1,8 +1,7 @@
 import passport from 'passport';
-
-import db from '../models';
-import {validationUtils} from '../utils/validation.utils';
-import {signUpSchema} from './schemas/sign-up.schema';
+import db from '../../models/index';
+import {validationUtils} from '../../utils/validation.utils';
+import {authSchemas} from './auth.schemas';
 
 
 export const authController = {
@@ -49,7 +48,7 @@ export const authController = {
       email
     };
 
-    try {
+    try { // todo create service and add transactionID for any data manipulation
       await db.User.create({
         ...user,
         password
@@ -72,7 +71,7 @@ export const authController = {
       const user = await db.User.find({where: {email: 'test@user.com'}});
       res.json(user);
     }
-    finally {
+    catch(err) {
       res.status(401).end();
     }
   },
@@ -80,7 +79,7 @@ export const authController = {
 
 // validators
 async function _signUpJsonValidator(req) {
-  const signUpValidator = validationUtils.getValidatorBySchema(signUpSchema);
+  const signUpValidator = validationUtils.getValidatorBySchema(authSchemas.signUpSchema);
   const valid = signUpValidator(req.body);
 
   if (!valid) {

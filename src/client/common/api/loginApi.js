@@ -4,7 +4,7 @@ export const loginApi = {
   doSignIn({email, password}, params) {
     return baseApi.ajax({
       method: 'post',
-      url: '/sign-in',
+      url: '/auth/sign-in',
       data: {
         username: email,
         password
@@ -23,7 +23,7 @@ export const loginApi = {
   doSignOut(params) {
     return baseApi.ajax({
       method: 'post',
-      url: '/sign-out'
+      url: '/auth/sign-out'
     }, params)
       .then(res => res.data)
       .then(data => {
@@ -44,7 +44,7 @@ export const loginApi = {
   }, params) {
     return baseApi.ajax({
       method: 'post',
-      url: '/sign-up',
+      url: '/auth/sign-up',
       data: {
         firstName,
         lastName,

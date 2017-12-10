@@ -1,7 +1,7 @@
 import moment from 'moment';
 import _ from 'lodash';
 
-import db from '../models';
+import db from '../../models/index';
 
 export const reportsController = {
   getAllReports: async(req, res) => {
