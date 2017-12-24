@@ -16,6 +16,7 @@ var WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
 var {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+var RuntimeAnalyzerPlugin = require('webpack-runtime-analyzer');
 
 
 module.exports = {
@@ -114,5 +115,12 @@ module.exports = {
       analyzerMode: 'static',
       reportFilename: 'webpack-bundle-report.html'
     }),
+
+    new RuntimeAnalyzerPlugin({
+      mode: 'standalone',
+      port: 0,
+      open: true,
+      watchModeOnly: false
+    })
   ]
 };
