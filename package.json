@@ -27,7 +27,7 @@
     "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start-dev\"",
     "start-prod": "better-npm-run create-db-prod && npx sequelize db:migrate && better-npm-run start-prod",
     "start-dev": "better-npm-run start-dev",
-    "build": "better-npm-run build && npm start",
+    "build": "better-npm-run build",
     "static-build": "npm run build && node ./bin/static-export.js",
     "postinstall": "npm run build",
     "lint": "eslint -c .eslintrc src api",
