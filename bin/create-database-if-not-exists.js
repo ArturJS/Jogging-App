@@ -6,13 +6,6 @@ const { connectionString } = dbConfig[env];
 createDatabaseIfNotExists(connectionString);
 
 async function createDatabaseIfNotExists(connectionString) {
-  // const sequelize = new Sequelize('postgres', null, null, {
-  //   dialect: 'postgres',
-  //   dialectOptions: {
-  //     connectionString
-  //   }
-  // });
-  console.log('connectionString', connectionString);
   const sequelize = new Sequelize(connectionString);
 
   try {
