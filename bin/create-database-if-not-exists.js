@@ -1,21 +1,25 @@
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
-const config = require('../src/server/api-server/config/db-config.json')[env];
+const config = require('../src/server/api-server/config/db-config')[env];
 
 createDatabaseIfNotExists(config);
 
-async function createDatabaseIfNotExists(config) {
-  const sequelize = new Sequelize('postgres', config.username, config.password, {
-    dialect: config.dialect,
-    host: config.host
-  });
-  const {database} = config;
+async function createDatabaseIfNotExists({ connectionString }) {
+  // const sequelize = new Sequelize('postgres', null, null, {
+  //   dialect: 'postgres',
+  //   dialectOptions: {
+  //     connectionString
+  //   }
+  // });
+  const sequelize = new Sequelize(connectionString);
 
   try {
+    const database = /([^/])+$/.exec(connectionString)[0];
     const result = await sequelize.query(
       `select exists(SELECT 1 from pg_database WHERE datname='${database}');`
     );
     const {exists} = result[0][0];
+
     if (exists) {
       console.log(`Database "${database}" already exists.`);
     } else {
