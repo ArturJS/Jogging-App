@@ -19,7 +19,7 @@ if (config.port) {
     if (err) {
       console.error(err);
     }
-    console.info(`----\n==> ✅  ${config.app.title} is running, talking to API server on ${config.apiTargetUrl}.`);
+    console.info(`----\n==> ✅  ${config.app.title} is running, talking to API server on ${config.uiTargetUrl}.`);
     console.info(`==> 💻  Open ${config.uiTargetUrl} in a browser to view the app.`);
   });
 }

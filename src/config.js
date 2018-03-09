@@ -11,9 +11,7 @@ const APP_NAME = 'Jogging App';
 
 const config = Object.assign({
   host: process.env.HOST || 'localhost',
-  port: process.env.PORT,
-  apiHost: process.env.APIHOST || 'localhost',
-  apiPort: process.env.APIPORT,
+  port: process.env.PORT || 80,
   app: {
     title: APP_NAME,
     description: 'All the modern best practices in one example.',
@@ -36,7 +34,6 @@ const config = Object.assign({
 
 }, environment);
 
-const apiTargetUrl = `http://${config.apiHost}:${config.apiPort}`;
 const uiTargetUrl = `http://${config.host}:${config.port}`;
 
-module.exports = Object.assign(config, {apiTargetUrl, uiTargetUrl});
+module.exports = Object.assign(config, { uiTargetUrl });

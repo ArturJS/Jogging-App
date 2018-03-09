@@ -60,9 +60,7 @@
       "command": "node ./bin/server.js",
       "env": {
         "NODE_PATH": "./src",
-        "NODE_ENV": "production",
-        "PORT": 80,
-        "APIPORT": 3030
+        "NODE_ENV": "production"
       }
     },
     "start-dev": {
@@ -70,8 +68,7 @@
       "env": {
         "NODE_PATH": "./src",
         "NODE_ENV": "development",
-        "PORT": 3000,
-        "APIPORT": 3030
+        "PORT": 3000
       }
     },
     "watch-client": {
@@ -79,8 +76,7 @@
       "env": {
         "UV_THREADPOOL_SIZE": 100,
         "NODE_PATH": "./src",
-        "PORT": 3000,
-        "APIPORT": 3030
+        "PORT": 3000
       }
     },
     "build": {
