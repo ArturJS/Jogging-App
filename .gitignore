@@ -1,10 +1,7 @@
 .idea/
 node_modules/
-!static/favicon.ico
 static-build/
 coverage/
 *.iml
-webpack-assets.json
-webpack-stats.json
 npm-debug.log
 *.swp
