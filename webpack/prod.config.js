@@ -111,16 +111,16 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest' //But since there are no more common modules between them we end up with just the runtime code included in the manifest file
     }),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      reportFilename: 'webpack-bundle-report.html'
-    }),
-
-    new RuntimeAnalyzerPlugin({
-      mode: 'standalone',
-      port: 0,
-      open: true,
-      watchModeOnly: false
-    })
+    // new BundleAnalyzerPlugin({
+    //   analyzerMode: 'static',
+    //   reportFilename: 'webpack-bundle-report.html'
+    // }),
+    //
+    // new RuntimeAnalyzerPlugin({
+    //   mode: 'standalone',
+    //   port: 0,
+    //   open: true,
+    //   watchModeOnly: false
+    // })
   ]
 };

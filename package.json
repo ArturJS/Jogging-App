@@ -25,9 +25,9 @@
   "scripts": {
     "start": "npm run start-prod",
     "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start-dev\"",
-    "start-prod": "better-npm-run create-db-prod && sequelize db:migrate && better-npm-run start-prod",
+    "start-prod": "better-npm-run create-db-prod && npx sequelize db:migrate && better-npm-run start-prod",
     "start-dev": "better-npm-run start-dev",
-    "build": "better-npm-run build",
+    "build": "better-npm-run build && npm start",
     "static-build": "npm run build && node ./bin/static-export.js",
     "postinstall": "npm run build",
     "lint": "eslint -c .eslintrc src api",
@@ -215,7 +215,7 @@
     "webpack-runtime-analyzer": "1.5.0"
   },
   "engines": {
-    "npm": "5.4.2",
-    "node": "8.6.0"
+    "npm": "5.7.1",
+    "node": "8.9.1"
   }
 }
