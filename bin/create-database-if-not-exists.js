@@ -1,15 +1,16 @@
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
-const dbConfig = require('../src/server/api-server/config/db-config');
-const { connectionString } = dbConfig[env];
+const config = require('../src/server/api-server/config/db-config')[env];
 
-createDatabaseIfNotExists(connectionString);
+createDatabaseIfNotExists(config);
 
-async function createDatabaseIfNotExists(connectionString) {
-  const sequelize = new Sequelize(connectionString);
+async function createDatabaseIfNotExists(config) {
+  const {
+    database
+  } = config;
+  const sequelize = new Sequelize(config);
 
   try {
-    const database = /([^/])+$/.exec(connectionString)[0];
     const result = await sequelize.query(
       `select exists(SELECT 1 from pg_database WHERE datname='${database}');`
     );

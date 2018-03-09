@@ -25,10 +25,10 @@ module.exports = {
     database: DB_NAME,
     host: DB_HOSTNAME,
     port: DB_PORT,
-    connectionString: devConnectionString,
     dialect: 'postgres',
+    ssl: true,
     dialectOptions: {
-      connectionString: devConnectionString,
+      ssl: true
     }
   },
   production: {
@@ -37,10 +37,10 @@ module.exports = {
     database: DB_NAME,
     host: DB_HOSTNAME,
     port: DB_PORT,
-    connectionString: DATABASE_URL,
     dialect: 'postgres',
+    ssl: true,
     dialectOptions: {
-      connectionString: DATABASE_URL,
+      ssl: true
     }
   }
 };
