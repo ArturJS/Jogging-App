@@ -1,16 +1,18 @@
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
-const config = require('../src/server/api-server/config/db-config')[env];
+const dbConfig = require('../src/server/api-server/config/db-config');
+const { connectionString } = dbConfig[env];
 
-createDatabaseIfNotExists(config);
+createDatabaseIfNotExists(connectionString);
 
-async function createDatabaseIfNotExists({ connectionString }) {
+async function createDatabaseIfNotExists(connectionString) {
   // const sequelize = new Sequelize('postgres', null, null, {
   //   dialect: 'postgres',
   //   dialectOptions: {
   //     connectionString
   //   }
   // });
+  console.log('connectionString', connectionString);
   const sequelize = new Sequelize(connectionString);
 
   try {

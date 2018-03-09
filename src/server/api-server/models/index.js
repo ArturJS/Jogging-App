@@ -4,9 +4,12 @@ const Sequelize = require('sequelize');
 
 const basename = path.basename(module.filename);
 const env = process.env.NODE_ENV || 'development';
-const { connectionString } = require(`${__dirname}/../config/db-config`)[env];
+const dbConfig = require('../config/db-config');
+const { connectionString } = dbConfig[env];
 const db = {};
+console.log('connectionString', connectionString);
 const sequelize = new Sequelize(connectionString);
+
 
 fs
   .readdirSync(__dirname)
