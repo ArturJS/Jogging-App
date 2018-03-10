@@ -1,5 +1,3 @@
-const { exec } = require('child_process');
-
 const isHerokuEnvironment = process.env.NODE && ~process.env.NODE.indexOf('heroku');
 
 if (!isHerokuEnvironment) {
@@ -7,27 +5,37 @@ if (!isHerokuEnvironment) {
   process.exit(0);
 }
 
-const buildSSRBundle = 'better-npm-run build';
-const createDatabaseIfAbsent = 'better-npm-run create-db-prod';
-const applyDatabaseMigrations = 'npx sequelize db:migrate';
-const tasks = [
-  buildSSRBundle,
-  createDatabaseIfAbsent,
-  applyDatabaseMigrations
-].join(' && ');
-
 console.log('Heroku build started...');
 
-exec(tasks, (error, stdout, stderr) => {
-  if (error) {
-    console.error('Heroku build failed with error:');
-    console.error(error);
-    process.exit(1);
+const {spawn} = require('child_process');
+const path = require('path');
 
-    return;
+const projectPath = path.resolve(__dirname, '../../');
+const extension = process.platform === 'win32' ? '.cmd' : '';
+const herokuBuild = spawn(`npx${extension}`, [
+  'npm-run-all',
+  '-s',
+  'build',
+  'create-db-prod',
+  'db:migrate'
+], {
+  cwd: projectPath
+});
+
+herokuBuild.stdout.on('data', (data) => {
+  console.log(`stdout: ${data.toString()}`);
+});
+
+herokuBuild.stderr.on('data', (data) => {
+  console.error(`stderr: ${data}`);
+});
+
+herokuBuild.on('close', (code) => {
+  if (code !== 0) {
+    console.error('Heroku build failed...');
+  } else {
+    console.log('Heroku build done!');
   }
 
-  console.log(`stdout: ${stdout}`);
-  console.log(`stderr: ${stderr}`);
-  console.log('Heroku build done!');
+  process.exit(code);
 });
