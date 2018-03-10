@@ -25,7 +25,7 @@
   "scripts": {
     "start": "npm run start-prod",
     "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start-dev\"",
-    "start-prod": "better-npm-run create-db-prod && npx sequelize db:migrate && better-npm-run start-prod",
+    "start-prod": "better-npm-run start-prod",
     "start-dev": "better-npm-run start-dev",
     "build": "better-npm-run build",
     "static-build": "npm run build && node ./bin/static-export.js",
@@ -33,7 +33,8 @@
     "watch-client": "better-npm-run watch-client",
     "test": "jest --env=jsdom",
     "test:coverage": "jest --env=jsdom --coverage",
-    "create-db-dev": "better-npm-run create-db-dev && sequelize db:migrate"
+    "create-db-dev": "better-npm-run create-db-dev && sequelize db:migrate",
+    "postinstall": "node ./scripts/tasks/heroku-build.js"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -207,8 +208,7 @@
     "webpack-hot-middleware": "^2.5.0",
     "webpack-runtime-analyzer": "1.5.0"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "engines": {
     "npm": "5.7.1",
     "node": "8.9.1"
