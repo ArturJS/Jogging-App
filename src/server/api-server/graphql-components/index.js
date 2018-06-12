@@ -2,18 +2,30 @@ import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { Records } from './records/queries';
 import { AddRecord, UpdateRecord, DeleteRecord } from './records/mutations';
 import { Reports } from './reports/queries';
+import { SignIn, GetUserData, SignOut } from './auth/queries';
+import { SignUp } from './auth/mutations';
 
-const RootType = new GraphQLObjectType({
-  name: 'RootType',
+const Query = new GraphQLObjectType({
+  name: 'Query',
   fields: {
     records: Records,
+    reports: Reports,
+    getUserData: GetUserData
+  }
+});
+const Mutations = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
     recordAdd: AddRecord,
     recordUpdate: UpdateRecord,
     recordDelete: DeleteRecord,
-    reports: Reports
+    signIn: SignIn,
+    signOut: SignOut,
+    signUp: SignUp
   }
 });
 
 export default new GraphQLSchema({
-  query: RootType
+  query: Query,
+  mutation: Mutations
 });

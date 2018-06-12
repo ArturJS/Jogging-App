@@ -7,7 +7,7 @@ export const authUtils = {
     }
   },
 
-  destroySession: (req, res, next) => {
+  destroySession: (req, res) => {
     req.logOut();
     if (req.session) {
       req.session.destroy();

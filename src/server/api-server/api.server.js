@@ -3,10 +3,8 @@ import bodyParser from 'body-parser';
 import passport from 'passport';
 import {Strategy} from 'passport-local';
 import expressSession from 'express-session';
-
-const {graphqlExpress, graphiqlExpress} = require('apollo-server-express');
+import {graphqlExpress, graphiqlExpress} from 'apollo-server-express';
 import Schema from './graphql-components/index';
-
 import corsMiddleware from './middlewares/cors.middleware';
 import noCacheMiddleware from './middlewares/no-cache.middleware';
 import router from './routers';
@@ -18,7 +16,9 @@ export const initAPIServer = (app) => {
 
   app.use(expressSession({
     secret: 'secret123',
-    cookie: {httpOnly: true}
+    cookie: {
+      httpOnly: true
+    }
   }));
   app.use(bodyParser.json());
   app.use(corsMiddleware);
@@ -31,10 +31,12 @@ export const initAPIServer = (app) => {
   app.use(
     '/graphql',
     bodyParser.json(),
-    graphqlExpress(req => ({
+    graphqlExpress((req, res) => ({
       schema: Schema,
       context: {
-        userId: _.get(req,'user.id', null)
+        userId: _.get(req,'user.id', null),
+        req,
+        res
       },
       pretty: true
     }))
