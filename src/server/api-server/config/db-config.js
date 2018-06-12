@@ -38,9 +38,9 @@ module.exports = {
     host: DB_HOSTNAME,
     port: DB_PORT,
     dialect: 'postgres',
-    ssl: true,
-    dialectOptions: {
-      ssl: true
-    }
+    // ssl: true,
+    // dialectOptions: {
+    //   ssl: true
+    // }
   }
 };

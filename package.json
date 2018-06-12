@@ -214,7 +214,9 @@
     "webpack-isomorphic-tools": "^2.2.18",
     "webpack-runtime-analyzer": "1.5.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "1.17.5"
+  },
   "engines": {
     "npm": "5.7.1",
     "node": "8.9.1"

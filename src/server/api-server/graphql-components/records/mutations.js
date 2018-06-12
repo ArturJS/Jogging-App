@@ -1,5 +1,6 @@
-import {GraphQLNonNull, GraphQLID, GraphQLError } from 'graphql'
+import {GraphQLNonNull, GraphQLID } from 'graphql';
 import {RecordInputType, RecordType} from './schema';
+import {withAuth} from '../utils';
 import db from '../../models';
 
 export const AddRecord = {
@@ -11,16 +12,16 @@ export const AddRecord = {
       type: RecordInputType
     }
   },
-  resolve: async (root, args) => {
+  resolve: withAuth(async (root, args, context) => {
     const { record } = args;
 
-    record.userId = 3; // todo pass the userId
+    record.userId = context.userId;
     record.averageSpeed = _calcAverageSpeed(record);
 
     const createdRecord = await db.Record.create(record);
 
     return createdRecord;
-  }
+  })
 };
 
 export const UpdateRecord = {
@@ -36,17 +37,18 @@ export const UpdateRecord = {
       type: RecordInputType
     }
   },
-  resolve: async (root, args) => {
+  resolve: withAuth(async (root, args, context) => {
     const {record} = args;
 
     record.averageSpeed = _calcAverageSpeed(record);
 
     await db.Record.update(record, {
       where: {
-        id: args.id
+        id: args.id,
+        userId: context.userId
       }
     });
-  }
+  })
 };
 
 export const DeleteRecord = {
@@ -58,9 +60,14 @@ export const DeleteRecord = {
       type: new GraphQLNonNull(GraphQLID)
     }
   },
-  resolve: async (root, args) => {
-    await db.Record.destroy({where: {id: args.id}});
-  }
+  resolve: withAuth(async (root, args, context) => {
+    await db.Record.destroy({
+      where: {
+        id: args.id,
+        userId: context.userId
+      }
+    });
+  })
 };
 
 function _calcAverageSpeed(record) {

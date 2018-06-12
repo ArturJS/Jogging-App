@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import bodyParser from 'body-parser';
 import passport from 'passport';
 import {Strategy} from 'passport-local';
 import expressSession from 'express-session';
-const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
+
+const {graphqlExpress, graphiqlExpress} = require('apollo-server-express');
 import Schema from './graphql-components/index';
 
 import corsMiddleware from './middlewares/cors.middleware';
@@ -29,11 +31,17 @@ export const initAPIServer = (app) => {
   app.use(
     '/graphql',
     bodyParser.json(),
-    graphqlExpress({ schema: Schema, pretty: true })
+    graphqlExpress(req => ({
+      schema: Schema,
+      context: {
+        userId: _.get(req,'user.id', null)
+      },
+      pretty: true
+    }))
   );
 
   // GraphiQL, a visual editor for queries
-  app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+  app.use('/graphiql', graphiqlExpress({endpointURL: '/graphql'}));
 };
 
 
