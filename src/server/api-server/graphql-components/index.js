@@ -1,6 +1,7 @@
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { Records } from './records/queries';
 import { AddRecord, UpdateRecord, DeleteRecord } from './records/mutations';
+import { Reports } from './reports/queries';
 
 const RootType = new GraphQLObjectType({
   name: 'RootType',
@@ -8,7 +9,8 @@ const RootType = new GraphQLObjectType({
     records: Records,
     recordAdd: AddRecord,
     recordUpdate: UpdateRecord,
-    recordDelete: DeleteRecord
+    recordDelete: DeleteRecord,
+    reports: Reports
   }
 });
 
