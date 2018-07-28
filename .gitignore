@@ -7,3 +7,4 @@ coverage/
 *.iml
 npm-debug.log
 *.swp
+webpack-assets.json
