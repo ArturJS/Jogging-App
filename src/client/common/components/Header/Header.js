@@ -15,25 +15,50 @@ import {
 } from '../../features/Form';
 import './Header.scss';
 
-const SIGN_IN_MUTATION = gql`
-  mutation SignInMutation($email: String!, $password: String!) {
-    signIn(signIn: { email: $email, password: $password }) {
-      email
-      firstName
-      lastName
+@graphql(
+  gql`
+    mutation SignInMutation($email: String!, $password: String!) {
+      signIn(signIn: { email: $email, password: $password }) {
+        email
+        firstName
+        lastName
+      }
     }
+  `,
+  {
+    name: 'signInMutation'
   }
-`;
-
-@graphql(SIGN_IN_MUTATION, {
-  name: 'signInMutation'
-})
+)
+@graphql(
+  gql`
+    query IsLoggedInQuery {
+      authState @client {
+        isLoggedIn
+      }
+    }
+  `,
+  {
+    name: 'isLoggedInQuery'
+  }
+)
+@graphql(
+  gql`
+    mutation UpdateIsLoggedInMutation($isLoggedIn: Boolean!) {
+      updateIsLoggedIn(isLoggedIn: $isLoggedIn) @client
+    }
+  `,
+  {
+    name: 'updateIsLoggedInMutation'
+  }
+)
 @inject('userStore')
 @withRouter
 @observer
 export default class Header extends Component {
   static propTypes = {
     signInMutation: PropTypes.func.isRequired,
+    updateIsLoggedInMutation: PropTypes.func.isRequired,
+    isLoggedInQuery: PropTypes.object.isRequired,
     userStore: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
   };
@@ -80,6 +105,12 @@ export default class Header extends Component {
         firstName,
         lastName
       });
+      await this.props.updateIsLoggedInMutation({
+        variables: {
+          isLoggedIn: true
+        }
+      });
+      this.props.isLoggedInQuery.refetch();
 
       this.formStore.resetFormData();
       this.setState({ error: null });
@@ -143,7 +174,7 @@ export default class Header extends Component {
   }
 
   render() {
-    const { isLoggedIn } = this.props.userStore;
+    const { isLoggedIn } = this.props.isLoggedInQuery.authState;
 
     return (
       <div className={classNames('header', { 'is-logged-in': isLoggedIn })}>

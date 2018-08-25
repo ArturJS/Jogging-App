@@ -22,8 +22,6 @@ import { userStore, routerStore, loadingStore } from './client/common/stores';
 import { modalStore } from './client/common/features/ModalDialog';
 import { recordsStore } from './client/pages/RecordsPage';
 
-let dest;
-
 const stores = {
   userStore,
   modalStore,
@@ -36,7 +34,31 @@ const apolloHttpLink = createHttpLink({ uri: '/graphql', fetch });
 
 const apolloClient = new ApolloClient({
   link: apolloHttpLink,
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  clientState: {
+    defaults: {
+      authState: {
+        __typename: 'AuthState',
+        isLoggedIn: false
+      }
+    },
+    resolvers: {
+      Mutation: {
+        updateIsLoggedIn: (_, { isLoggedIn }, { cache }) => {
+          cache.writeData({
+            data: {
+              authState: {
+                __typename: 'AuthState',
+                isLoggedIn
+              }
+            }
+          });
+
+          return null;
+        }
+      }
+    }
+  }
 });
 
 const Client = ({ children }) => (
@@ -46,6 +68,8 @@ const Client = ({ children }) => (
     </Provider>
   </ApolloProvider>
 );
+
+let dest;
 
 if (__CLIENT__) {
   const browserHistory = createBrowserHistory();
