@@ -98,52 +98,58 @@ export default class Header extends Component {
     this.setState({ error });
   };
 
-  render() {
+  renderLogout() {
+    return (
+      <button
+        type="button"
+        className="btn btn-default"
+        onClick={this.onSignOut}
+      >
+        Logout
+      </button>
+    );
+  }
+
+  renderLogin() {
     const { error } = this.state;
-    const { isLoggedIn } = this.props.userStore;
     const { inputTextCtrl, inputPasswordCtrl } = Controls;
+
+    return (
+      <Form
+        className="login-form"
+        store={this.formStore}
+        onSubmit={this.onSignIn}
+      >
+        <Field
+          className="control-field"
+          name="authEmail"
+          control={inputTextCtrl}
+          placeholder={'Email'}
+        />
+        <Field
+          className="control-field"
+          name="authPassword"
+          control={inputPasswordCtrl}
+          placeholder={'Password'}
+        />
+        {error && (
+          <div className="login-error-summary field-error-text">{error}</div>
+        )}
+        <button type="submit" className="btn btn-default btn-submit">
+          Log In
+        </button>
+      </Form>
+    );
+  }
+
+  render() {
+    const { isLoggedIn } = this.props.userStore;
 
     return (
       <div className={classNames('header', { 'is-logged-in': isLoggedIn })}>
         <div className="header-brand">Jogging App</div>
         <div className="header-auth">
-          {isLoggedIn && (
-            <button
-              type="button"
-              className="btn btn-default"
-              onClick={this.onSignOut}
-            >
-              Logout
-            </button>
-          )}
-          {!isLoggedIn && (
-            <Form
-              className="login-form"
-              store={this.formStore}
-              onSubmit={this.onSignIn}
-            >
-              <Field
-                className="control-field"
-                name="authEmail"
-                control={inputTextCtrl}
-                placeholder={'Email'}
-              />
-              <Field
-                className="control-field"
-                name="authPassword"
-                control={inputPasswordCtrl}
-                placeholder={'Password'}
-              />
-              {error && (
-                <div className="login-error-summary field-error-text">
-                  {error}
-                </div>
-              )}
-              <button type="submit" className="btn btn-default btn-submit">
-                Log In
-              </button>
-            </Form>
-          )}
+          {isLoggedIn ? this.renderLogout() : this.renderLogin()}
         </div>
       </div>
     );
