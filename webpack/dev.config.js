@@ -5,12 +5,14 @@ var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
 var assetsPath = path.resolve(__dirname, '../static/dist');
-var host = (process.env.HOST || 'localhost');
-var port = (+process.env.PORT + 1) || 3001;
+var host = process.env.HOST || 'localhost';
+var port = +process.env.PORT + 1 || 3001;
 
 // https://github.com/halt-hammerzeit/webpack-isomorphic-tools
 var WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(
+  require('./webpack-isomorphic-tools')
+);
 
 var babelrc = fs.readFileSync('./.babelrc');
 var babelrcObject = {};
@@ -22,13 +24,16 @@ try {
   console.error(err);
 }
 
-
 module.exports = {
   devtool: 'inline-source-map',
   context: path.resolve(__dirname, '..'),
   entry: {
     main: [
-      'webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
+      'webpack-hot-middleware/client?path=http://' +
+        host +
+        ':' +
+        port +
+        '/__webpack_hmr',
       './src/client.js'
     ]
   },
@@ -50,30 +55,43 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: babelrcObject
-          },
-          {
-            loader: 'eslint-loader'
           }
+          // {
+          //   loader: 'eslint-loader'
+          // }
         ]
       },
-      {test: /\.json$/, loader: 'json-loader'},
+      { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.s?css$/,
-        loader: 'style-loader!css-loader?importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]!postcss-loader?parser=postcss-scss&sourceMap=true!sass-loader?outputStyle=expanded&sourceMap'
+        loader:
+          'style-loader!css-loader?importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]!postcss-loader?parser=postcss-scss&sourceMap=true!sass-loader?outputStyle=expanded&sourceMap'
       },
-      {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff"},
-      {test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff"},
-      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/octet-stream"},
-      {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader"},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=image/svg+xml"},
-      {test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240'}
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
+      },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader' },
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+      },
+      {
+        test: webpackIsomorphicToolsPlugin.regular_expression('images'),
+        loader: 'url-loader?limit=10240'
+      }
     ]
   },
   resolve: {
-    modules: [
-      'src',
-      'node_modules'
-    ],
+    modules: ['src', 'node_modules'],
     extensions: ['.json', '.js', '.jsx']
   },
   plugins: [
@@ -87,15 +105,11 @@ module.exports = {
       __PRODUCTION__: false
     }),
     webpackIsomorphicToolsPlugin.development(),
-    new webpack.ContextReplacementPlugin(
-      /moment[\/\\]locale$/,
-      /en/
-    ),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
-      minChunks: function (module) {
-        return module.context &&
-          module.context.indexOf('node_modules') !== -1;
+      minChunks: function(module) {
+        return module.context && module.context.indexOf('node_modules') !== -1;
       }
     }),
     //CommonChunksPlugin will now extract all the common modules from vendor and main bundles
