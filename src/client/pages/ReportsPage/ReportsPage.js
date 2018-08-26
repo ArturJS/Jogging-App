@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { inject, observer } from 'mobx-react';
 import ReactTable from 'react-table';
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
@@ -20,11 +19,8 @@ const REPORTS_QUERY = gql`
 @graphql(REPORTS_QUERY, {
   name: 'reportsQuery'
 })
-@inject('userStore')
-@observer
 export default class ReportsPage extends Component {
   static propTypes = {
-    userStore: PropTypes.object.isRequired,
     reportsQuery: PropTypes.object.isRequired
   };
 
