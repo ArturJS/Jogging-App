@@ -110,7 +110,6 @@ export default class Header extends Component {
           isLoggedIn: true
         }
       });
-      this.props.isLoggedInQuery.refetch();
 
       this.formStore.resetFormData();
       this.setState({ error: null });
