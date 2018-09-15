@@ -30,44 +30,55 @@ const stores = {
   loadingStore
 };
 
-const apolloHttpLink = createHttpLink({ uri: '/graphql', fetch });
-
-const apolloClient = new ApolloClient({
-  link: apolloHttpLink,
-  cache: new InMemoryCache(),
-  clientState: {
-    defaults: {
-      authState: {
-        __typename: 'AuthState',
-        isLoggedIn: false
+export const createApolloClient = ({ isLoggedIn = false } = {}) => {
+  const cache = __CLIENT__
+    ? new InMemoryCache().restore(window.__APOLLO_STATE__)
+    : new InMemoryCache();
+  const defaultClientState = __SERVER__
+    ? {
+        authState: {
+          __typename: 'AuthState',
+          isLoggedIn
+        }
       }
-    },
-    resolvers: {
-      Mutation: {
-        updateIsLoggedIn: (_, { isLoggedIn }, { cache }) => {
-          cache.writeData({
-            data: {
-              authState: {
-                __typename: 'AuthState',
-                isLoggedIn
-              }
-            }
-          });
+    : null;
 
-          return null;
+  return new ApolloClient({
+    // link: createHttpLink({ uri: '/graphql', fetch }),
+    cache,
+    clientState: {
+      defaults: defaultClientState,
+      resolvers: {
+        Mutation: {
+          updateIsLoggedIn: (_, { isLoggedIn }, { cache }) => {
+            cache.writeData({
+              data: {
+                authState: {
+                  __typename: 'AuthState',
+                  isLoggedIn
+                }
+              }
+            });
+
+            return null;
+          }
         }
       }
     }
-  }
-});
+  });
+};
 
-const Client = ({ children }) => (
+export const createRootComponent = (apolloClient = createApolloClient()) => ({
+  children
+}) => (
   <ApolloProvider client={apolloClient}>
     <Provider {...stores}>
       <RootShell>{children || _renderRoutes(rootRoutes)}</RootShell>
     </Provider>
   </ApolloProvider>
 );
+
+const Client = createRootComponent();
 
 let dest;
 

@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { withRouter } from 'react-router';
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import { Query } from 'react-apollo';
 
 import {
   FormStore,
@@ -14,6 +15,14 @@ import {
   Validators
 } from '../../features/Form';
 import './Header.scss';
+
+const IS_LOGGED_IN = gql`
+  query IsLoggedInQuery {
+    authState @client {
+      isLoggedIn
+    }
+  }
+`;
 
 @graphql(
   gql`
@@ -27,18 +36,6 @@ import './Header.scss';
   `,
   {
     name: 'signInMutation'
-  }
-)
-@graphql(
-  gql`
-    query IsLoggedInQuery {
-      authState @client {
-        isLoggedIn
-      }
-    }
-  `,
-  {
-    name: 'isLoggedInQuery'
   }
 )
 @graphql(
@@ -58,7 +55,6 @@ export default class Header extends Component {
   static propTypes = {
     signInMutation: PropTypes.func.isRequired,
     updateIsLoggedInMutation: PropTypes.func.isRequired,
-    isLoggedInQuery: PropTypes.object.isRequired,
     userStore: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
   };
@@ -173,15 +169,25 @@ export default class Header extends Component {
   }
 
   render() {
-    const { isLoggedIn } = this.props.isLoggedInQuery.authState;
-
     return (
-      <div className={classNames('header', { 'is-logged-in': isLoggedIn })}>
-        <div className="header-brand">Jogging App</div>
-        <div className="header-auth">
-          {isLoggedIn ? this.renderLogout() : this.renderLogin()}
-        </div>
-      </div>
+      <Query query={IS_LOGGED_IN}>
+        {({
+          data: {
+            authState: { isLoggedIn }
+          }
+        }) => (
+          <div
+            className={classNames('header', {
+              'is-logged-in': isLoggedIn
+            })}
+          >
+            <div className="header-brand">Jogging App</div>
+            <div className="header-auth">
+              {isLoggedIn ? this.renderLogout() : this.renderLogin()}
+            </div>
+          </div>
+        )}
+      </Query>
     );
   }
 }

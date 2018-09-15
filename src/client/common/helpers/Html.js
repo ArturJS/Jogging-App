@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom/server';
 import serialize from 'serialize-javascript';
@@ -17,11 +17,17 @@ export default class Html extends Component {
   static propTypes = {
     assets: PropTypes.object,
     component: PropTypes.node,
-    initialAppState: PropTypes.object
+    initialAppState: PropTypes.object,
+    initialApolloState: PropTypes.object
   };
 
   render() {
-    const {assets, component, initialAppState} = this.props;
+    const {
+      assets,
+      component,
+      initialAppState,
+      initialApolloState
+    } = this.props;
     const content = component ? ReactDOM.renderToString(component) : '';
     const head = Helmet.rewind();
 
@@ -36,32 +42,48 @@ export default class Html extends Component {
 
           <link rel="shortcut icon" href="/favicon.ico" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta charSet="utf-8"/>
-          {Object.values(assets.javascript).map((assetPath) =>
-            <link href={assetPath} rel="preload" as="script" charSet="UTF-8"/>
-          )}
+          <meta charSet="utf-8" />
+          {Object.values(assets.javascript).map(assetPath => (
+            <link href={assetPath} rel="preload" as="script" charSet="UTF-8" />
+          ))}
           {/* styles (will be present only in production with webpack extract text plugin) */}
-          {Object.keys(assets.styles).map((style, key) =>
-            <link href={assets.styles[style]} key={key} media="screen, projection"
-                  rel="stylesheet" type="text/css" charSet="UTF-8"/>
-          )}
+          {Object.keys(assets.styles).map((style, key) => (
+            <link
+              href={assets.styles[style]}
+              key={key}
+              media="screen, projection"
+              rel="stylesheet"
+              type="text/css"
+              charSet="UTF-8"
+            />
+          ))}
 
           {/* (will be present only in development mode) */}
           {/* outputs a <style/> tag with all bootstrap styles + App.scss + it could be CurrentPage.scss. */}
           {/* can smoothen the initial style flash (flicker) on page load in development mode. */}
           {/* ideally one could also include here the style for the current page (Home.scss, About.scss, etc) */}
-          <script src={assets.javascript.manifest} charSet="UTF-8"/>
+          <script src={assets.javascript.manifest} charSet="UTF-8" />
         </head>
         <body>
-          <div id="content" dangerouslySetInnerHTML={{__html: content}}/>
-          {initialAppState &&
+          <div id="content" dangerouslySetInnerHTML={{ __html: content }} />
+          {initialAppState && (
             <script
               id="initial_app_state"
               type="application/json"
-              dangerouslySetInnerHTML={{__html: serialize(initialAppState)}}/>
-          }
-          <script src={assets.javascript.vendor} charSet="UTF-8"/>
-          <script src={assets.javascript.main} charSet="UTF-8"/>
+              dangerouslySetInnerHTML={{ __html: serialize(initialAppState) }}
+            />
+          )}
+          {initialApolloState && (
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.__APOLLO_STATE__=${serialize(
+                  initialApolloState
+                )}`
+              }}
+            />
+          )}
+          <script src={assets.javascript.vendor} charSet="UTF-8" />
+          <script src={assets.javascript.main} charSet="UTF-8" />
         </body>
       </html>
     );

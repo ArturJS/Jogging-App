@@ -3,10 +3,11 @@ import { renderToString } from 'react-router-server';
 import { StaticRouter } from 'react-router';
 import { inspect } from 'import-inspector';
 import { matchRoutes } from 'react-router-config';
+import { getDataFromTree } from 'react-apollo';
 import _ from 'lodash';
 
 import Html from '../../client/common/helpers/Html';
-import Client from '../../client';
+import { createApolloClient, createRootComponent } from '../../client';
 import routes from '../../routes';
 import { userStore } from '../../client/common/stores';
 
@@ -37,7 +38,11 @@ export const initSSRServer = app => {
     }
 
     res.send(
-      await renderPage(req.url, pageComponent, { initialPageData, stores })
+      await renderPage(req.url, pageComponent, {
+        initialPageData,
+        stores,
+        isAuthenticated: req.isAuthenticated()
+      })
     );
   });
 };
@@ -45,7 +50,7 @@ export const initSSRServer = app => {
 export async function renderPage(
   url,
   pageComponent,
-  { initialPageData, stores }
+  { initialPageData, stores, isAuthenticated }
 ) {
   const context = {};
   let lazyImports = [];
@@ -56,11 +61,21 @@ export async function renderPage(
     lazyImports.push(metadata);
   });
 
+  const apolloClient = createApolloClient({ isLoggedIn: isAuthenticated });
+
   try {
+    const Client = createRootComponent(apolloClient);
+
+    await getDataFromTree(Client);
+
+    const initialApolloState = apolloClient.extract();
+    console.log('Initial apollo state: ', initialApolloState);
+
     let { html } = await renderToString(
       <Html
         assets={webpackIsomorphicTools.assets()}
         initialAppState={{ initialPageData, stores }}
+        initialApolloState={initialApolloState}
         component={
           __DISABLE_SSR__ ? null : (
             <StaticRouter context={context} location={url}>
