@@ -1,18 +1,17 @@
 import React from 'react';
-import {renderToString} from 'react-router-server';
-import {StaticRouter} from 'react-router';
-import {inspect} from 'import-inspector';
-import {matchRoutes} from 'react-router-config';
+import { renderToString } from 'react-router-server';
+import { StaticRouter } from 'react-router';
+import { inspect } from 'import-inspector';
+import { matchRoutes } from 'react-router-config';
 import _ from 'lodash';
 
 import Html from '../../client/common/helpers/Html';
 import Client from '../../client';
 import routes from '../../routes';
-import {userStore} from '../../client/common/stores';
+import { userStore } from '../../client/common/stores';
 
-
-export const initSSRServer = (app) => {
-  app.use(async(req, res) => {
+export const initSSRServer = app => {
+  app.use(async (req, res) => {
     const branch = matchRoutes(routes, req.url);
     const lastMatchedRoute = _.last(branch);
 
@@ -26,7 +25,10 @@ export const initSSRServer = (app) => {
     await userStore.init(stores.userStore);
 
     const initialPageData = await _getInitialPageData(branch);
-    const pageComponent = getPageComponentFromMatchedRoutes(branch, initialPageData);
+    const pageComponent = getPageComponentFromMatchedRoutes(
+      branch,
+      initialPageData
+    );
 
     if (__DEVELOPMENT__) {
       // Do not cache webpack stats: the script file would change since
@@ -35,34 +37,36 @@ export const initSSRServer = (app) => {
     }
 
     res.send(
-      await renderPage(req.url, pageComponent, {initialPageData, stores})
+      await renderPage(req.url, pageComponent, { initialPageData, stores })
     );
   });
 };
 
-export async function renderPage(url, pageComponent, {initialPageData, stores}) {
+export async function renderPage(
+  url,
+  pageComponent,
+  { initialPageData, stores }
+) {
   const context = {};
   let lazyImports = [];
 
-  _resetGlobalChartsRenderQueue();
-
   // setup a watcher
-  let stopInspecting = inspect(metadata => { // necessary for react-loadable components
+  let stopInspecting = inspect(metadata => {
+    // necessary for react-loadable components
     lazyImports.push(metadata);
   });
 
   try {
-    let {html} = await renderToString(
+    let { html } = await renderToString(
       <Html
         assets={webpackIsomorphicTools.assets()}
-        initialAppState={{initialPageData, stores}}
+        initialAppState={{ initialPageData, stores }}
         component={
-          __DISABLE_SSR__ ? null :
+          __DISABLE_SSR__ ? null : (
             <StaticRouter context={context} location={url}>
-              <Client>
-                {pageComponent}
-              </Client>
+              <Client>{pageComponent}</Client>
             </StaticRouter>
+          )
         }
       />
     );
@@ -71,32 +75,35 @@ export async function renderPage(url, pageComponent, {initialPageData, stores}) 
     html = _addLazyModules(html, url, lazyImports);
 
     return `<!doctype html>${html}`;
-  }
-  catch (err) {
+  } catch (err) {
     console.error(err);
   }
 }
 
 export function getPageComponentFromMatchedRoutes(branch, initialPageData) {
-  return _.reduceRight(branch, (componentPyramid, {route}) => (
-    React.createElement(route.component, {children: componentPyramid, initialPageData})
-  ), null); // collect components from the inside out of matched routes;
+  return _.reduceRight(
+    branch,
+    (componentPyramid, { route }) =>
+      React.createElement(route.component, {
+        children: componentPyramid,
+        initialPageData
+      }),
+    null
+  ); // collect components from the inside out of matched routes;
 }
-
 
 // private methods
 
 const lazyModulesCache = {};
 
 async function _getInitialPageData(branch) {
-  const {fetchData} = branch[0].route.component;
+  const { fetchData } = branch[0].route.component;
   let initialPageData;
 
   if (fetchData) {
     try {
       initialPageData = await fetchData();
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
     }
   }
@@ -110,11 +117,7 @@ function _getInitialStoresData(req) {
   };
 
   if (req.isAuthenticated()) {
-    const {
-      firstName,
-      lastName,
-      email
-    } = req.user.dataValues;
+    const { firstName, lastName, email } = req.user.dataValues;
 
     stores.userStore = {
       firstName,
@@ -126,16 +129,12 @@ function _getInitialStoresData(req) {
   return stores;
 }
 
-function _resetGlobalChartsRenderQueue() {
-  global.chartsRenderQueue = {
-    barChartQueue: []
-  };
-}
-
 function _addLazyModules(html, requestUrl, lazyImports) {
   if (
-    lazyImports.length === 0 && !lazyModulesCache[requestUrl] // necessary due to "lazyImports" generates only on first invocation ("renderToString" uses cache internally)
-  ) return html;
+    lazyImports.length === 0 &&
+    !lazyModulesCache[requestUrl] // necessary due to "lazyImports" generates only on first invocation ("renderToString" uses cache internally)
+  )
+    return html;
 
   if (lazyImports.length > 0) {
     lazyModulesCache[requestUrl] = lazyImports;
@@ -152,7 +151,9 @@ function _addLazyModules(html, requestUrl, lazyImports) {
 }
 
 function _getChunkPath(serverSideRequirePath) {
-  const moduleName = serverSideRequirePath.substr(serverSideRequirePath.lastIndexOf('\\') + 1);
+  const moduleName = serverSideRequirePath.substr(
+    serverSideRequirePath.lastIndexOf('\\') + 1
+  );
   return webpackIsomorphicTools.assets().javascript[moduleName];
 }
 
