@@ -12,18 +12,17 @@ import { syncHistoryWithStore } from 'mobx-react-router';
 import 'react-table/react-table.css';
 import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-boost';
-import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { createHttpLink } from 'apollo-link-http';
 import fetch from 'isomorphic-fetch';
 
 import rootRoutes from './routes';
 import RootShell from './client/common/shells/RootShell';
-import { userStore, routerStore, loadingStore } from './client/common/stores';
+import { routerStore, loadingStore } from './client/common/stores';
 import { modalStore } from './client/common/features/ModalDialog';
 import { recordsStore } from './client/pages/RecordsPage';
 
 const stores = {
-  userStore,
   modalStore,
   recordsStore,
   routerStore,

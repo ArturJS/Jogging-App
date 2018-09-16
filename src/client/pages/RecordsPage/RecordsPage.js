@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import {inject, observer} from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import ReactTable from 'react-table';
 import moment from 'moment';
 
@@ -9,11 +9,10 @@ import EditRecordModal from './components/EditRecordModal';
 import DateRangeFilter from './components/DateRangeFilter';
 import './RecordsPage.scss';
 
-@inject('userStore', 'modalStore', 'recordsStore')
+@inject('modalStore', 'recordsStore')
 @observer
 export default class RecordsPage extends Component {
   static propTypes = {
-    userStore: PropTypes.object.isRequired,
     modalStore: PropTypes.object.isRequired,
     recordsStore: PropTypes.object.isRequired
   };
@@ -24,7 +23,7 @@ export default class RecordsPage extends Component {
         Header: 'Date',
         accessor: 'date',
         sortable: true,
-        Cell: ({value}) => moment(value).format('DD.MM.YYYY')
+        Cell: ({ value }) => moment(value).format('DD.MM.YYYY')
       },
       {
         Header: () => (
@@ -54,8 +53,8 @@ export default class RecordsPage extends Component {
       },
       {
         Header: 'Edit',
-        Cell: (cellInfo) => {
-          const {id} = cellInfo.original;
+        Cell: cellInfo => {
+          const { id } = cellInfo.original;
           const onEditClick = () => this.showEditRecordModal(id);
           cellInfo.onEditClick = cellInfo.onEditClick || onEditClick;
           return (
@@ -72,15 +71,16 @@ export default class RecordsPage extends Component {
       },
       {
         Header: 'Delete',
-        Cell: (cellInfo) => {
-          const {id} = cellInfo.original;
+        Cell: cellInfo => {
+          const { id } = cellInfo.original;
           const onDeleteClick = () => this.showRemoveRecordModal(id);
           cellInfo.onDeleteClick = cellInfo.onDeleteClick || onDeleteClick;
           return (
             <button
               type="button"
               className="btn btn-default fa fa-trash-o"
-              onClick={cellInfo.onDeleteClick}/>
+              onClick={cellInfo.onDeleteClick}
+            />
           );
         },
         width: 60,
@@ -91,49 +91,49 @@ export default class RecordsPage extends Component {
   }
 
   componentDidMount() {
-    this.props.recordsStore.init({showLoading: true});
+    this.props.recordsStore.init({ showLoading: true });
   }
 
   showAddRecordModal = () => {
     this.props.modalStore.showCustom({
       title: 'Add new record',
-      component: <EditRecordModal isAddMode={true}/>
+      component: <EditRecordModal isAddMode={true} />
     });
   };
 
-  showEditRecordModal = (recordId) => {
+  showEditRecordModal = recordId => {
     const relatedRecord = this.props.recordsStore.getRecordById(recordId);
     this.props.modalStore.showCustom({
       title: 'Edit record',
-      component: <EditRecordModal record={relatedRecord}/>
+      component: <EditRecordModal record={relatedRecord} />
     });
   };
 
-  showRemoveRecordModal = (recordId) => {
+  showRemoveRecordModal = recordId => {
     const record = this.props.recordsStore.getFormattedRecordById(recordId);
-    this.props.modalStore.showConfirm({
-      title: 'Confirm your action',
-      body: (
-        <div>
-          <div>Are you sure you want to delete this record?</div>
+    this.props.modalStore
+      .showConfirm({
+        title: 'Confirm your action',
+        body: (
           <div>
-            {
-              `Date: ${moment(record.date).format('DD.MM.YYYY')};
+            <div>Are you sure you want to delete this record?</div>
+            <div>
+              {`Date: ${moment(record.date).format('DD.MM.YYYY')};
               Distance: ${record.distance};
               Time: ${record.time};
-              Average speed: ${record.averageSpeed}.`
-            }
+              Average speed: ${record.averageSpeed}.`}
+            </div>
           </div>
-        </div>
-      )
-    }).then((result) => {
-      if (!result) return;
+        )
+      })
+      .then(result => {
+        if (!result) return;
 
-      this.props.recordsStore.removeRecord(recordId, {showLoading: true});
-    });
+        this.props.recordsStore.removeRecord(recordId, { showLoading: true });
+      });
   };
 
-  onDatesChange = ({startDate, endDate}) => {
+  onDatesChange = ({ startDate, endDate }) => {
     this.props.recordsStore.setFilter({
       startDate: startDate && startDate.startOf('day'),
       endDate: endDate && endDate.startOf('day')
@@ -149,39 +149,42 @@ export default class RecordsPage extends Component {
 
     return (
       <div className="page records-page">
-        <Helmet title="Records"/>
+        <Helmet title="Records" />
         <h1>Records</h1>
-        <DateRangeFilter onDatesChange={this.onDatesChange}/>
+        <DateRangeFilter onDatesChange={this.onDatesChange} />
 
-        {noRecords &&
-        <div className="no-records-placeholder">
-          <p>Your records list is empty...</p>
-          <p>Feel free to create new record!</p>
-        </div>
-        }
+        {noRecords && (
+          <div className="no-records-placeholder">
+            <p>Your records list is empty...</p>
+            <p>Feel free to create new record!</p>
+          </div>
+        )}
 
-        {!noRecords && noFilteredRecords &&
-        <div className="no-records-placeholder">
-          <p>There are no records in selected date range...</p>
-        </div>
-        }
+        {!noRecords &&
+          noFilteredRecords && (
+            <div className="no-records-placeholder">
+              <p>There are no records in selected date range...</p>
+            </div>
+          )}
 
-        {!noFilteredRecords &&
-        <ReactTable
-          className={'records-table'}
-          data={recordsGridData}
-          columns={this.recordsGridColumns}
-          pageSize={recordsGridData.length}
-          showPageSizeOptions={false}
-          showPagination={false}/>
-        }
+        {!noFilteredRecords && (
+          <ReactTable
+            className={'records-table'}
+            data={recordsGridData}
+            columns={this.recordsGridColumns}
+            pageSize={recordsGridData.length}
+            showPageSizeOptions={false}
+            showPagination={false}
+          />
+        )}
 
         <div className="buttons-group">
           <button
             type="button"
             className="btn btn-primary"
-            onClick={this.showAddRecordModal}>
-            <i className="fa fa-plus"/>
+            onClick={this.showAddRecordModal}
+          >
+            <i className="fa fa-plus" />
             Add new record
           </button>
         </div>

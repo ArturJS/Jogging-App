@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
 import { withRouter } from 'react-router';
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
 import { IS_LOGGED_IN } from '../../graphql/queries';
+import { UPDATE_IS_LOGGED_IN } from '../../graphql/mutations';
 import {
   FormStore,
   Form,
@@ -14,6 +14,7 @@ import {
   Controls,
   Validators
 } from '../../features/Form';
+import { loginApi } from '../../api/loginApi';
 import './Header.scss';
 
 @graphql(
@@ -30,24 +31,14 @@ import './Header.scss';
     name: 'signInMutation'
   }
 )
-@graphql(
-  gql`
-    mutation UpdateIsLoggedInMutation($isLoggedIn: Boolean!) {
-      updateIsLoggedIn(isLoggedIn: $isLoggedIn) @client
-    }
-  `,
-  {
-    name: 'updateIsLoggedInMutation'
-  }
-)
-@inject('userStore')
+@graphql(UPDATE_IS_LOGGED_IN, {
+  name: 'updateIsLoggedIn'
+})
 @withRouter
-@observer
 export default class Header extends Component {
   static propTypes = {
     signInMutation: PropTypes.func.isRequired,
-    updateIsLoggedInMutation: PropTypes.func.isRequired,
-    userStore: PropTypes.object.isRequired,
+    updateIsLoggedIn: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
 
@@ -77,23 +68,14 @@ export default class Header extends Component {
     const { authEmail, authPassword } = this.formStore.values;
 
     try {
-      const {
-        data: {
-          signIn: { email, firstName, lastName }
-        }
-      } = await this.props.signInMutation({
+      await this.props.signInMutation({
         variables: {
           email: authEmail,
           password: authPassword
         }
       });
 
-      this.props.userStore.setUserData({
-        email,
-        firstName,
-        lastName
-      });
-      await this.props.updateIsLoggedInMutation({
+      await this.props.updateIsLoggedIn({
         variables: {
           isLoggedIn: true
         }
@@ -106,8 +88,13 @@ export default class Header extends Component {
     }
   };
 
-  onSignOut = () => {
-    this.props.userStore.doSignOut();
+  onSignOut = async () => {
+    await loginApi.doSignOut(); // todo replace with sithOutMutation
+    await this.props.updateIsLoggedIn({
+      variables: {
+        isLoggedIn: false
+      }
+    });
     this.props.history.push('/sign-up');
   };
 

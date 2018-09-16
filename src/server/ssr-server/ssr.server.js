@@ -5,11 +5,9 @@ import { inspect } from 'import-inspector';
 import { matchRoutes } from 'react-router-config';
 import { getDataFromTree } from 'react-apollo';
 import _ from 'lodash';
-
 import Html from '../../client/common/helpers/Html';
 import { createApolloClient, createRootComponent } from '../../client';
 import routes from '../../routes';
-import { userStore } from '../../client/common/stores';
 
 export const initSSRServer = app => {
   app.use(async (req, res) => {
@@ -20,10 +18,6 @@ export const initSSRServer = app => {
       _redirectTo(res, lastMatchedRoute.redirectTo);
       return false;
     }
-
-    const stores = _getInitialStoresData(req);
-
-    await userStore.init(stores.userStore);
 
     const initialPageData = await _getInitialPageData(branch);
     const pageComponent = getPageComponentFromMatchedRoutes(
@@ -40,7 +34,6 @@ export const initSSRServer = app => {
     res.send(
       await renderPage(req.url, pageComponent, {
         initialPageData,
-        stores,
         isAuthenticated: req.isAuthenticated()
       })
     );
@@ -50,7 +43,7 @@ export const initSSRServer = app => {
 export async function renderPage(
   url,
   pageComponent,
-  { initialPageData, stores, isAuthenticated }
+  { initialPageData, isAuthenticated }
 ) {
   const context = {};
   let lazyImports = [];
@@ -76,7 +69,7 @@ export async function renderPage(
     let { html } = await renderToString(
       <Html
         assets={webpackIsomorphicTools.assets()}
-        initialAppState={{ initialPageData, stores }}
+        initialAppState={{ initialPageData }}
         initialApolloState={initialApolloState}
         component={
           __DISABLE_SSR__ ? null : (
@@ -126,24 +119,6 @@ async function _getInitialPageData(branch) {
   }
 
   return initialPageData;
-}
-
-function _getInitialStoresData(req) {
-  let stores = {
-    userStore: null
-  };
-
-  if (req.isAuthenticated()) {
-    const { firstName, lastName, email } = req.user.dataValues;
-
-    stores.userStore = {
-      firstName,
-      lastName,
-      email
-    };
-  }
-
-  return stores;
 }
 
 function _addLazyModules(html, requestUrl, lazyImports) {

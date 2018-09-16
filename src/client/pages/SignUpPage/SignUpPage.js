@@ -1,21 +1,29 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import {inject, observer} from 'mobx-react';
-import {withRouter} from 'react-router';
-
+import { withRouter } from 'react-router';
+import { graphql } from 'react-apollo';
+import { loginApi } from '../../common/api/loginApi';
 import processErrors from '../../common/components/ProcessErrors';
 import ErrorSummary from '../../common/components/ErrorSummary';
-import {FormStore, Form, Field, Validators, Controls} from '../../common/features/Form';
+import {
+  FormStore,
+  Form,
+  Field,
+  Validators,
+  Controls
+} from '../../common/features/Form';
+import { UPDATE_IS_LOGGED_IN } from '../../common/graphql/mutations';
 import './SignUpPage.scss';
 
-@inject('userStore')
+@graphql(UPDATE_IS_LOGGED_IN, {
+  name: 'updateIsLoggedIn'
+})
 @processErrors
 @withRouter
-@observer
 export default class SignUpPage extends Component {
   static propTypes = {
-    userStore: PropTypes.object.isRequired,
+    updateIsLoggedIn: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     error: PropTypes.string,
     processAjaxError: PropTypes.func.isRequired
@@ -53,7 +61,10 @@ export default class SignUpPage extends Component {
         maxLength: 254,
         validators: [
           Validators.required('Please enter your password'),
-          Validators.minLength(8, 'Password is too short. Minimal length - 8 characters.'),
+          Validators.minLength(
+            8,
+            'Password is too short. Minimal length - 8 characters.'
+          ),
           Validators.maxLength(30, 'Maximum password length is 30 characters.')
         ]
       },
@@ -73,7 +84,7 @@ export default class SignUpPage extends Component {
     });
   }
 
-  onSubmit = async() => {
+  onSubmit = async () => {
     if (!this.formStore.validate().valid) {
       this.formStore.setFocusFirstInvalid();
       return;
@@ -88,99 +99,95 @@ export default class SignUpPage extends Component {
     } = this.formStore.values;
 
     try {
-      await this.props.userStore.doSignUp({
-        firstName,
-        lastName,
-        email,
-        password,
-        repeatPassword
-      }, {showLoading: true});
+      await loginApi.doSignUp(
+        {
+          firstName,
+          lastName,
+          email,
+          password,
+          repeatPassword
+        },
+        { showLoading: true }
+      );
+      await this.props.updateIsLoggedIn({
+        variables: {
+          isLoggedIn: true
+        }
+      });
       this.formStore.resetFormData();
-      this.setState({error: null});
+      this.setState({ error: null });
       this.props.history.push('/records');
-    }
-    catch (err) {
+    } catch (err) {
       this.props.processAjaxError(err);
     }
   };
 
   render() {
-    const {error} = this.props;
-    const {
-      inputTextCtrl,
-      inputPasswordCtrlWithShowBnt
-    } = Controls;
+    const { error } = this.props;
+    const { inputTextCtrl, inputPasswordCtrlWithShowBnt } = Controls;
 
     return (
       <div className="page sign-up-page">
-        <Helmet title="Create an account"/>
+        <Helmet title="Create an account" />
         <Form
           className="sign-up-form"
           store={this.formStore}
-          onSubmit={this.onSubmit}>
-          <h2 className="text-center">
-            Create an account
-          </h2>
+          onSubmit={this.onSubmit}
+        >
+          <h2 className="text-center">Create an account</h2>
           <div className="form-group">
-            <label
-              htmlFor="firstName"
-              className="control-label">
+            <label htmlFor="firstName" className="control-label">
               First name
             </label>
             <Field
               className="control-field"
               name="firstName"
-              control={inputTextCtrl}/>
+              control={inputTextCtrl}
+            />
           </div>
           <div className="form-group">
-            <label
-              htmlFor="lastName"
-              className="control-label">
+            <label htmlFor="lastName" className="control-label">
               Surname
             </label>
             <Field
               className="control-field"
               name="lastName"
-              control={inputTextCtrl}/>
+              control={inputTextCtrl}
+            />
           </div>
           <div className="form-group">
-            <label
-              htmlFor="email"
-              className="control-label">
+            <label htmlFor="email" className="control-label">
               Email
             </label>
             <Field
               className="control-field"
               name="email"
-              control={inputTextCtrl}/>
+              control={inputTextCtrl}
+            />
           </div>
           <div className="form-group">
-            <label
-              htmlFor="password"
-              className="control-label">
+            <label htmlFor="password" className="control-label">
               Password
             </label>
             <Field
               className="control-field"
               name="password"
-              control={inputPasswordCtrlWithShowBnt}/>
+              control={inputPasswordCtrlWithShowBnt}
+            />
           </div>
           <div className="form-group">
-            <label
-              htmlFor="repeatPassword"
-              className="control-label">
+            <label htmlFor="repeatPassword" className="control-label">
               Repeat password
             </label>
             <Field
               className="control-field"
               name="repeatPassword"
-              control={inputPasswordCtrlWithShowBnt}/>
+              control={inputPasswordCtrlWithShowBnt}
+            />
           </div>
-          <ErrorSummary error={error}/>
+          <ErrorSummary error={error} />
           <div className="buttons-group">
-            <button
-              type="submit"
-              className="btn btn-primary">
+            <button type="submit" className="btn btn-primary">
               Create an account
             </button>
           </div>
