@@ -6,7 +6,7 @@ import { withRouter } from 'react-router';
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
-
+import { IS_LOGGED_IN } from '../../graphql/queries';
 import {
   FormStore,
   Form,
@@ -15,14 +15,6 @@ import {
   Validators
 } from '../../features/Form';
 import './Header.scss';
-
-const IS_LOGGED_IN = gql`
-  query IsLoggedInQuery {
-    authState @client {
-      isLoggedIn
-    }
-  }
-`;
 
 @graphql(
   gql`
