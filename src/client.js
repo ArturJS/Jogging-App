@@ -68,12 +68,15 @@ export const createApolloClient = ({ isLoggedIn = false } = {}) => {
   });
 };
 
-export const createRootComponent = (apolloClient = createApolloClient()) => ({
-  children
-}) => (
+export const createRootComponent = ({
+  apolloClient = createApolloClient(),
+  pageComponent
+} = {}) => ({ children }) => (
   <ApolloProvider client={apolloClient}>
     <Provider {...stores}>
-      <RootShell>{children || _renderRoutes(rootRoutes)}</RootShell>
+      <RootShell>
+        {pageComponent || children || _renderRoutes(rootRoutes)}
+      </RootShell>
     </Provider>
   </ApolloProvider>
 );

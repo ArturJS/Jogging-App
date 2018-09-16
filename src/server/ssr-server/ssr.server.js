@@ -64,12 +64,14 @@ export async function renderPage(
   const apolloClient = createApolloClient({ isLoggedIn: isAuthenticated });
 
   try {
-    const Client = createRootComponent(apolloClient);
+    const Client = createRootComponent({
+      apolloClient,
+      pageComponent
+    });
 
     await getDataFromTree(Client);
 
     const initialApolloState = apolloClient.extract();
-    console.log('Initial apollo state: ', initialApolloState);
 
     let { html } = await renderToString(
       <Html
@@ -79,7 +81,7 @@ export async function renderPage(
         component={
           __DISABLE_SSR__ ? null : (
             <StaticRouter context={context} location={url}>
-              <Client>{pageComponent}</Client>
+              <Client />
             </StaticRouter>
           )
         }
