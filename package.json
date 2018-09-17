@@ -152,6 +152,7 @@
     "graphql": "0.13.2",
     "graphql-errors": "2.1.0",
     "graphql-tools": "3.0.0",
+    "graphql-type-long": "^0.1.1",
     "history": "4.6.1",
     "hoist-non-react-statics": "^1.0.3",
     "http-proxy": "^1.12.0",

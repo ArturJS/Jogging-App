@@ -6,7 +6,7 @@ import {
   GraphQLFloat,
   GraphQLNonNull
 } from 'graphql';
-
+import GraphQLLong from 'graphql-type-long';
 
 export const RecordType = new GraphQLObjectType({
   name: 'record',
@@ -15,7 +15,7 @@ export const RecordType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLID)
     },
     date: {
-      type: new GraphQLNonNull(GraphQLInt)
+      type: new GraphQLNonNull(GraphQLLong)
     },
     distance: {
       type: new GraphQLNonNull(GraphQLFloat)
@@ -36,7 +36,7 @@ export const RecordInputType = new GraphQLInputObjectType({
   name: 'recordInput',
   fields: () => ({
     date: {
-      type: new GraphQLNonNull(GraphQLInt)
+      type: new GraphQLNonNull(GraphQLLong)
     },
     distance: {
       type: new GraphQLNonNull(GraphQLFloat)
