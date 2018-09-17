@@ -1,9 +1,9 @@
-import {GraphQLNonNull, GraphQLID } from 'graphql';
-import {RecordInputType, RecordType} from './schema';
-import {withAuth} from '../utils';
+import { GraphQLNonNull, GraphQLID } from 'graphql';
+import { RecordInputType, RecordType } from './schema';
+import { withAuth } from '../utils';
 import db from '../../models';
 
-export const AddRecord = {
+export const addRecord = {
   type: RecordType,
   description: 'Add Record',
   args: {
@@ -24,7 +24,7 @@ export const AddRecord = {
   })
 };
 
-export const UpdateRecord = {
+export const updateRecord = {
   type: RecordType,
   description: 'Update Record',
   args: {
@@ -32,13 +32,13 @@ export const UpdateRecord = {
       name: 'Record ID',
       type: new GraphQLNonNull(GraphQLID)
     },
-    impression: {
+    record: {
       name: 'Record Object',
       type: RecordInputType
     }
   },
   resolve: withAuth(async (root, args, context) => {
-    const {record} = args;
+    const { record } = args;
 
     record.averageSpeed = _calcAverageSpeed(record);
 
@@ -51,7 +51,7 @@ export const UpdateRecord = {
   })
 };
 
-export const DeleteRecord = {
+export const deleteRecord = {
   type: RecordType,
   description: 'Delete Record',
   args: {
@@ -71,5 +71,5 @@ export const DeleteRecord = {
 };
 
 function _calcAverageSpeed(record) {
-  return record.distance / record.time * 3.6;
+  return (record.distance / record.time) * 3.6;
 }

@@ -1,7 +1,6 @@
 import { UserError } from 'graphql-errors';
-import { SignUpType, UserType } from './schema';
+import { SignUpType, UserType, SignInType } from './schema';
 import { GraphQLBoolean } from 'graphql';
-import { UserError } from 'graphql-errors';
 import { authUtils } from '../../utils';
 import db from '../../models';
 
