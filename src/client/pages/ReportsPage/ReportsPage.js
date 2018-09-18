@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import ReactTable from 'react-table';
-import { graphql } from 'react-apollo';
+import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import './ReportsPage.scss';
 
@@ -16,93 +15,91 @@ const REPORTS_QUERY = gql`
   }
 `;
 
-@graphql(REPORTS_QUERY, {
-  name: 'reportsQuery'
-})
 export default class ReportsPage extends Component {
-  static propTypes = {
-    reportsQuery: PropTypes.object.isRequired
-  };
+  gridColumns = [
+    {
+      Header: 'Week',
+      accessor: 'week',
+      width: 150,
+      sortable: true
+    },
+    {
+      Header: () => (
+        <div>
+          <div>Average distance</div>
+          <div>(Metres)</div>
+        </div>
+      ),
+      accessor: 'averageDistance',
+      sortable: false
+    },
+    {
+      Header: () => (
+        <div>
+          <div>Average speed</div>
+          <div>(Km/hr)</div>
+        </div>
+      ),
+      accessor: 'averageSpeed',
+      sortable: false
+    }
+  ];
 
-  state = {
-    reportsGrid: {}
-  };
-
-  componentWillMount() {
-    this.setState({
-      reportsGrid: {
-        data: [],
-        columns: [
+  fetchData() {
+    return Promise.resolve({
+      data: {
+        reports: [
           {
-            Header: 'Week',
-            accessor: 'week',
-            width: 150,
-            sortable: true
+            week: 1,
+            averageSpeed: 16.65,
+            averageDistance: 555,
+            __typename: 'report'
           },
           {
-            Header: () => (
-              <div>
-                <div>Average distance</div>
-                <div>(Metres)</div>
-              </div>
-            ),
-            accessor: 'averageDistance',
-            sortable: false
-          },
-          {
-            Header: () => (
-              <div>
-                <div>Average speed</div>
-                <div>(Km/hr)</div>
-              </div>
-            ),
-            accessor: 'averageSpeed',
-            sortable: false
+            week: 29,
+            averageSpeed: 6.13421052631579,
+            averageDistance: 370,
+            __typename: 'report'
           }
         ]
       }
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { reports } = nextProps.reportsQuery;
-
-    this.updateReports(reports);
+  renderNoReports() {
+    return (
+      <div className="no-reports-placeholder">
+        <p>There are no records to display reports...</p>
+      </div>
+    );
   }
 
-  updateReports(reports) {
-    this.setState(({ reportsGrid }) => ({
-      reportsGrid: {
-        data: reports,
-        columns: reportsGrid.columns
-      }
-    }));
+  renderTable(reports = []) {
+    return (
+      <ReactTable
+        className={'reports-table'}
+        data={reports}
+        columns={this.gridColumns}
+        pageSize={reports.length}
+        showPageSizeOptions={false}
+        showPagination={false}
+      />
+    );
   }
 
   render() {
-    const { reportsGrid } = this.state;
-
     return (
       <div className="page reports-page">
         <Helmet title="Reports" />
         <h1>Reports</h1>
 
-        {reportsGrid.data.length === 0 && (
-          <div className="no-reports-placeholder">
-            <p>There are no records to display reports...</p>
-          </div>
-        )}
-
-        {reportsGrid.data.length > 0 && (
-          <ReactTable
-            className={'reports-table'}
-            data={reportsGrid.data}
-            columns={reportsGrid.columns}
-            pageSize={reportsGrid.data.length}
-            showPageSizeOptions={false}
-            showPagination={false}
-          />
-        )}
+        <Query query={REPORTS_QUERY}>
+          {({ data: { reports } }) =>
+            !reports || reports.length === 0
+              ? this.renderNoReports()
+              : this.renderTable(reports || [])
+          }
+        </Query>
       </div>
     );
   }

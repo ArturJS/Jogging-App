@@ -3,8 +3,9 @@ import { renderToString } from 'react-router-server';
 import { StaticRouter } from 'react-router';
 import { inspect } from 'import-inspector';
 import { matchRoutes } from 'react-router-config';
-import { getDataFromTree } from 'react-apollo';
+import { getDataFromTree, ApolloProvider } from 'react-apollo';
 import _ from 'lodash';
+import ReportsPage from '../../client/pages/ReportsPage';
 import Html from '../../client/common/helpers/Html';
 import { createApolloClient, createRootComponent } from '../../client';
 import routes from '../../routes';
@@ -34,7 +35,8 @@ export const initSSRServer = app => {
     res.send(
       await renderPage(req.url, pageComponent, {
         initialPageData,
-        isAuthenticated: req.isAuthenticated()
+        isLoggedIn: req.isAuthenticated(),
+        cookie: req.header('Cookie')
       })
     );
   });
@@ -43,9 +45,8 @@ export const initSSRServer = app => {
 export async function renderPage(
   url,
   pageComponent,
-  { initialPageData, isAuthenticated }
+  { initialPageData, isLoggedIn, cookie }
 ) {
-  const context = {};
   let lazyImports = [];
 
   // setup a watcher
@@ -54,7 +55,10 @@ export async function renderPage(
     lazyImports.push(metadata);
   });
 
-  const apolloClient = createApolloClient({ isLoggedIn: isAuthenticated });
+  const apolloClient = createApolloClient({
+    isLoggedIn,
+    cookie
+  });
 
   try {
     const Client = createRootComponent({
@@ -62,9 +66,13 @@ export async function renderPage(
       pageComponent
     });
 
-    await getDataFromTree(Client);
+    await getDataFromTree(
+      <ApolloProvider client={apolloClient}>{pageComponent}</ApolloProvider>
+    );
 
     const initialApolloState = apolloClient.extract();
+
+    console.log('initialApolloState ', initialApolloState);
 
     let { html } = await renderToString(
       <Html
@@ -73,7 +81,7 @@ export async function renderPage(
         initialApolloState={initialApolloState}
         component={
           __DISABLE_SSR__ ? null : (
-            <StaticRouter context={context} location={url}>
+            <StaticRouter context={{}} location={url}>
               <Client />
             </StaticRouter>
           )
@@ -94,7 +102,7 @@ export function getPageComponentFromMatchedRoutes(branch, initialPageData) {
   return _.reduceRight(
     branch,
     (componentPyramid, { route }) =>
-      React.createElement(route.component, {
+      React.createElement(route.pageComponent, {
         children: componentPyramid,
         initialPageData
       }),

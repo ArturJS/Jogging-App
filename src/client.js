@@ -2,7 +2,7 @@
  * THIS IS THE ENTRY POINT FOR THE CLIENT, JUST LIKE server.js IS THE ENTRY POINT FOR THE SERVER.
  */
 import 'babel-polyfill';
-import React from 'react';
+import React, { Component } from 'react';
 import { Switch, Route } from 'react-router';
 import { render } from 'react-dom';
 import { Router } from 'react-router';
@@ -11,9 +11,12 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import 'react-table/react-table.css';
 import { ApolloProvider } from 'react-apollo';
-import ApolloClient from 'apollo-boost';
+// import ApolloClient from 'apollo-boost';
+import { ApolloLink } from 'apollo-link';
+import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
+import { withClientState } from 'apollo-link-state';
 import fetch from 'isomorphic-fetch';
 
 import rootRoutes from './routes';
@@ -29,7 +32,7 @@ const stores = {
   loadingStore
 };
 
-export const createApolloClient = ({ isLoggedIn = false } = {}) => {
+export const createApolloClient = ({ isLoggedIn = false, cookie } = {}) => {
   const cache = __CLIENT__
     ? new InMemoryCache().restore(window.__APOLLO_STATE__)
     : new InMemoryCache();
@@ -43,42 +46,59 @@ export const createApolloClient = ({ isLoggedIn = false } = {}) => {
     : null;
 
   return new ApolloClient({
-    // link: createHttpLink({ uri: '/graphql', fetch }),
     cache,
-    clientState: {
-      defaults: defaultClientState,
-      resolvers: {
-        Mutation: {
-          updateIsLoggedIn: (_, { isLoggedIn }, { cache }) => {
-            cache.writeData({
-              data: {
-                authState: {
-                  __typename: 'AuthState',
-                  isLoggedIn
+    // ssrMode: __SERVER__,
+    link: ApolloLink.from([
+      withClientState({
+        cache,
+        defaults: defaultClientState,
+        resolvers: {
+          Mutation: {
+            updateIsLoggedIn: (_, { isLoggedIn }, { cache }) => {
+              cache.writeData({
+                data: {
+                  authState: {
+                    __typename: 'AuthState',
+                    isLoggedIn
+                  }
                 }
-              }
-            });
+              });
 
-            return null;
+              return null;
+            }
           }
         }
-      }
-    }
+      }),
+      createHttpLink({
+        uri: __SERVER__ ? 'http://localhost:3000/graphql' : '/graphql',
+        fetch,
+        headers: {
+          cookie
+        }
+      })
+    ])
   });
 };
 
 export const createRootComponent = ({
   apolloClient = createApolloClient(),
   pageComponent
-} = {}) => ({ children }) => (
-  <ApolloProvider client={apolloClient}>
-    <Provider {...stores}>
-      <RootShell>
-        {pageComponent || children || _renderRoutes(rootRoutes)}
-      </RootShell>
-    </Provider>
-  </ApolloProvider>
-);
+} = {}) =>
+  class Client extends Component {
+    render() {
+      const { children } = this.props;
+
+      return (
+        <ApolloProvider client={apolloClient}>
+          <Provider {...stores}>
+            <RootShell>
+              {pageComponent || children || _renderRoutes(rootRoutes)}
+            </RootShell>
+          </Provider>
+        </ApolloProvider>
+      );
+    }
+  };
 
 const Client = createRootComponent();
 
