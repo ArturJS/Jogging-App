@@ -38,16 +38,24 @@ export const updateRecord = {
     }
   },
   resolve: withAuth(async (root, args, context) => {
-    const { record } = args;
+    const { record, id } = args;
 
     record.averageSpeed = _calcAverageSpeed(record);
 
     await db.Record.update(record, {
       where: {
-        id: args.id,
+        id,
         userId: context.userId
-      }
+      },
+      returning: true,
+      plain: true
     });
+
+    return {
+      // todo reconsider the data we're returning
+      id,
+      ...record
+    };
   })
 };
 
