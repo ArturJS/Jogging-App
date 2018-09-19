@@ -14,16 +14,12 @@ export const initSSRServer = app => {
     const branch = matchRoutes(routes, req.url);
     const lastMatchedRoute = _.last(branch);
 
-    if (__SERVER__ && lastMatchedRoute.redirectTo) {
+    if (lastMatchedRoute.redirectTo) {
       _redirectTo(res, lastMatchedRoute.redirectTo);
       return false;
     }
 
-    const initialPageData = await _getInitialPageData(branch);
-    const pageComponent = getPageComponentFromMatchedRoutes(
-      branch,
-      initialPageData
-    );
+    const pageComponent = getPageComponentFromMatchedRoutes(branch);
 
     if (__DEVELOPMENT__) {
       // Do not cache webpack stats: the script file would change since
@@ -33,7 +29,6 @@ export const initSSRServer = app => {
 
     res.send(
       await renderPage(req.url, pageComponent, {
-        initialPageData,
         isLoggedIn: req.isAuthenticated(),
         cookie: req.header('Cookie')
       })
@@ -41,11 +36,7 @@ export const initSSRServer = app => {
   });
 };
 
-export async function renderPage(
-  url,
-  pageComponent,
-  { initialPageData, isLoggedIn, cookie }
-) {
+export async function renderPage(url, pageComponent, { isLoggedIn, cookie }) {
   const apolloClient = createApolloClient({
     isLoggedIn,
     cookie
@@ -63,13 +54,10 @@ export async function renderPage(
       </ApolloProvider>
     );
 
-    const initialApolloState = apolloClient.extract();
-
     const { html } = await renderToString(
       <Html
         assets={webpackIsomorphicTools.assets()}
-        initialAppState={{ initialPageData }}
-        initialApolloState={initialApolloState}
+        initialApolloState={apolloClient.extract()}
         component={
           __DISABLE_SSR__ ? null : (
             <StaticRouter context={{}} location={url}>
@@ -86,34 +74,18 @@ export async function renderPage(
   }
 }
 
-export function getPageComponentFromMatchedRoutes(branch, initialPageData) {
+export function getPageComponentFromMatchedRoutes(branch) {
   return _.reduceRight(
     branch,
     (componentPyramid, { route }) =>
       React.createElement(route.pageComponent, {
-        children: componentPyramid,
-        initialPageData
+        children: componentPyramid
       }),
     null
   ); // collect components from the inside out of matched routes;
 }
 
 // private methods
-
-async function _getInitialPageData(branch) {
-  const { fetchData } = branch[0].route.component;
-  let initialPageData;
-
-  if (fetchData) {
-    try {
-      initialPageData = await fetchData();
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  return initialPageData;
-}
 
 function _redirectTo(res, redirectUrl) {
   res.writeHead(302, {

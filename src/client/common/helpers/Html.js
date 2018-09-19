@@ -17,17 +17,11 @@ export default class Html extends Component {
   static propTypes = {
     assets: PropTypes.object,
     component: PropTypes.node,
-    initialAppState: PropTypes.object,
     initialApolloState: PropTypes.object
   };
 
   render() {
-    const {
-      assets,
-      component,
-      initialAppState,
-      initialApolloState
-    } = this.props;
+    const { assets, component, initialApolloState } = this.props;
     const content = component ? ReactDOM.renderToString(component) : '';
     const head = Helmet.rewind();
 
@@ -66,13 +60,6 @@ export default class Html extends Component {
         </head>
         <body>
           <div id="content" dangerouslySetInnerHTML={{ __html: content }} />
-          {initialAppState && (
-            <script
-              id="initial_app_state"
-              type="application/json"
-              dangerouslySetInnerHTML={{ __html: serialize(initialAppState) }}
-            />
-          )}
           {initialApolloState && (
             <script
               dangerouslySetInnerHTML={{
