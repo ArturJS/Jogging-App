@@ -4,10 +4,44 @@ import Helmet from 'react-helmet';
 import { inject, observer } from 'mobx-react';
 import ReactTable from 'react-table';
 import moment from 'moment';
+import { Query } from 'react-apollo';
+import { gql } from 'apollo-boost';
 
 import EditRecordModal from './components/EditRecordModal';
 import DateRangeFilter from './components/DateRangeFilter';
 import './RecordsPage.scss';
+
+// todo move data transformations to utils
+const convertToMomentDate = timeInSeconds => {
+  const HOUR = 3600;
+  const MINUTE = 60;
+
+  const hours = Math.floor(timeInSeconds / HOUR);
+  const minutes = Math.floor((timeInSeconds - hours * HOUR) / MINUTE);
+  const seconds = timeInSeconds - hours * HOUR - minutes * MINUTE;
+
+  return moment({ hours, minutes, seconds });
+};
+
+const formatRecordToDisplay = record => ({
+  id: +record.id,
+  date: moment(+record.date).valueOf(),
+  distance: record.distance,
+  time: convertToMomentDate(record.time).format('HH:mm:ss'),
+  averageSpeed: record.averageSpeed.toFixed(2)
+});
+
+const RECORDS_QUERY = gql`
+  query Records($startDate: Long, $endDate: Long) {
+    records(filter: { startDate: $startDate, endDate: $endDate }) {
+      id
+      date
+      distance
+      time
+      averageSpeed
+    }
+  }
+`;
 
 @inject('modalStore', 'recordsStore')
 @observer
@@ -15,6 +49,13 @@ export default class RecordsPage extends Component {
   static propTypes = {
     modalStore: PropTypes.object.isRequired,
     recordsStore: PropTypes.object.isRequired
+  };
+
+  state = {
+    filters: {
+      startDate: null,
+      endDate: null
+    }
   };
 
   componentWillMount() {
@@ -133,12 +174,63 @@ export default class RecordsPage extends Component {
       });
   };
 
-  onDatesChange = ({ startDate, endDate }) => {
-    this.props.recordsStore.setFilter({
-      startDate: startDate && startDate.startOf('day'),
-      endDate: endDate && endDate.startOf('day')
+  filterRecords = ({ startDate, endDate }) => {
+    this.setState({
+      filters: {
+        startDate: startDate && startDate.startOf('day').valueOf(),
+        endDate: endDate && endDate.startOf('day').valueOf()
+      }
     });
   };
+
+  renderRecordsGrid() {
+    const { filters } = this.state;
+    const hasFilters = !!(filters.startDate || filters.endDate);
+
+    return (
+      <Query query={RECORDS_QUERY} variables={filters}>
+        {({ loading, data: { records } }) => {
+          if (loading) {
+            return <div>Loading...</div>;
+          }
+
+          records = records || [];
+
+          const noRecords = records.length === 0;
+
+          if (noRecords) {
+            if (hasFilters) {
+              return (
+                <div className="no-records-placeholder">
+                  <p>There are no records in selected date range...</p>
+                </div>
+              );
+            }
+
+            return (
+              <div className="no-records-placeholder">
+                <p>Your records list is empty...</p>
+                <p>Feel free to create new record!</p>
+              </div>
+            );
+          }
+
+          const recordsGridData = records.map(formatRecordToDisplay);
+
+          return (
+            <ReactTable
+              className={'records-table'}
+              data={recordsGridData}
+              columns={this.recordsGridColumns}
+              pageSize={recordsGridData.length}
+              showPageSizeOptions={false}
+              showPagination={false}
+            />
+          );
+        }}
+      </Query>
+    );
+  }
 
   render() {
     const {
@@ -151,32 +243,8 @@ export default class RecordsPage extends Component {
       <div className="page records-page">
         <Helmet title="Records" />
         <h1>Records</h1>
-        <DateRangeFilter onDatesChange={this.onDatesChange} />
-
-        {noRecords && (
-          <div className="no-records-placeholder">
-            <p>Your records list is empty...</p>
-            <p>Feel free to create new record!</p>
-          </div>
-        )}
-
-        {!noRecords &&
-          noFilteredRecords && (
-            <div className="no-records-placeholder">
-              <p>There are no records in selected date range...</p>
-            </div>
-          )}
-
-        {!noFilteredRecords && (
-          <ReactTable
-            className={'records-table'}
-            data={recordsGridData}
-            columns={this.recordsGridColumns}
-            pageSize={recordsGridData.length}
-            showPageSizeOptions={false}
-            showPagination={false}
-          />
-        )}
+        <DateRangeFilter onDatesChange={this.filterRecords} />
+        {this.renderRecordsGrid()}
 
         <div className="buttons-group">
           <button

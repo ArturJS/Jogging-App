@@ -11,7 +11,6 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import 'react-table/react-table.css';
 import { ApolloProvider } from 'react-apollo';
-// import ApolloClient from 'apollo-boost';
 import { ApolloLink } from 'apollo-link';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
