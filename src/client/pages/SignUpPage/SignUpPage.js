@@ -20,8 +20,7 @@ import './SignUpPage.scss';
   name: 'updateIsLoggedIn'
 })
 @processErrors
-@withRouter
-export default class SignUpPage extends Component {
+class SignUpPage extends Component {
   static propTypes = {
     updateIsLoggedIn: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
@@ -196,3 +195,5 @@ export default class SignUpPage extends Component {
     );
   }
 }
+
+export default (__SERVER__ ? SignUpPage : withRouter(SignUpPage));

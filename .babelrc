@@ -1,11 +1,14 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "browsers": ["last 2 versions", "ie >= 11"]
-      },
-      "useBuiltIns": true
-    }],
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": ["last 2 versions", "ie >= 11"]
+        },
+        "useBuiltIns": true
+      }
+    ],
     "react",
     "es2015",
     "stage-0"
@@ -14,10 +17,6 @@
   "plugins": [
     "lodash",
     "syntax-dynamic-import",
-    ["import-inspector", {
-      "serverSideRequirePath": true,
-      "webpackRequireWeakId": true
-    }],
     "babel-plugin-dynamic-import-node",
     "transform-runtime",
     "add-module-exports",
@@ -29,13 +28,17 @@
     "development": {
       "plugins": [
         "typecheck",
-        ["react-transform", {
-            "transforms": [{
+        [
+          "react-transform",
+          {
+            "transforms": [
+              {
                 "transform": "react-transform-catch-errors",
                 "imports": ["react", "redbox-react"]
               }
             ]
-        }]
+          }
+        ]
       ]
     }
   }

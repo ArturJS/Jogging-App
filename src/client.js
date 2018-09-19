@@ -25,7 +25,7 @@ import { routerStore, loadingStore } from './client/common/stores';
 import { modalStore } from './client/common/features/ModalDialog';
 import { recordsStore } from './client/pages/RecordsPage';
 
-const stores = {
+export const stores = {
   modalStore,
   recordsStore,
   routerStore,
