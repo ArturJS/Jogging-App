@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import { inject, observer } from 'mobx-react';
 import ReactTable from 'react-table';
 import moment from 'moment';
-import { Query } from 'react-apollo';
+import { Query, graphql, withApollo } from 'react-apollo';
 import { gql } from 'apollo-boost';
 
 import EditRecordModal from './components/EditRecordModal';
@@ -42,7 +42,19 @@ const RECORDS_QUERY = gql`
     }
   }
 `;
+const RECORD_QUERY = gql`
+  query Record($id: ID!) {
+    record(id: $id) @client {
+      id
+      date
+      distance
+      time
+      averageSpeed
+    }
+  }
+`;
 
+@withApollo
 @inject('modalStore', 'recordsStore')
 @observer
 export default class RecordsPage extends Component {
@@ -150,8 +162,16 @@ export default class RecordsPage extends Component {
     });
   };
 
-  showRemoveRecordModal = recordId => {
-    const record = this.props.recordsStore.getFormattedRecordById(recordId);
+  showRemoveRecordModal = async recordId => {
+    const {
+      data: { record: rawRecord }
+    } = await this.props.client.query({
+      query: RECORD_QUERY,
+      variables: { id: recordId }
+    });
+
+    const record = formatRecordToDisplay(rawRecord);
+
     this.props.modalStore
       .showConfirm({
         title: 'Confirm your action',
@@ -233,17 +253,13 @@ export default class RecordsPage extends Component {
   }
 
   render() {
-    const {
-      recordsGridData,
-      noRecords,
-      noFilteredRecords
-    } = this.props.recordsStore;
-
     return (
       <div className="page records-page">
         <Helmet title="Records" />
         <h1>Records</h1>
+
         <DateRangeFilter onDatesChange={this.filterRecords} />
+
         {this.renderRecordsGrid()}
 
         <div className="buttons-group">

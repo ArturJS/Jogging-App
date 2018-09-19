@@ -11,6 +11,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import 'react-table/react-table.css';
 import { ApolloProvider } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import { ApolloLink } from 'apollo-link';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
@@ -52,6 +53,11 @@ export const createApolloClient = ({ isLoggedIn = false, cookie } = {}) => {
         cache,
         defaults: defaultClientState,
         resolvers: {
+          Query: {
+            record: (_, { id }, { cache }) => {
+              return cache.data.data[`record:${id}`];
+            }
+          },
           Mutation: {
             updateIsLoggedIn: (_, { isLoggedIn }, { cache }) => {
               cache.writeData({
