@@ -5,6 +5,7 @@ import { matchRoutes } from 'react-router-config';
 import { getDataFromTree, ApolloProvider } from 'react-apollo';
 import { Provider } from 'mobx-react';
 import _ from 'lodash';
+import config from '../../config';
 import Html from '../../client/common/helpers/Html';
 import { createApolloClient, createRootComponent, stores } from '../../client';
 import routes from '../../routes';
@@ -12,10 +13,13 @@ import routes from '../../routes';
 export const initSSRServer = app => {
   app.use(async (req, res) => {
     const branch = matchRoutes(routes, req.url);
-    const lastMatchedRoute = _.last(branch);
+    const matchedRoute = branch[0];
+    const { redirectTo } = matchedRoute.route;
 
-    if (lastMatchedRoute.redirectTo) {
-      _redirectTo(res, lastMatchedRoute.redirectTo);
+    if (redirectTo) {
+      const redirectLocation = `${config.uiTargetUrl}${redirectTo}`;
+
+      _redirectTo(res, redirectLocation);
       return false;
     }
 
