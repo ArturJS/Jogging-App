@@ -7,3 +7,15 @@ export const IS_LOGGED_IN = gql`
     }
   }
 `;
+
+export const RECORD_QUERY = gql`
+  query Record($id: ID!) {
+    record(id: $id) @client {
+      id
+      date
+      distance
+      time
+      averageSpeed
+    }
+  }
+`;

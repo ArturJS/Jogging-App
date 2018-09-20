@@ -4,47 +4,17 @@ import Helmet from 'react-helmet';
 import { inject, observer } from 'mobx-react';
 import ReactTable from 'react-table';
 import moment from 'moment';
-import { Query, graphql, withApollo } from 'react-apollo';
+import { Query, withApollo } from 'react-apollo';
 import { gql } from 'apollo-boost';
-
+import { RECORD_QUERY } from '../../common/graphql/queries';
+import { mapRecordToDisplay } from './utils/mappers';
 import EditRecordModal from './components/EditRecordModal';
 import DateRangeFilter from './components/DateRangeFilter';
 import './RecordsPage.scss';
 
-// todo move data transformations to utils
-const convertToMomentDate = timeInSeconds => {
-  const HOUR = 3600;
-  const MINUTE = 60;
-
-  const hours = Math.floor(timeInSeconds / HOUR);
-  const minutes = Math.floor((timeInSeconds - hours * HOUR) / MINUTE);
-  const seconds = timeInSeconds - hours * HOUR - minutes * MINUTE;
-
-  return moment({ hours, minutes, seconds });
-};
-
-const formatRecordToDisplay = record => ({
-  id: +record.id,
-  date: moment(+record.date).valueOf(),
-  distance: record.distance,
-  time: convertToMomentDate(record.time).format('HH:mm:ss'),
-  averageSpeed: record.averageSpeed.toFixed(2)
-});
-
 const RECORDS_QUERY = gql`
   query Records($startDate: Long, $endDate: Long) {
     records(filter: { startDate: $startDate, endDate: $endDate }) {
-      id
-      date
-      distance
-      time
-      averageSpeed
-    }
-  }
-`;
-const RECORD_QUERY = gql`
-  query Record($id: ID!) {
-    record(id: $id) @client {
       id
       date
       distance
@@ -155,11 +125,16 @@ export default class RecordsPage extends Component {
   };
 
   showEditRecordModal = recordId => {
-    const relatedRecord = this.props.recordsStore.getRecordById(recordId);
-    this.props.modalStore.showCustom({
-      title: 'Edit record',
-      component: <EditRecordModal record={relatedRecord} />
-    });
+    this.props.modalStore
+      .showCustom({
+        title: 'Edit record',
+        component: <EditRecordModal recordId={recordId} />
+      })
+      .then(({ success }) => {
+        if (success) {
+          this.refetchRecords();
+        }
+      });
   };
 
   showRemoveRecordModal = async recordId => {
@@ -170,7 +145,7 @@ export default class RecordsPage extends Component {
       variables: { id: recordId }
     });
 
-    const record = formatRecordToDisplay(rawRecord);
+    const record = mapRecordToDisplay(rawRecord);
 
     this.props.modalStore
       .showConfirm({
@@ -209,10 +184,12 @@ export default class RecordsPage extends Component {
 
     return (
       <Query query={RECORDS_QUERY} variables={filters}>
-        {({ loading, data: { records } }) => {
+        {({ loading, refetch, data: { records } }) => {
           if (loading) {
             return <div>Loading...</div>;
           }
+
+          this.refetchRecords = refetch;
 
           records = records || [];
 
@@ -235,7 +212,7 @@ export default class RecordsPage extends Component {
             );
           }
 
-          const recordsGridData = records.map(formatRecordToDisplay);
+          const recordsGridData = records.map(mapRecordToDisplay);
 
           return (
             <ReactTable

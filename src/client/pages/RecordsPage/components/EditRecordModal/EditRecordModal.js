@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject } from 'mobx-react';
 import moment from 'moment';
-import { graphql } from 'react-apollo';
+import { graphql, withApollo } from 'react-apollo';
 import { gql } from 'apollo-boost';
-
+import { RECORD_QUERY } from '../../../../common/graphql/queries';
+import { mapRecordToEdit } from '../../utils/mappers';
 import processErrors from '../../../../common/components/ProcessErrors';
 import ErrorSummary from '../../../../common/components/ErrorSummary';
 import {
@@ -60,6 +61,7 @@ const mapRecord = ({ date, distance, time }) => ({
     name: 'updateRecord'
   }
 )
+@withApollo
 @inject('modalStore')
 @processErrors
 export default class EditRecordModal extends Component {
@@ -67,7 +69,7 @@ export default class EditRecordModal extends Component {
     updateRecord: PropTypes.func.isRequired,
     addRecord: PropTypes.func.isRequired,
     modalStore: PropTypes.object.isRequired,
-    record: PropTypes.object,
+    recordId: PropTypes.number,
     isAddMode: PropTypes.bool,
     error: PropTypes.string,
     processAjaxError: PropTypes.func.isRequired
@@ -96,8 +98,23 @@ export default class EditRecordModal extends Component {
         ]
       }
     });
+  }
 
-    const { record } = this.props;
+  async componentDidMount() {
+    const { recordId } = this.props;
+
+    if (!recordId) {
+      return;
+    }
+
+    const {
+      data: { record: rawRecord }
+    } = await this.props.client.query({
+      query: RECORD_QUERY,
+      variables: { id: recordId }
+    });
+
+    const record = mapRecordToEdit(rawRecord);
 
     if (record) {
       this.formStore.setFormData(record);
@@ -110,10 +127,7 @@ export default class EditRecordModal extends Component {
       return;
     }
 
-    const {
-      isAddMode,
-      record: { id }
-    } = this.props;
+    const { isAddMode, recordId } = this.props;
     const { date, distance, time } = this.formStore.values;
     const recordPayload = mapRecord({
       date,
@@ -129,14 +143,13 @@ export default class EditRecordModal extends Component {
       } else {
         await this.props.updateRecord({
           variables: {
-            id,
+            id: recordId,
             ...recordPayload
           }
-          // refetchQueries: []
         });
       }
 
-      this.props.modalStore.close();
+      this.props.modalStore.close({ success: true });
     } catch (err) {
       this.props.processAjaxError(err);
     }
