@@ -11,7 +11,6 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import 'react-table/react-table.css';
 import { ApolloProvider } from 'react-apollo';
-import { gql } from 'apollo-boost';
 import { ApolloLink } from 'apollo-link';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
@@ -23,11 +22,9 @@ import rootRoutes from './routes';
 import RootShell from './client/common/shells/RootShell';
 import { routerStore, loadingStore } from './client/common/stores';
 import { modalStore } from './client/common/features/ModalDialog';
-import { recordsStore } from './client/pages/RecordsPage';
 
 export const stores = {
   modalStore,
-  recordsStore,
   routerStore,
   loadingStore
 };

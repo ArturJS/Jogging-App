@@ -37,13 +37,12 @@ const RECORDS_QUERY = gql`
   }
 )
 @withApollo
-@inject('modalStore', 'recordsStore')
+@inject('modalStore')
 @observer
 export default class RecordsPage extends Component {
   static propTypes = {
     modalStore: PropTypes.object.isRequired,
-    removeRecord: PropTypes.func.isRequired,
-    recordsStore: PropTypes.object.isRequired
+    removeRecord: PropTypes.func.isRequired
   };
 
   state = {
@@ -124,10 +123,6 @@ export default class RecordsPage extends Component {
         sortable: false
       }
     ];
-  }
-
-  componentDidMount() {
-    this.props.recordsStore.init({ showLoading: true });
   }
 
   showAddRecordModal = () => {

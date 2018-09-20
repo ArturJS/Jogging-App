@@ -1,2 +1,1 @@
-export {default} from './RecordsPage';
-export {default as recordsStore} from './RecordsStore';
+export { default } from './RecordsPage';
