@@ -131,10 +131,16 @@ export default class RecordsPage extends Component {
   }
 
   showAddRecordModal = () => {
-    this.props.modalStore.showCustom({
-      title: 'Add new record',
-      component: <EditRecordModal isAddMode={true} />
-    });
+    this.props.modalStore
+      .showCustom({
+        title: 'Add new record',
+        component: <EditRecordModal isAddMode={true} />
+      })
+      .then(({ success }) => {
+        if (success) {
+          this.refetchRecords();
+        }
+      });
   };
 
   showEditRecordModal = recordId => {
