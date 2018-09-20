@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import { inject, observer } from 'mobx-react';
 import ReactTable from 'react-table';
 import moment from 'moment';
-import { Query, withApollo } from 'react-apollo';
+import { Query, withApollo, graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { RECORD_QUERY } from '../../common/graphql/queries';
 import { mapRecordToDisplay } from './utils/mappers';
@@ -24,12 +24,25 @@ const RECORDS_QUERY = gql`
   }
 `;
 
+@graphql(
+  gql`
+    mutation RemoveRecord($id: ID!) {
+      deleteRecord(id: $id) {
+        id
+      }
+    }
+  `,
+  {
+    name: 'removeRecord'
+  }
+)
 @withApollo
 @inject('modalStore', 'recordsStore')
 @observer
 export default class RecordsPage extends Component {
   static propTypes = {
     modalStore: PropTypes.object.isRequired,
+    removeRecord: PropTypes.func.isRequired,
     recordsStore: PropTypes.object.isRequired
   };
 
@@ -162,10 +175,16 @@ export default class RecordsPage extends Component {
           </div>
         )
       })
-      .then(result => {
+      .then(async result => {
         if (!result) return;
 
-        this.props.recordsStore.removeRecord(recordId, { showLoading: true });
+        await this.props.removeRecord({
+          variables: {
+            id: recordId
+          }
+        });
+
+        this.refetchRecords();
       });
   };
 
