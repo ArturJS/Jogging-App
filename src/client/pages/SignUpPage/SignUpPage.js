@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { withRouter } from 'react-router';
 import { graphql } from 'react-apollo';
-import { loginApi } from '../../common/api/loginApi';
+import { gql } from 'apollo-boost';
 import processErrors from '../../common/components/ProcessErrors';
 import ErrorSummary from '../../common/components/ErrorSummary';
 import {
@@ -16,12 +16,38 @@ import {
 import { UPDATE_IS_LOGGED_IN } from '../../common/graphql/mutations';
 import './SignUpPage.scss';
 
+const SIGN_UP = gql`
+  mutation SignUp(
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $password: String!
+    $repeatPassword: String!
+  ) {
+    signUp(
+      signUp: {
+        firstName: $firstName
+        lastName: $lastName
+        email: $email
+        password: $password
+        repeatPassword: $repeatPassword
+      }
+    ) {
+      email
+    }
+  }
+`;
+
+@graphql(SIGN_UP, {
+  name: 'signUp'
+})
 @graphql(UPDATE_IS_LOGGED_IN, {
   name: 'updateIsLoggedIn'
 })
 @processErrors
 class SignUpPage extends Component {
   static propTypes = {
+    signUp: PropTypes.func.isRequired,
     updateIsLoggedIn: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     error: PropTypes.string,
@@ -83,12 +109,7 @@ class SignUpPage extends Component {
     });
   }
 
-  onSubmit = async () => {
-    if (!this.formStore.validate().valid) {
-      this.formStore.setFocusFirstInvalid();
-      return;
-    }
-
+  async performSignUp() {
     const {
       firstName,
       lastName,
@@ -98,27 +119,38 @@ class SignUpPage extends Component {
     } = this.formStore.values;
 
     try {
-      await loginApi.doSignUp(
-        {
+      await this.props.signUp({
+        variables: {
           firstName,
           lastName,
           email,
           password,
           repeatPassword
-        },
-        { showLoading: true }
-      );
+        }
+      });
       await this.props.updateIsLoggedIn({
         variables: {
           isLoggedIn: true
         }
       });
-      this.formStore.resetFormData();
-      this.setState({ error: null });
-      this.props.history.push('/records');
     } catch (err) {
       this.props.processAjaxError(err);
+
+      throw err;
     }
+  }
+
+  onSubmit = async () => {
+    if (!this.formStore.validate().valid) {
+      this.formStore.setFocusFirstInvalid();
+      return;
+    }
+
+    await this.performSignUp();
+
+    this.formStore.resetFormData();
+    this.setState({ error: null });
+    this.props.history.push('/records');
   };
 
   render() {

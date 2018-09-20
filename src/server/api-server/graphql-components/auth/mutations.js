@@ -4,6 +4,17 @@ import { GraphQLBoolean } from 'graphql';
 import { authUtils } from '../../utils';
 import db from '../../models';
 
+const waitForLogin = (req, user) =>
+  new Promise((resolve, reject) => {
+    req.login(user, {}, err => {
+      if (err) {
+        reject(new UserError(`Sign In failed. ${err}`));
+      }
+
+      return resolve(user);
+    });
+  });
+
 export const signIn = {
   type: UserType,
   description: 'Sign In',
@@ -73,7 +84,7 @@ export const signUp = {
   resolve: async (root, args, { req, res }) => {
     await _validateSignUp(args.signUp);
 
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password } = args.signUp;
 
     const user = {
       firstName,
@@ -90,13 +101,7 @@ export const signUp = {
       throw new UserError(`Sign Up failed. ${err}`);
     }
 
-    req.login(user, {}, err => {
-      if (err) {
-        throw new UserError(`Sign In failed. ${err}`);
-      }
-
-      return res.json(user);
-    });
+    await waitForLogin(req, user);
 
     return user;
   }
