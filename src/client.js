@@ -44,7 +44,6 @@ export const createApolloClient = ({ isLoggedIn = false, cookie } = {}) => {
 
   return new ApolloClient({
     cache,
-    // ssrMode: __SERVER__,
     link: ApolloLink.from([
       withClientState({
         cache,
@@ -53,20 +52,6 @@ export const createApolloClient = ({ isLoggedIn = false, cookie } = {}) => {
           Query: {
             record: (_, { id }, { cache }) => {
               return cache.data.data[`record:${id}`];
-            }
-          },
-          Mutation: {
-            updateIsLoggedIn: (_, { isLoggedIn }, { cache }) => {
-              cache.writeData({
-                data: {
-                  authState: {
-                    __typename: 'AuthState',
-                    isLoggedIn
-                  }
-                }
-              });
-
-              return null;
             }
           }
         }

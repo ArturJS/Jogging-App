@@ -6,7 +6,7 @@ import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
 import { IS_LOGGED_IN } from '../../graphql/queries';
-import { UPDATE_IS_LOGGED_IN } from '../../graphql/mutations';
+import { setIsLoggedIn } from '../../graphql/utils';
 import {
   FormStore,
   Form,
@@ -23,7 +23,10 @@ import './Header.scss';
     }
   `,
   {
-    name: 'signOut'
+    name: 'signOut',
+    options: {
+      update: setIsLoggedIn(false)
+    }
   }
 )
 @graphql(
@@ -37,17 +40,16 @@ import './Header.scss';
     }
   `,
   {
-    name: 'signIn'
+    name: 'signIn',
+    options: {
+      update: setIsLoggedIn(true)
+    }
   }
 )
-@graphql(UPDATE_IS_LOGGED_IN, {
-  name: 'updateIsLoggedIn'
-})
 @withRouter
 export default class Header extends Component {
   static propTypes = {
     signIn: PropTypes.func.isRequired,
-    updateIsLoggedIn: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
 
@@ -84,14 +86,9 @@ export default class Header extends Component {
         }
       });
 
-      await this.props.updateIsLoggedIn({
-        variables: {
-          isLoggedIn: true
-        }
-      });
-
       this.formStore.resetFormData();
       this.setState({ error: null });
+      this.props.history.push('/records');
     } catch (err) {
       this.processAjaxError(err);
     }
@@ -99,11 +96,6 @@ export default class Header extends Component {
 
   onSignOut = async () => {
     await this.props.signOut();
-    await this.props.updateIsLoggedIn({
-      variables: {
-        isLoggedIn: false
-      }
-    });
     this.props.history.push('/sign-up');
   };
 

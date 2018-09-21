@@ -13,7 +13,7 @@ import {
   Validators,
   Controls
 } from '../../common/features/Form';
-import { UPDATE_IS_LOGGED_IN } from '../../common/graphql/mutations';
+import { setIsLoggedIn } from '../../common/graphql/utils';
 import './SignUpPage.scss';
 
 const SIGN_UP = gql`
@@ -39,15 +39,14 @@ const SIGN_UP = gql`
 `;
 
 @graphql(SIGN_UP, {
-  name: 'signUp'
-})
-@graphql(UPDATE_IS_LOGGED_IN, {
-  name: 'updateIsLoggedIn'
+  name: 'signUp',
+  options: {
+    update: setIsLoggedIn(true)
+  }
 })
 class SignUpPage extends Component {
   static propTypes = {
     signUp: PropTypes.func.isRequired,
-    updateIsLoggedIn: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
 
@@ -134,12 +133,6 @@ class SignUpPage extends Component {
     if (error) {
       throw error;
     }
-
-    await this.props.updateIsLoggedIn({
-      variables: {
-        isLoggedIn: true
-      }
-    });
   }
 
   onSubmit = async () => {
