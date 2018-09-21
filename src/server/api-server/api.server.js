@@ -4,7 +4,7 @@ import passport from 'passport';
 import { Strategy } from 'passport-local';
 import expressSession from 'express-session';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
-import Schema from './graphql-components/index';
+import Schema from './components/index';
 import corsMiddleware from './middlewares/cors.middleware';
 import noCacheMiddleware from './middlewares/no-cache.middleware';
 import db from './models';
