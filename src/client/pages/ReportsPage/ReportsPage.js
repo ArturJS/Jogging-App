@@ -94,10 +94,14 @@ export default class ReportsPage extends Component {
         <h1>Reports</h1>
 
         <Query query={REPORTS_QUERY}>
-          {({ data: { reports } }) =>
-            !reports || reports.length === 0
-              ? this.renderNoReports()
-              : this.renderTable(reports || [])
+          {({ loading, data: { reports } }) =>
+            loading ? (
+              <div>Loading...</div>
+            ) : !reports || reports.length === 0 ? (
+              this.renderNoReports()
+            ) : (
+              this.renderTable(reports || [])
+            )
           }
         </Query>
       </div>
