@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import { withRouter } from 'react-router';
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import processErrors from '../../common/components/ProcessErrors';
+import _ from 'lodash';
 import ErrorSummary from '../../common/components/ErrorSummary';
 import {
   FormStore,
@@ -44,14 +44,15 @@ const SIGN_UP = gql`
 @graphql(UPDATE_IS_LOGGED_IN, {
   name: 'updateIsLoggedIn'
 })
-@processErrors
 class SignUpPage extends Component {
   static propTypes = {
     signUp: PropTypes.func.isRequired,
     updateIsLoggedIn: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    error: PropTypes.string,
-    processAjaxError: PropTypes.func.isRequired
+    history: PropTypes.object.isRequired
+  };
+
+  state = {
+    error: null
   };
 
   componentWillMount() {
@@ -118,26 +119,27 @@ class SignUpPage extends Component {
       repeatPassword
     } = this.formStore.values;
 
-    try {
-      await this.props.signUp({
-        variables: {
-          firstName,
-          lastName,
-          email,
-          password,
-          repeatPassword
-        }
-      });
-      await this.props.updateIsLoggedIn({
-        variables: {
-          isLoggedIn: true
-        }
-      });
-    } catch (err) {
-      this.props.processAjaxError(err);
+    const { errors } = await this.props.signUp({
+      variables: {
+        firstName,
+        lastName,
+        email,
+        password,
+        repeatPassword
+      },
+      errorPolicy: 'all'
+    });
+    const error = _.get(errors, '[0].message');
 
-      throw err;
+    if (error) {
+      throw error;
     }
+
+    await this.props.updateIsLoggedIn({
+      variables: {
+        isLoggedIn: true
+      }
+    });
   }
 
   onSubmit = async () => {
@@ -146,15 +148,19 @@ class SignUpPage extends Component {
       return;
     }
 
-    await this.performSignUp();
+    try {
+      await this.performSignUp();
 
-    this.formStore.resetFormData();
-    this.setState({ error: null });
-    this.props.history.push('/records');
+      this.formStore.resetFormData();
+      this.setState({ error: null });
+      this.props.history.push('/records');
+    } catch (error) {
+      this.setState({ error });
+    }
   };
 
   render() {
-    const { error } = this.props;
+    const { error } = this.state;
     const { inputTextCtrl, inputPasswordCtrlWithShowBnt } = Controls;
 
     return (
