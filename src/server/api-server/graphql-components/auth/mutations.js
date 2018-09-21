@@ -1,7 +1,6 @@
 import { UserError } from 'graphql-errors';
 import { SignUpType, UserType, SignInType } from './schema';
 import { GraphQLBoolean } from 'graphql';
-import { authUtils } from '../../utils';
 import db from '../../models';
 
 const waitForLogin = (req, user) =>
@@ -67,8 +66,14 @@ export const signIn = {
 export const signOut = {
   type: GraphQLBoolean,
   description: 'Sign Out',
-  resolve: async (root, args, { req, res }) => {
-    authUtils.destroySession(req, res);
+  resolve: async (root, args, { req }) => {
+    req.logOut();
+
+    if (req.session) {
+      req.session.destroy();
+    }
+
+    return true;
   }
 };
 
@@ -81,7 +86,7 @@ export const signUp = {
       type: SignUpType
     }
   },
-  resolve: async (root, args, { req, res }) => {
+  resolve: async (root, args, { req }) => {
     await _validateSignUp(args.signUp);
 
     const { firstName, lastName, email, password } = args.signUp;

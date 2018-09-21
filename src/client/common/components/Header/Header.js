@@ -14,9 +14,18 @@ import {
   Controls,
   Validators
 } from '../../features/Form';
-import { loginApi } from '../../api/loginApi';
 import './Header.scss';
 
+@graphql(
+  gql`
+    mutation {
+      signOut
+    }
+  `,
+  {
+    name: 'signOut'
+  }
+)
 @graphql(
   gql`
     mutation SignInMutation($email: String!, $password: String!) {
@@ -28,7 +37,7 @@ import './Header.scss';
     }
   `,
   {
-    name: 'signInMutation'
+    name: 'signIn'
   }
 )
 @graphql(UPDATE_IS_LOGGED_IN, {
@@ -37,7 +46,7 @@ import './Header.scss';
 @withRouter
 export default class Header extends Component {
   static propTypes = {
-    signInMutation: PropTypes.func.isRequired,
+    signIn: PropTypes.func.isRequired,
     updateIsLoggedIn: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
@@ -68,7 +77,7 @@ export default class Header extends Component {
     const { authEmail, authPassword } = this.formStore.values;
 
     try {
-      await this.props.signInMutation({
+      await this.props.signIn({
         variables: {
           email: authEmail,
           password: authPassword
@@ -89,7 +98,7 @@ export default class Header extends Component {
   };
 
   onSignOut = async () => {
-    await loginApi.doSignOut(); // todo replace with sithOutMutation
+    await this.props.signOut();
     await this.props.updateIsLoggedIn({
       variables: {
         isLoggedIn: false
