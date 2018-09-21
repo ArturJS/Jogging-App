@@ -45,27 +45,6 @@ export default class ReportsPage extends Component {
     }
   ];
 
-  fetchData() {
-    return Promise.resolve({
-      data: {
-        reports: [
-          {
-            week: 1,
-            averageSpeed: 16.65,
-            averageDistance: 555,
-            __typename: 'report'
-          },
-          {
-            week: 29,
-            averageSpeed: 6.13421052631579,
-            averageDistance: 370,
-            __typename: 'report'
-          }
-        ]
-      }
-    });
-  }
-
   renderNoReports() {
     return (
       <div className="no-reports-placeholder">
