@@ -7,7 +7,8 @@ import { Provider } from 'mobx-react';
 import _ from 'lodash';
 import config from '../../config';
 import Html from '../../client/common/helpers/Html';
-import { createApolloClient, createRootComponent, stores } from '../../client';
+import { createApolloClient } from '../../client/common/graphql/apollo-client';
+import { createRootComponent, stores } from '../../client';
 import routes from '../../routes';
 
 export const initSSRServer = app => {

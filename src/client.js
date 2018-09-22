@@ -11,14 +11,8 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import 'react-table/react-table.css';
 import { ApolloProvider } from 'react-apollo';
-import { ApolloLink } from 'apollo-link';
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { createHttpLink } from 'apollo-link-http';
-import { withClientState } from 'apollo-link-state';
-import fetch from 'isomorphic-fetch';
-
 import rootRoutes from './routes';
+import { createApolloClient } from './client/common/graphql/apollo-client';
 import RootShell from './client/common/shells/RootShell';
 import { routerStore, loadingStore } from './client/common/stores';
 import { modalStore } from './client/common/features/ModalDialog';
@@ -29,49 +23,38 @@ export const stores = {
   loadingStore
 };
 
-export const createApolloClient = ({ isLoggedIn = false, cookie } = {}) => {
-  const cache = __CLIENT__
-    ? new InMemoryCache().restore(window.__APOLLO_STATE__)
-    : new InMemoryCache();
-  const defaultClientState = __SERVER__
-    ? {
-        authState: {
-          __typename: 'AuthState',
-          isLoggedIn
-        }
-      }
-    : null;
-
-  return new ApolloClient({
-    cache,
-    link: ApolloLink.from([
-      withClientState({
-        cache,
-        defaults: defaultClientState,
-        resolvers: {
-          Query: {
-            record: (_, { id }, { cache }) => {
-              return cache.data.data[`record:${id}`];
-            }
-          }
-        }
-      }),
-      createHttpLink({
-        uri: __SERVER__ ? 'http://localhost:3000/graphql' : '/graphql',
-        fetch,
-        headers: {
-          cookie
-        }
-      })
-    ])
-  });
-};
-
 export const createRootComponent = ({
   apolloClient = createApolloClient(),
   pageComponent
-} = {}) =>
-  class Client extends Component {
+} = {}) => {
+  const renderRoutes = routes => {
+    return routes ? (
+      <Switch>
+        {routes.map((route, i) => {
+          let childComponents = renderRoutes(route.routes);
+
+          if (childComponents) {
+            childComponents = (
+              <route.component>{childComponents}</route.component>
+            );
+          }
+          return (
+            <Route
+              key={route.key || i}
+              path={route.path}
+              exact={route.exact}
+              strict={route.strict}
+              component={childComponents ? null : route.component}
+            >
+              {childComponents}
+            </Route>
+          );
+        })}
+      </Switch>
+    ) : null;
+  };
+
+  return class Client extends Component {
     render() {
       const { children } = this.props;
 
@@ -79,13 +62,14 @@ export const createRootComponent = ({
         <ApolloProvider client={apolloClient}>
           <Provider {...stores}>
             <RootShell>
-              {pageComponent || children || _renderRoutes(rootRoutes)}
+              {pageComponent || children || renderRoutes(rootRoutes)}
             </RootShell>
           </Provider>
         </ApolloProvider>
       );
     }
   };
+};
 
 const Client = createRootComponent();
 
@@ -120,31 +104,4 @@ if (process.env.NODE_ENV !== 'production') {
       'Server-side React render was discarded. Make sure that your initial render does not contain any client-side code.'
     );
   }
-}
-
-function _renderRoutes(routes) {
-  return routes ? (
-    <Switch>
-      {routes.map((route, i) => {
-        let childComponents = _renderRoutes(route.routes);
-
-        if (childComponents) {
-          childComponents = (
-            <route.component>{childComponents}</route.component>
-          );
-        }
-        return (
-          <Route
-            key={route.key || i}
-            path={route.path}
-            exact={route.exact}
-            strict={route.strict}
-            component={childComponents ? null : route.component}
-          >
-            {childComponents}
-          </Route>
-        );
-      })}
-    </Switch>
-  ) : null;
 }
