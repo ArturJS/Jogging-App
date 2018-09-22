@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { inject, observer } from 'mobx-react';
 import ReactTable from 'react-table';
 import moment from 'moment';
 import { Query, withApollo, graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import { modalManager } from '../../common/features/ModalDialog';
 import { RECORD_QUERY } from '../../common/graphql/queries';
 import { mapRecordToDisplay } from './utils/mappers';
 import EditRecordModal from './components/EditRecordModal';
@@ -37,11 +37,8 @@ const RECORDS_QUERY = gql`
   }
 )
 @withApollo
-@inject('modalStore')
-@observer
 export default class RecordsPage extends Component {
   static propTypes = {
-    modalStore: PropTypes.object.isRequired,
     removeRecord: PropTypes.func.isRequired
   };
 
@@ -126,7 +123,7 @@ export default class RecordsPage extends Component {
   }
 
   showAddRecordModal = () => {
-    this.props.modalStore
+    modalManager
       .showCustom({
         title: 'Add new record',
         component: <EditRecordModal isAddMode={true} />
@@ -139,7 +136,7 @@ export default class RecordsPage extends Component {
   };
 
   showEditRecordModal = recordId => {
-    this.props.modalStore
+    modalManager
       .showCustom({
         title: 'Edit record',
         component: <EditRecordModal recordId={recordId} />
@@ -161,7 +158,7 @@ export default class RecordsPage extends Component {
 
     const record = mapRecordToDisplay(rawRecord);
 
-    this.props.modalStore
+    modalManager
       .showConfirm({
         title: 'Confirm your action',
         body: (

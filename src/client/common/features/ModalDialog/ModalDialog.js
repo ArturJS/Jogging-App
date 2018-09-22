@@ -1,74 +1,74 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { observer, inject } from 'mobx-react';
 import Modal from 'react-modal';
 import _ from 'lodash';
-import { MODAL_TYPES } from './ModalStore';
+import modalManager, { MODAL_TYPES } from './ModalManager';
 import './ModalDialog.scss';
 
+const noBackdropStyle = {
+  overlay: {
+    backgroundColor: 'transparent',
+    pointerEvents: 'none',
+    zIndex: 1080
+  }
+};
+
 @withRouter
-@inject('modalStore')
-@observer
 export default class ModalDialog extends Component {
   static propTypes = {
-    modalStore: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
   };
 
+  state = {
+    isOpen: false
+  };
+
   componentDidMount() {
-    this.unlisten = this.props.history.listen(this.onLocationChange);
+    this.unlisten = [
+      this.props.history.listen(this.onLocationChange),
+      modalManager.pubsub.on('toggleModal', isOpen => {
+        this.setState({
+          isOpen
+        });
+      })
+    ];
   }
 
   componentWillUnmount() {
-    this.unlisten();
+    this.unlisten.forEach(cb => cb());
   }
 
-  static noBackdropStyle = {
-    overlay: {
-      backgroundColor: 'transparent',
-      pointerEvents: 'none',
-      zIndex: 1080
-    }
-  };
-
   onLocationChange = () => {
-    if (!this.props.modalStore.noCloseOnRedirect) {
-      this.props.modalStore.close(false);
-    }
+    modalManager.close(false);
   };
 
   close = () => {
-    if (this.props.modalStore.onCloseCallback) {
-      this.props.modalStore.onCloseCallback();
-    }
-    this.props.modalStore.close(true);
+    modalManager.close(true);
   };
 
   dismiss = () => {
-    if (!this.props.modalStore.noClose) {
-      this.props.modalStore.close(false);
-    }
+    modalManager.close(false);
   };
 
   render() {
+    const { isOpen } = this.state;
     const {
-      isOpen,
       noBackdrop,
       modalType,
       modalClassName,
-      shouldCloseOnOverlayClick,
       title,
       body,
       buttons
-    } = this.props.modalStore;
+    } = modalManager;
+
     return (
       <Modal
         isOpen={isOpen}
         onRequestClose={this.dismiss}
-        style={noBackdrop ? ModalDialog.noBackdropStyle : {}}
+        style={noBackdrop ? noBackdropStyle : {}}
         className={`modal ${modalClassName}`}
-        shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
+        shouldCloseOnOverlayClick={true}
         contentLabel={''}
       >
         <div className="modal-dialog">

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { inject } from 'mobx-react';
 import moment from 'moment';
 import { graphql, withApollo } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import { modalManager } from '../../../../common/features/ModalDialog';
 import { RECORD_QUERY } from '../../../../common/graphql/queries';
-import { mapRecordToEdit } from '../../utils/mappers';
 import processErrors from '../../../../common/components/ProcessErrors';
 import ErrorSummary from '../../../../common/components/ErrorSummary';
 import {
@@ -16,6 +15,7 @@ import {
   Field,
   Transformers
 } from '../../../../common/features/Form';
+import { mapRecordToEdit } from '../../utils/mappers';
 import './EditRecordModal.scss';
 
 const getSecondsFromMidNight = date => {
@@ -57,13 +57,11 @@ const mapRecord = ({ date, distance, time }) => ({
   }
 )
 @withApollo
-@inject('modalStore')
 @processErrors
 export default class EditRecordModal extends Component {
   static propTypes = {
     updateRecord: PropTypes.func.isRequired,
     addRecord: PropTypes.func.isRequired,
-    modalStore: PropTypes.object.isRequired,
     recordId: PropTypes.number,
     isAddMode: PropTypes.bool,
     error: PropTypes.string,
@@ -144,7 +142,7 @@ export default class EditRecordModal extends Component {
         });
       }
 
-      this.props.modalStore.close({ success: true });
+      modalManager.close({ success: true });
     } catch (err) {
       this.props.processAjaxError(err);
     }

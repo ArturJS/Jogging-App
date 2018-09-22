@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router';
 import { render } from 'react-dom';
 import { Router } from 'react-router';
-import { Provider } from 'mobx-react';
 import createBrowserHistory from 'history/createBrowserHistory';
 import 'react-table/react-table.css';
 import { ApolloProvider } from 'react-apollo';
@@ -14,11 +13,6 @@ import _ from 'lodash';
 import rootRoutes from './routes';
 import { createApolloClient } from './client/common/graphql/apollo-client';
 import RootShell from './client/common/shells/RootShell';
-import { modalStore } from './client/common/features/ModalDialog';
-
-export const stores = {
-  modalStore
-};
 
 export const createRootComponent = ({
   apolloClient = createApolloClient(),
@@ -57,11 +51,9 @@ export const createRootComponent = ({
 
       return (
         <ApolloProvider client={apolloClient}>
-          <Provider {...stores}>
-            <RootShell>
-              {pageComponent || children || renderRoutes(rootRoutes)}
-            </RootShell>
-          </Provider>
+          <RootShell>
+            {pageComponent || children || renderRoutes(rootRoutes)}
+          </RootShell>
         </ApolloProvider>
       );
     }

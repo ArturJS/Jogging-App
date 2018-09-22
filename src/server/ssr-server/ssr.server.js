@@ -3,12 +3,11 @@ import { renderToString } from 'react-router-server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes } from 'react-router-config';
 import { getDataFromTree, ApolloProvider } from 'react-apollo';
-import { Provider } from 'mobx-react';
 import _ from 'lodash';
 import config from '../../config';
 import Html from '../../client/common/helpers/Html';
 import { createApolloClient } from '../../client/common/graphql/apollo-client';
-import { createRootComponent, stores } from '../../client';
+import { createRootComponent } from '../../client';
 import routes from '../../routes';
 
 export const initSSRServer = app => {
@@ -54,9 +53,7 @@ export async function renderPage(url, pageComponent, { isLoggedIn, cookie }) {
     });
 
     await getDataFromTree(
-      <ApolloProvider client={apolloClient}>
-        <Provider {...stores}>{pageComponent}</Provider>
-      </ApolloProvider>
+      <ApolloProvider client={apolloClient}>{pageComponent}</ApolloProvider>
     );
 
     const { html } = await renderToString(
