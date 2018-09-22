@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 
 export const IS_LOGGED_IN = gql`
-  query IsLoggedInQuery {
+  query {
     authState @client {
       isLoggedIn
     }
@@ -9,7 +9,7 @@ export const IS_LOGGED_IN = gql`
 `;
 
 export const RECORD_QUERY = gql`
-  query Record($id: ID!) {
+  query($id: ID!) {
     record(id: $id) @client {
       id
       date

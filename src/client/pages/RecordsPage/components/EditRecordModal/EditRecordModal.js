@@ -31,7 +31,7 @@ const mapRecord = ({ date, distance, time }) => ({
 
 @graphql(
   gql`
-    mutation AddRecord($date: Long!, $distance: Float!, $time: Int!) {
+    mutation($date: Long!, $distance: Float!, $time: Int!) {
       addRecord(record: { date: $date, distance: $distance, time: $time }) {
         id
       }
@@ -43,12 +43,7 @@ const mapRecord = ({ date, distance, time }) => ({
 )
 @graphql(
   gql`
-    mutation UpdateRecord(
-      $id: ID!
-      $date: Long!
-      $distance: Float!
-      $time: Int!
-    ) {
+    mutation($id: ID!, $date: Long!, $distance: Float!, $time: Int!) {
       updateRecord(
         id: $id
         record: { date: $date, distance: $distance, time: $time }

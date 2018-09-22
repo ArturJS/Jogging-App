@@ -13,7 +13,7 @@ import DateRangeFilter from './components/DateRangeFilter';
 import './RecordsPage.scss';
 
 const RECORDS_QUERY = gql`
-  query Records($startDate: Long, $endDate: Long) {
+  query($startDate: Long, $endDate: Long) {
     records(filter: { startDate: $startDate, endDate: $endDate }) {
       id
       date
@@ -26,7 +26,7 @@ const RECORDS_QUERY = gql`
 
 @graphql(
   gql`
-    mutation RemoveRecord($id: ID!) {
+    mutation($id: ID!) {
       deleteRecord(id: $id) {
         id
       }

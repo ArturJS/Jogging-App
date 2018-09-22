@@ -31,7 +31,7 @@ import './Header.scss';
 )
 @graphql(
   gql`
-    mutation SignInMutation($email: String!, $password: String!) {
+    mutation($email: String!, $password: String!) {
       signIn(signIn: { email: $email, password: $password }) {
         email
         firstName
