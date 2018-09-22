@@ -8,18 +8,16 @@ import { render } from 'react-dom';
 import { Router } from 'react-router';
 import { Provider } from 'mobx-react';
 import createBrowserHistory from 'history/createBrowserHistory';
-import { syncHistoryWithStore } from 'mobx-react-router';
 import 'react-table/react-table.css';
 import { ApolloProvider } from 'react-apollo';
+import _ from 'lodash';
 import rootRoutes from './routes';
 import { createApolloClient } from './client/common/graphql/apollo-client';
 import RootShell from './client/common/shells/RootShell';
-import { routerStore } from './client/common/stores';
 import { modalStore } from './client/common/features/ModalDialog';
 
 export const stores = {
-  modalStore,
-  routerStore
+  modalStore
 };
 
 export const createRootComponent = ({
@@ -72,35 +70,26 @@ export const createRootComponent = ({
 
 const Client = createRootComponent();
 
-let dest;
-
 if (__CLIENT__) {
   const browserHistory = createBrowserHistory();
-  const history = syncHistoryWithStore(browserHistory, routerStore);
-
-  dest = document.getElementById('content');
+  const dest = document.getElementById('content');
 
   render(
-    <Router history={history}>
+    <Router history={browserHistory}>
       <Client />
     </Router>,
     dest
   );
+
+  if (process.env.NODE_ENV !== 'production') {
+    global.React = React; // enable debugger
+
+    if (!_.get(dest, 'firstChild.attributes["data-react-checksum"]')) {
+      console.error(
+        'Server-side React render was discarded. Make sure that your initial render does not contain any client-side code.'
+      );
+    }
+  }
 }
 
 export default Client;
-
-if (process.env.NODE_ENV !== 'production') {
-  global.React = React; // enable debugger
-
-  if (
-    !dest ||
-    !dest.firstChild ||
-    !dest.firstChild.attributes ||
-    !dest.firstChild.attributes['data-react-checksum']
-  ) {
-    console.error(
-      'Server-side React render was discarded. Make sure that your initial render does not contain any client-side code.'
-    );
-  }
-}
