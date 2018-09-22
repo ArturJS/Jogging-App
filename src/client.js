@@ -14,13 +14,12 @@ import { ApolloProvider } from 'react-apollo';
 import rootRoutes from './routes';
 import { createApolloClient } from './client/common/graphql/apollo-client';
 import RootShell from './client/common/shells/RootShell';
-import { routerStore, loadingStore } from './client/common/stores';
+import { routerStore } from './client/common/stores';
 import { modalStore } from './client/common/features/ModalDialog';
 
 export const stores = {
   modalStore,
-  routerStore,
-  loadingStore
+  routerStore
 };
 
 export const createRootComponent = ({

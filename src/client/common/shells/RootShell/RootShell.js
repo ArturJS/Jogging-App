@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import Header from '../../components/Header';
 import NavSubHeader from '../../components/NavSubHeader';
-import LoadingScreen from '../../components/LoadingScreen';
 import { ModalDialog } from '../../features/ModalDialog';
 import config from '../../../../config';
 import '../../styles/base.scss';
@@ -24,7 +23,6 @@ export default class RootShell extends Component {
         <NavSubHeader />
         <div className="page-container">{children}</div>
         <ModalDialog />
-        <LoadingScreen />
       </div>
     );
   }
