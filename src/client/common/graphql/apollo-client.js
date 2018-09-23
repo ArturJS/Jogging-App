@@ -5,7 +5,11 @@ import { createHttpLink } from 'apollo-link-http';
 import { withClientState } from 'apollo-link-state';
 import fetch from 'isomorphic-fetch';
 
-export const createApolloClient = ({ isLoggedIn = false, cookie } = {}) => {
+export const createApolloClient = ({
+  isLoggedIn = false,
+  cookie,
+  baseUrl = '/graphql'
+} = {}) => {
   const cache = __CLIENT__
     ? new InMemoryCache().restore(window.__APOLLO_STATE__)
     : new InMemoryCache();
@@ -33,7 +37,7 @@ export const createApolloClient = ({ isLoggedIn = false, cookie } = {}) => {
         }
       }),
       createHttpLink({
-        uri: __SERVER__ ? 'http://localhost:3000/graphql' : '/graphql',
+        uri: baseUrl,
         fetch,
         headers: {
           cookie

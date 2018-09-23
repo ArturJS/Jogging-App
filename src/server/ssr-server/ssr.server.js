@@ -43,7 +43,8 @@ export const initSSRServer = app => {
 export async function renderPage(url, pageComponent, { isLoggedIn, cookie }) {
   const apolloClient = createApolloClient({
     isLoggedIn,
-    cookie
+    cookie,
+    baseUrl: `${config.uiTargetUrl}/graphql`
   });
 
   try {
