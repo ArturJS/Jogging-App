@@ -1,23 +1,18 @@
 import moment from 'moment';
 import _ from 'lodash';
-import { GraphQLList } from 'graphql';
-import { ReportType } from './schema';
 import { withAuth } from '../utils';
 import db from '../../models/index';
 
-export const reports = {
-  type: new GraphQLList(ReportType),
-  resolve: withAuth(async (root, args, context) => {
-    const recordsList = await db.Record.findAll({
-      where: {
-        userId: context.userId
-      }
-    });
-    const reportsList = _mapRecordsToReports(recordsList);
+export const reports = withAuth(async (root, args, context) => {
+  const recordsList = await db.Record.findAll({
+    where: {
+      userId: context.userId
+    }
+  });
+  const reportsList = _mapRecordsToReports(recordsList);
 
-    return reportsList;
-  })
-};
+  return reportsList;
+});
 
 function _mapRecordsToReports(recordsList) {
   if (recordsList.length === 0) return [];

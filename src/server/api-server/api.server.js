@@ -4,7 +4,7 @@ import passport from 'passport';
 import { Strategy } from 'passport-local';
 import expressSession from 'express-session';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
-import Schema from './components/index';
+import schema from './components/index';
 import corsMiddleware from './middlewares/cors.middleware';
 import noCacheMiddleware from './middlewares/no-cache.middleware';
 import db from './models';
@@ -31,7 +31,7 @@ export const initAPIServer = app => {
     '/graphql',
     bodyParser.json(),
     graphqlExpress((req, res) => ({
-      schema: Schema,
+      schema,
       context: {
         userId: _.get(req, 'user.id', null),
         req,

@@ -1,0 +1,24 @@
+type Record {
+  id: ID!
+  date: Long!
+  distance: Float!
+  time: Int!
+  averageSpeed: Float!
+}
+
+input RecordInput {
+  date: Long!
+  distance: Float!
+  time: Int!
+}
+
+type Query {
+  records: [Record]
+  record(id: ID!): Record
+}
+
+type Mutation {
+  addRecord(record: RecordInput!): Record
+  updateRecord(id: ID!, record: RecordInput!): Record
+  deleteRecord(id: ID!): Boolean
+}
