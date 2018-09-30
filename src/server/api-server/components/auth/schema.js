@@ -1,54 +1,30 @@
-import {
-  GraphQLObjectType,
-  GraphQLInputObjectType,
-  GraphQLNonNull,
-  GraphQLString
-} from 'graphql';
+export default `
+  input SignIn {
+    email: String!
+    password: String!
+  }
 
-export const SignInType = new GraphQLInputObjectType({
-  name: 'signIn',
-  fields: () => ({
-    email: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    password: {
-      type: new GraphQLNonNull(GraphQLString)
-    }
-  })
-});
+  input SignUp {
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    repeatPassword: String!
+  }
 
-export const SignUpType = new GraphQLInputObjectType({
-  name: 'signUp',
-  fields: () => ({
-    firstName: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    lastName: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    email: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    password: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    repeatPassword: {
-      type: new GraphQLNonNull(GraphQLString)
-    }
-  })
-});
+  type User {
+    firstName: String!
+    lastName: String!
+    email: String!
+  }
 
-export const UserType = new GraphQLObjectType({
-  name: 'user',
-  fields: () => ({
-    firstName: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    lastName: {
-      type: new GraphQLNonNull(GraphQLString)
-    },
-    email: {
-      type: new GraphQLNonNull(GraphQLString)
-    }
-  })
-});
+  extend type Query {
+    userData: User
+  }
+
+  extend type Mutation {
+    signIn(signIn: SignIn!): Boolean
+    signOut: Boolean
+    signUp(signUp: SignUp!): Boolean
+  }
+`;

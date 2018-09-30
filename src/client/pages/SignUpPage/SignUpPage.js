@@ -32,9 +32,7 @@ const SIGN_UP = gql`
         password: $password
         repeatPassword: $repeatPassword
       }
-    ) {
-      email
-    }
+    )
   }
 `;
 

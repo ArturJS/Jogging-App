@@ -1,48 +1,31 @@
-import {
-  GraphQLObjectType,
-  GraphQLInputObjectType,
-  GraphQLID,
-  GraphQLInt,
-  GraphQLFloat,
-  GraphQLNonNull
-} from 'graphql';
-import GraphQLLong from 'graphql-type-long';
+export default `
+  type Record {
+    id: ID!
+    date: Long!
+    distance: Float!
+    time: Int!
+    averageSpeed: Float!
+  }
 
-export const RecordType = new GraphQLObjectType({
-  name: 'record',
-  fields: () => ({
-    id: {
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    date: {
-      type: new GraphQLNonNull(GraphQLLong)
-    },
-    distance: {
-      type: new GraphQLNonNull(GraphQLFloat)
-    },
-    time: {
-      type: new GraphQLNonNull(GraphQLInt)
-    },
-    averageSpeed: {
-      type: new GraphQLNonNull(GraphQLFloat)
-    },
-    userId: {
-      type: new GraphQLNonNull(GraphQLID)
-    }
-  })
-});
+  input RecordInput {
+    date: Long!
+    distance: Float!
+    time: Int!
+  }
 
-export const RecordInputType = new GraphQLInputObjectType({
-  name: 'recordInput',
-  fields: () => ({
-    date: {
-      type: new GraphQLNonNull(GraphQLLong)
-    },
-    distance: {
-      type: new GraphQLNonNull(GraphQLFloat)
-    },
-    time: {
-      type: new GraphQLNonNull(GraphQLInt)
-    }
-  })
-});
+  input Filter {
+    startDate: Long
+    endDate: Long
+  }
+
+  extend type Query {
+    records(filter: Filter): [Record]
+    record(id: ID!): Record
+  }
+
+  extend type Mutation {
+    addRecord(record: RecordInput!): Record
+    updateRecord(id: ID!, record: RecordInput!): Record
+    deleteRecord(id: ID!): Boolean
+  }
+`;

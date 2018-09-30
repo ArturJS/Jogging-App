@@ -4,6 +4,6 @@ type Report {
   averageSpeed: Float!
 }
 
-type Query {
+extend type Query {
   reports: [Report]
 }
