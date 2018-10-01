@@ -1,17 +1,4 @@
 export default `
-  input SignIn {
-    email: String!
-    password: String!
-  }
-
-  input SignUp {
-    firstName: String!
-    lastName: String!
-    email: String!
-    password: String!
-    repeatPassword: String!
-  }
-
   type User {
     firstName: String!
     lastName: String!
@@ -23,8 +10,19 @@ export default `
   }
 
   extend type Mutation {
-    signIn(signIn: SignIn!): Boolean
+    signIn(
+      email: String!
+      password: String!
+    ): Boolean
+
+    signUp(
+      firstName: String!
+      lastName: String!
+      email: String!
+      password: String!
+      repeatPassword: String!
+    ): Boolean
+
     signOut: Boolean
-    signUp(signUp: SignUp!): Boolean
   }
 `;

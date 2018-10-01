@@ -25,13 +25,11 @@ const SIGN_UP = gql`
     $repeatPassword: String!
   ) {
     signUp(
-      signUp: {
-        firstName: $firstName
-        lastName: $lastName
-        email: $email
-        password: $password
-        repeatPassword: $repeatPassword
-      }
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+      repeatPassword: $repeatPassword
     )
   }
 `;

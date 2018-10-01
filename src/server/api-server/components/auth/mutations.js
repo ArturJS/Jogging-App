@@ -15,12 +15,12 @@ const waitForLogin = (req, user) =>
   });
 
 export const signIn = async (root, args, { req }) => {
-  const { signIn } = args;
+  const { email, password } = args;
 
   return new Promise((resolve, reject) => {
     db.User.find({
       where: {
-        email: signIn.email
+        email
       }
     }).then(user => {
       if (!user) {
@@ -30,7 +30,7 @@ export const signIn = async (root, args, { req }) => {
       }
 
       db.User.validPassword(
-        signIn.password,
+        password,
         user.password,
         (error, user) => {
           if (error) {
@@ -64,9 +64,9 @@ export const signOut = async (root, args, { req }) => {
 };
 
 export const signUp = async (root, args, { req }) => {
-  await _validateSignUp(args.signUp);
+  await _validateSignUp(args);
 
-  const { firstName, lastName, email, password } = args.signUp;
+  const { firstName, lastName, email, password } = args;
 
   const user = {
     firstName,

@@ -32,7 +32,7 @@ import './Header.scss';
 @graphql(
   gql`
     mutation($email: String!, $password: String!) {
-      signIn(signIn: { email: $email, password: $password })
+      signIn(email: $email, password: $password)
     }
   `,
   {
