@@ -1,6 +1,4 @@
 import { UserError } from 'graphql-errors';
-import { SignUpType, UserType, SignInType } from './schema';
-import { GraphQLBoolean } from 'graphql';
 import db from '../../models';
 
 const waitForLogin = (req, user) =>

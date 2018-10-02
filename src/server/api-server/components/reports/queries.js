@@ -1,18 +1,20 @@
 import moment from 'moment';
 import _ from 'lodash';
-import { withAuth } from '../utils';
+import { isAuthenticatedResolver } from '../acl';
 import db from '../../models/index';
 
-export const reports = withAuth(async (root, args, context) => {
-  const recordsList = await db.Record.findAll({
-    where: {
-      userId: context.userId
-    }
-  });
-  const reportsList = _mapRecordsToReports(recordsList);
+export const reports = isAuthenticatedResolver.createResolver(
+  async (root, args, context) => {
+    const recordsList = await db.Record.findAll({
+      where: {
+        userId: context.userId
+      }
+    });
+    const reportsList = _mapRecordsToReports(recordsList);
 
-  return reportsList;
-});
+    return reportsList;
+  }
+);
 
 function _mapRecordsToReports(recordsList) {
   if (recordsList.length === 0) return [];

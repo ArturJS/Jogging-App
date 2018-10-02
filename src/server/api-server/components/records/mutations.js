@@ -1,46 +1,52 @@
-import { withAuth } from '../utils';
+import { isAuthenticatedResolver } from '../acl';
 import db from '../../models';
 
-export const addRecord = withAuth(async (root, args, context) => {
-  const { record } = args;
+export const addRecord = isAuthenticatedResolver.createResolver(
+  async (root, args, context) => {
+    const { record } = args;
 
-  record.userId = context.userId;
-  record.averageSpeed = _calcAverageSpeed(record);
+    record.userId = context.userId;
+    record.averageSpeed = _calcAverageSpeed(record);
 
-  const createdRecord = await db.Record.create(record);
+    const createdRecord = await db.Record.create(record);
 
-  return createdRecord;
-});
+    return createdRecord;
+  }
+);
 
-export const updateRecord = withAuth(async (root, args, context) => {
-  const { record, id } = args;
+export const updateRecord = isAuthenticatedResolver.createResolver(
+  async (root, args, context) => {
+    const { record, id } = args;
 
-  record.averageSpeed = _calcAverageSpeed(record);
+    record.averageSpeed = _calcAverageSpeed(record);
 
-  await db.Record.update(record, {
-    where: {
+    await db.Record.update(record, {
+      where: {
+        id,
+        userId: context.userId
+      },
+      returning: true,
+      plain: true
+    });
+
+    return {
+      // todo reconsider the data we're returning
       id,
-      userId: context.userId
-    },
-    returning: true,
-    plain: true
-  });
+      ...record
+    };
+  }
+);
 
-  return {
-    // todo reconsider the data we're returning
-    id,
-    ...record
-  };
-});
-
-export const deleteRecord = withAuth(async (root, args, context) => {
-  await db.Record.destroy({
-    where: {
-      id: args.id,
-      userId: context.userId
-    }
-  });
-});
+export const deleteRecord = isAuthenticatedResolver.createResolver(
+  async (root, args, context) => {
+    await db.Record.destroy({
+      where: {
+        id: args.id,
+        userId: context.userId
+      }
+    });
+  }
+);
 
 function _calcAverageSpeed(record) {
   return (record.distance / record.time) * 3.6;
