@@ -1,7 +1,7 @@
 /**
  * THIS IS THE ENTRY POINT FOR THE CLIENT, JUST LIKE server.js IS THE ENTRY POINT FOR THE SERVER.
  */
-import 'babel-polyfill';
+import '@babel/polyfill';
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router';
 import { render } from 'react-dom';
