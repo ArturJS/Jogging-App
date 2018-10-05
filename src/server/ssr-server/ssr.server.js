@@ -1,8 +1,10 @@
+import path from 'path';
 import React from 'react';
 import { renderToString } from 'react-router-server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes } from 'react-router-config';
 import { getDataFromTree, ApolloProvider } from 'react-apollo';
+import WebpackIsomorphicTools from 'webpack-isomorphic-tools';
 import _ from 'lodash';
 import config from '../../config';
 import Html from '../../client/common/helpers/Html';
@@ -10,7 +12,15 @@ import { createApolloClient } from '../../client/common/graphql/apollo-client';
 import { createRootComponent } from '../../client';
 import routes from '../../routes';
 
-export const initSSRServer = app => {
+global.webpackIsomorphicTools = new WebpackIsomorphicTools(
+  require('../../../webpack/webpack-isomorphic-tools')
+);
+
+export const initSSRServer = async app => {
+  const rootDir = path.resolve(__dirname, '../../..');
+
+  await webpackIsomorphicTools.server(rootDir);
+
   app.use(async (req, res) => {
     const branch = matchRoutes(routes, req.url);
     const matchedRoute = branch[0];
