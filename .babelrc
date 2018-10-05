@@ -4,20 +4,17 @@
       "env",
       {
         "targets": {
-          "browsers": ["last 2 versions", "ie >= 11"]
+          "node": "8.9.1"
         },
-        "useBuiltIns": true
+        "useBuiltIns": "usage"
       }
     ],
     "react",
     "es2015",
     "stage-0"
   ],
-
   "plugins": [
     "lodash",
-    "syntax-dynamic-import",
-    "babel-plugin-dynamic-import-node",
     "transform-runtime",
     "add-module-exports",
     "transform-decorators-legacy",
