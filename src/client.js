@@ -62,7 +62,7 @@ export const createRootComponent = ({
 
 const Client = createRootComponent();
 
-if (__CLIENT__) {
+if (process.browser) {
   const browserHistory = createBrowserHistory();
   const dest = document.getElementById('content');
 

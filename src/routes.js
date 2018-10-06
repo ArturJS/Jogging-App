@@ -2,9 +2,9 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import RedirectAlreadyLogin from './client/common/components/RedirectAlreadyLogin';
 import AuthRoute from './client/common/components/AuthRoute';
-import SignUpPage from './client/pages/SignUpPage';
-import RecordsPage from './client/pages/RecordsPage';
-import ReportsPage from './client/pages/ReportsPage';
+import SignUpPage from './client/pages/sign-up';
+import RecordsPage from './client/pages/records';
+import ReportsPage from './client/pages/reports';
 
 const routes = [
   {

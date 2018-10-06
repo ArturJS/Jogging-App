@@ -1,12 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {NavLink} from 'react-router-dom';
-import {withRouter} from 'react-router';
+import { NavLink } from 'react-router-dom';
+// import {withRouter} from 'react-router';
 
 import './NavSubHeader.scss';
 
-
-@withRouter
+// @withRouter
 export default class NavSubHeader extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
@@ -17,23 +16,24 @@ export default class NavSubHeader extends Component {
     visible: false
   };
 
-  componentDidMount() {
-    this.updateVisibility(this.props.location);
-    this.unlinsten = this.props.history.listen(this.updateVisibility);
-  }
+  // todo fix
+  // componentDidMount() {
+  //   this.updateVisibility(this.props.location);
+  //   this.unlinsten = this.props.history.listen(this.updateVisibility);
+  // }
 
-  componentWillUnmount() {
-    this.unlinsten();
-  }
+  // componentWillUnmount() {
+  //   this.unlinsten();
+  // }
 
-  updateVisibility = ({pathname}) => {
-    this.setState({
-      visible: /\/records|\/reports/.test(pathname)
-    });
-  };
+  // updateVisibility = ({ pathname }) => {
+  //   this.setState({
+  //     visible: /\/records|\/reports/.test(pathname)
+  //   });
+  // };
 
   render() {
-    const {visible} = this.state;
+    const { visible } = this.state;
 
     if (!visible) return null;
 
@@ -43,7 +43,8 @@ export default class NavSubHeader extends Component {
           <NavLink
             className="nav-link unstyled-link"
             to="/records"
-            activeClassName="active">
+            activeClassName="active"
+          >
             Records
           </NavLink>
         </li>
@@ -51,7 +52,8 @@ export default class NavSubHeader extends Component {
           <NavLink
             className="nav-link unstyled-link"
             to="/reports"
-            activeClassName="active">
+            activeClassName="active"
+          >
             Reports
           </NavLink>
         </li>

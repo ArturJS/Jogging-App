@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { withRouter } from 'react-router';
+// import { withRouter } from 'react-router'; // todo use nextjs router
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import _ from 'lodash';
@@ -223,4 +223,4 @@ class SignUpPage extends Component {
   }
 }
 
-export default (__SERVER__ ? SignUpPage : withRouter(SignUpPage));
+export default SignUpPage;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { withRouter } from 'react-router';
+// import { withRouter } from 'react-router';
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
@@ -42,7 +42,7 @@ import './Header.scss';
     }
   }
 )
-@withRouter
+// @withRouter
 export default class Header extends Component {
   static propTypes = {
     signIn: PropTypes.func.isRequired,

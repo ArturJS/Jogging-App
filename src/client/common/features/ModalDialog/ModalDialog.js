@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
+// import { withRouter } from 'react-router';
 import Modal from 'react-modal';
 import _ from 'lodash';
 import modalManager, { MODAL_TYPES } from './ModalManager';
@@ -14,7 +14,7 @@ const noBackdropStyle = {
   }
 };
 
-@withRouter
+// @withRouter
 export default class ModalDialog extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired
@@ -24,20 +24,20 @@ export default class ModalDialog extends Component {
     isOpen: false
   };
 
-  componentDidMount() {
-    this.unlisten = [
-      this.props.history.listen(this.onLocationChange),
-      modalManager.pubsub.on('toggleModal', isOpen => {
-        this.setState({
-          isOpen
-        });
-      })
-    ];
-  }
+  // componentDidMount() { // todo fix
+  //   this.unlisten = [
+  //     this.props.history.listen(this.onLocationChange),
+  //     modalManager.pubsub.on('toggleModal', isOpen => {
+  //       this.setState({
+  //         isOpen
+  //       });
+  //     })
+  //   ];
+  // }
 
-  componentWillUnmount() {
-    this.unlisten.forEach(cb => cb());
-  }
+  // componentWillUnmount() {
+  //   this.unlisten.forEach(cb => cb());
+  // }
 
   onLocationChange = () => {
     modalManager.close(false);
