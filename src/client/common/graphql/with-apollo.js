@@ -31,11 +31,13 @@ const withApollo = App => {
         router,
         ctx: { req, res }
       } = ctx;
+
       const apollo = initApollo(
         {},
         {
           cookie: req.header('Cookie'),
-          isLoggedIn: req.isAuthenticated()
+          isLoggedIn: req.isAuthenticated(),
+          baseUrl: `${req.protocol}://${req.get('host')}/graphql`
         }
       );
 

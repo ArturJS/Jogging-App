@@ -114,8 +114,7 @@ class Routes {
           const isAuthenticated = req.isAuthenticated();
           const performRedirect = (req, res, redirectTo) => {
             res.writeHead(301, {
-              // todo use protocol from req
-              Location: `http://${req.headers.host}${redirectTo}`
+              Location: `${req.protocol}://${req.headers.host}${redirectTo}`
             });
             res.end();
           };

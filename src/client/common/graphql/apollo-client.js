@@ -4,10 +4,14 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { withClientState } from 'apollo-link-state';
 import fetch from 'isomorphic-fetch';
+import resolvers from './resolvers';
 
 let apolloClient = null;
 
-function create(initialState, { cookie, isLoggedIn = false } = {}) {
+function create(
+  initialState,
+  { cookie, isLoggedIn = false, baseUrl = '/graphql' } = {}
+) {
   const cache = new InMemoryCache().restore(initialState || {});
   const defaultClientState = !process.browser
     ? {
@@ -23,17 +27,10 @@ function create(initialState, { cookie, isLoggedIn = false } = {}) {
       withClientState({
         cache,
         defaults: defaultClientState,
-        resolvers: {
-          // todo extract into separate file client resolvers
-          Query: {
-            record: (_, { id }, { cache }) => {
-              return cache.data.data[`Record:${id}`];
-            }
-          }
-        }
+        resolvers
       }),
       createHttpLink({
-        uri: 'http://localhost:3000/graphql', // todo fix
+        uri: baseUrl,
         fetch,
         headers: {
           cookie
