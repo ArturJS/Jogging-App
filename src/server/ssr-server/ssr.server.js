@@ -4,7 +4,7 @@ import WebpackIsomorphicTools from 'webpack-isomorphic-tools';
 import routes from 'routes';
 
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(
-  require('../../../webpack/webpack-isomorphic-tools')
+  require('../../../scripts/tools/webpack/webpack-isomorphic-tools')
 );
 
 const dev = process.env.NODE_ENV !== 'production';

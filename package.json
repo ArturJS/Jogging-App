@@ -23,17 +23,15 @@
   ],
   "main": "bin/server.js",
   "scripts": {
-    "start": "node ./src/index.js",
-    "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start\"",
-    "build": "better-npm-run build",
-    "static-build": "npm run build && node ./bin/static-export.js",
+    "start": "npx cross-env NODE_ENV=production node ./src/index.js",
+    "dev": "npx cross-env NODE_ENV=development node ./src/index.js",
+    "build": "cd ./src/client && next build",
     "lint": "eslint -c .eslintrc src api",
-    "watch-client": "better-npm-run watch-client",
     "test": "jest --env=jsdom",
     "test:coverage": "jest --env=jsdom --coverage",
     "db:migrate": "npx sequelize db:migrate",
-    "db:create:dev": "better-npm-run create-db-dev",
-    "db:create:prod": "better-npm-run create-db-prod",
+    "db:create:dev": "npx cross-env NODE_ENV=development node ./scripts/tasks/db-create.js",
+    "db:create:prod": "npx cross-env NODE_ENV=production node ./scripts/tasks/db-create.js",
     "postinstall": "node ./scripts/tasks/heroku-build.js"
   },
   "jest": {
@@ -54,34 +52,6 @@
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
     ]
-  },
-  "betterScripts": {
-    "watch-client": {
-      "command": "node webpack/webpack-dev-server.js",
-      "env": {
-        "UV_THREADPOOL_SIZE": 100,
-        "NODE_PATH": "./src",
-        "PORT": 3000
-      }
-    },
-    "build": {
-      "command": "webpack --verbose --colors --display-error-details --config webpack/prod.config.js",
-      "env": {
-        "NODE_ENV": "production"
-      }
-    },
-    "create-db-dev": {
-      "command": "node ./scripts/tasks/db-create.js",
-      "env": {
-        "NODE_ENV": "development"
-      }
-    },
-    "create-db-prod": {
-      "command": "node ./scripts/tasks/db-create.js",
-      "env": {
-        "NODE_ENV": "production"
-      }
-    }
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
@@ -113,7 +83,6 @@
     "babel-plugin-lodash": "3.3.2",
     "babel-plugin-module-resolver": "^3.1.1",
     "bcrypt-nodejs": "0.0.3",
-    "better-npm-run": "0.0.8",
     "body-parser": "^1.14.1",
     "chalk": "2.1.0",
     "classnames": "2.2.5",
@@ -122,6 +91,7 @@
     "concurrently": "^0.1.1",
     "cookie-parser": "1.4.3",
     "core-js": "2.5.1",
+    "cross-env": "^5.2.0",
     "css-loader": "^0.28.11",
     "dotenv-safe": "^6.0.0",
     "eslint": "4.4.0",
@@ -137,7 +107,6 @@
     "graphql-errors": "2.1.0",
     "graphql-tools": "3.0.0",
     "graphql-type-long": "^0.1.1",
-    "history": "4.6.1",
     "hoist-non-react-statics": "^1.0.3",
     "http-proxy": "^1.12.0",
     "invariant": "^2.2.0",
@@ -169,17 +138,11 @@
     "react-hot-loader": "^4.3.11",
     "react-modal": "3.0.4",
     "react-moment-proptypes": "1.5.0",
-    "react-router": "4.1.1",
-    "react-router-config": "1.0.0-beta.3",
-    "react-router-dom": "4.1.1",
-    "react-router-server": "4.2.1",
     "react-table": "6.6.0",
     "react-transform-catch-errors": "^1.0.0",
     "react-transition-group": "2.2.1",
-    "redbox-react": "1.4.3",
     "regenerator-runtime": "0.11.0",
     "sass-loader": "^6.0.6",
-    "scroll-behavior": "^0.3.2",
     "sequelize": "4.15.1",
     "sequelize-cli": "4.0.0",
     "serialize-javascript": "^1.1.2",
