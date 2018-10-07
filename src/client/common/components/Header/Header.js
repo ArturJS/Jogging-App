@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-// import { withRouter } from 'react-router';
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
+import { Router } from 'routes';
 import { IS_LOGGED_IN } from '../../graphql/queries';
 import { setIsLoggedIn } from '../../graphql/utils';
 import {
@@ -42,11 +42,9 @@ import './Header.scss';
     }
   }
 )
-// @withRouter
 export default class Header extends Component {
   static propTypes = {
-    signIn: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    signIn: PropTypes.func.isRequired
   };
 
   state = {
@@ -84,7 +82,7 @@ export default class Header extends Component {
 
       this.formStore.resetFormData();
       this.setState({ error: null });
-      this.props.history.push('/records');
+      Router.pushRoute('records');
     } catch (err) {
       this.processAjaxError(err);
     }
@@ -92,7 +90,7 @@ export default class Header extends Component {
 
   onSignOut = async () => {
     await this.props.signOut();
-    this.props.history.push('/sign-up');
+    Router.pushRoute('sign-up');
   };
 
   processAjaxError = err => {

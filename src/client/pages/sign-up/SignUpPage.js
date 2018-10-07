@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-// import { withRouter } from 'react-router'; // todo use nextjs router
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import _ from 'lodash';
+import { Router } from 'routes';
 import ErrorSummary from '../../common/components/ErrorSummary';
 import {
   FormStore,
@@ -42,8 +42,7 @@ const SIGN_UP = gql`
 })
 class SignUpPage extends Component {
   static propTypes = {
-    signUp: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    signUp: PropTypes.func.isRequired
   };
 
   state = {
@@ -142,7 +141,7 @@ class SignUpPage extends Component {
 
       this.formStore.resetFormData();
       this.setState({ error: null });
-      this.props.history.push('/records');
+      Router.pushRoute('records');
     } catch (error) {
       this.setState({ error });
     }

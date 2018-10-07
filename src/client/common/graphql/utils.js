@@ -1,3 +1,4 @@
+import { Router } from 'routes';
 import { IS_LOGGED_IN } from './queries';
 
 export const setIsLoggedIn = isLoggedIn => (proxy, { data: success }) => {
@@ -14,4 +15,6 @@ export const setIsLoggedIn = isLoggedIn => (proxy, { data: success }) => {
     query: IS_LOGGED_IN,
     data
   });
+
+  Router.toggleAuth(isLoggedIn);
 };

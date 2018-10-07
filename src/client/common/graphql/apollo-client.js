@@ -5,51 +5,6 @@ import { createHttpLink } from 'apollo-link-http';
 import { withClientState } from 'apollo-link-state';
 import fetch from 'isomorphic-fetch';
 
-// export const createApolloClient = ({
-//   isLoggedIn = false,
-//   cookie,
-//   baseUrl = '/graphql'
-// } = {}) => {
-//   const cache = process.browser
-//     ? new InMemoryCache().restore(window.__APOLLO_STATE__)
-//     : new InMemoryCache();
-//   const defaultClientState = !process.browser
-//     ? {
-//         authState: {
-//           __typename: 'AuthState',
-//           isLoggedIn
-//         }
-//       }
-//     : null;
-
-//   return new ApolloClient({
-//     cache,
-//     link: ApolloLink.from([
-//       withClientState({
-//         cache,
-//         defaults: defaultClientState,
-//         resolvers: {
-//           Query: {
-//             record: (_, { id }, { cache }) => {
-//               return cache.data.data[`record:${id}`];
-//             }
-//           }
-//         }
-//       }),
-//       createHttpLink({
-//         uri: baseUrl,
-//         fetch,
-//         headers: {
-//           cookie
-//         }
-//       })
-//     ])
-//   });
-// };
-
-////////////////////////////////////////
-///////////////////////////////////////
-
 let apolloClient = null;
 
 function create(initialState, { cookie, isLoggedIn = false } = {}) {

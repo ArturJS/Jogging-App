@@ -1,36 +1,26 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
-// import {withRouter} from 'react-router';
-
+import { Router, Link } from 'routes';
 import './NavSubHeader.scss';
 
-// @withRouter
 export default class NavSubHeader extends Component {
-  static propTypes = {
-    history: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
-  };
-
   state = {
     visible: false
   };
 
-  // todo fix
-  // componentDidMount() {
-  //   this.updateVisibility(this.props.location);
-  //   this.unlinsten = this.props.history.listen(this.updateVisibility);
-  // }
+  componentDidMount() {
+    this.updateVisibility(window.location.pathname);
+    Router.events.on('routeChangeComplete', this.updateVisibility);
+  }
 
-  // componentWillUnmount() {
-  //   this.unlinsten();
-  // }
+  componentWillUnmount() {
+    Router.events.off('routeChangeComplete', this.updateVisibility);
+  }
 
-  // updateVisibility = ({ pathname }) => {
-  //   this.setState({
-  //     visible: /\/records|\/reports/.test(pathname)
-  //   });
-  // };
+  updateVisibility = url => {
+    this.setState({
+      visible: /\/records|\/reports/.test(url)
+    });
+  };
 
   render() {
     const { visible } = this.state;
@@ -40,22 +30,22 @@ export default class NavSubHeader extends Component {
     return (
       <ul className="nav-sub-header list-unstyled">
         <li className="nav-item">
-          <NavLink
+          <Link
             className="nav-link unstyled-link"
-            to="/records"
+            route="records"
             activeClassName="active"
           >
             Records
-          </NavLink>
+          </Link>
         </li>
         <li className="nav-item">
-          <NavLink
+          <Link
             className="nav-link unstyled-link"
-            to="/reports"
+            route="reports"
             activeClassName="active"
           >
             Reports
-          </NavLink>
+          </Link>
         </li>
       </ul>
     );
