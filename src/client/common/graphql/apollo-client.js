@@ -27,7 +27,7 @@ function create(initialState, { cookie, isLoggedIn = false } = {}) {
           // todo extract into separate file client resolvers
           Query: {
             record: (_, { id }, { cache }) => {
-              return cache.data.data[`record:${id}`];
+              return cache.data.data[`Record:${id}`];
             }
           }
         }
