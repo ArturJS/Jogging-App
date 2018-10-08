@@ -16,15 +16,15 @@ global.__DISABLE_SSR__ = false; // <----- DISABLES SERVER SIDE RENDERING FOR ERR
 global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
 global.__PRODUCTION__ = process.env.NODE_ENV === 'production';
 
-if (__DEVELOPMENT__) {
-  if (
-    !require('piping')({
-      hook: true,
-      ignore: /(\/\.|~$|\.json|\.scss$)/i
-    })
-  ) {
-    return;
-  }
-}
+// if (__DEVELOPMENT__) {
+//   if (
+//     !require('piping')({
+//       hook: true,
+//       ignore: /(\/\.|~$|\.json|\.scss$)/i
+//     })
+//   ) {
+//     return;
+//   }
+// }
 
 module.exports = require('./server.js').default;
