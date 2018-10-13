@@ -6,6 +6,13 @@ import NextRouter from 'next/router';
 import _ from 'lodash';
 import classNames from 'classnames';
 
+export const performRedirect = ({ req, res, redirectTo }) => {
+  res.writeHead(301, {
+    Location: `${req.protocol}://${req.headers.host}${redirectTo}`
+  });
+  res.end();
+};
+
 class Routes {
   constructor({ Link = NextLink, Router = NextRouter } = {}) {
     this.routes = [];
@@ -112,21 +119,15 @@ class Routes {
           customHandler({ req, res, route, query });
         } else {
           const isAuthenticated = req.isAuthenticated();
-          const performRedirect = (req, res, redirectTo) => {
-            res.writeHead(301, {
-              Location: `${req.protocol}://${req.headers.host}${redirectTo}`
-            });
-            res.end();
-          };
 
           if (route.onlyForUnauthenticated && isAuthenticated) {
             const { redirectTo } = route.onlyForUnauthenticated;
-            performRedirect(req, res, redirectTo);
+            performRedirect({ req, res, redirectTo });
 
             return;
           } else if (route.onlyForAuthenticated && !isAuthenticated) {
             const { redirectTo } = route.onlyForAuthenticated;
-            performRedirect(req, res, redirectTo);
+            performRedirect({ req, res, redirectTo });
 
             return;
           }
