@@ -1,59 +1,51 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {NavLink} from 'react-router-dom';
-import {withRouter} from 'react-router';
-
+import React, { Component } from 'react';
+import { Router, Link } from 'routes';
 import './NavSubHeader.scss';
 
-
-@withRouter
 export default class NavSubHeader extends Component {
-  static propTypes = {
-    history: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
-  };
-
   state = {
     visible: false
   };
 
   componentDidMount() {
-    this.updateVisibility(this.props.location);
-    this.unlinsten = this.props.history.listen(this.updateVisibility);
+    this.updateVisibility(window.location.pathname);
+    Router.events.on('routeChangeComplete', this.updateVisibility);
   }
 
   componentWillUnmount() {
-    this.unlinsten();
+    Router.events.off('routeChangeComplete', this.updateVisibility);
   }
 
-  updateVisibility = ({pathname}) => {
+  updateVisibility = url => {
     this.setState({
-      visible: /\/records|\/reports/.test(pathname)
+      visible: /\/records|\/reports/.test(url)
     });
   };
 
   render() {
-    const {visible} = this.state;
+    const { visible } = this.state;
 
     if (!visible) return null;
 
     return (
       <ul className="nav-sub-header list-unstyled">
         <li className="nav-item">
-          <NavLink
+          <Link
             className="nav-link unstyled-link"
-            to="/records"
-            activeClassName="active">
+            route="records"
+            activeClassName="active"
+          >
             Records
-          </NavLink>
+          </Link>
         </li>
         <li className="nav-item">
-          <NavLink
+          <Link
             className="nav-link unstyled-link"
-            to="/reports"
-            activeClassName="active">
+            route="reports"
+            activeClassName="active"
+          >
             Reports
-          </NavLink>
+          </Link>
         </li>
       </ul>
     );

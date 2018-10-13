@@ -9,3 +9,4 @@ npm-debug.log
 *.swp
 webpack-assets.json
 .env
+.next/
