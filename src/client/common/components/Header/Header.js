@@ -144,7 +144,7 @@ export default class Header extends Component {
 
   render() {
     return (
-      <Query query={IS_LOGGED_IN}>
+      <Query query={IS_LOGGED_IN} fetchPolicy="cache-and-network">
         {({
           data: {
             authState: { isLoggedIn }
