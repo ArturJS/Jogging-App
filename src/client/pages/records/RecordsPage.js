@@ -27,9 +27,7 @@ const RECORDS_QUERY = gql`
 @graphql(
   gql`
     mutation($id: ID!) {
-      deleteRecord(id: $id) {
-        id
-      }
+      deleteRecord(id: $id)
     }
   `,
   {
