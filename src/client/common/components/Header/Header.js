@@ -53,11 +53,11 @@ export default class Header extends Component {
 
   componentWillMount() {
     this.formStore = new FormStore({
-      authEmail: {
+      email: {
         value: '',
         validators: [Validators.required(true)]
       },
-      authPassword: {
+      password: {
         value: '',
         validators: [Validators.required(true)]
       }
@@ -70,21 +70,14 @@ export default class Header extends Component {
       return;
     }
 
-    const { authEmail, authPassword } = this.formStore.values;
-
     try {
-      await this.props.signIn({
-        variables: {
-          email: authEmail,
-          password: authPassword
-        }
-      });
+      await this.performSignIn();
 
       this.formStore.resetFormData();
       this.setState({ error: null });
       Router.pushRoute('records');
-    } catch (err) {
-      this.processAjaxError(err);
+    } catch (error) {
+      this.setState({ error });
     }
   };
 
@@ -93,9 +86,20 @@ export default class Header extends Component {
     Router.pushRoute('sign-up');
   };
 
-  processAjaxError = err => {
-    const { error } = err.response.data;
-    this.setState({ error });
+  performSignIn = async () => {
+    const { email, password } = this.formStore.values;
+    const { errors } = await this.props.signIn({
+      variables: {
+        email,
+        password
+      },
+      errorPolicy: 'all'
+    });
+    const error = _.get(errors, '[0].message');
+
+    if (error) {
+      throw error;
+    }
   };
 
   renderLogout() {
@@ -121,14 +125,16 @@ export default class Header extends Component {
         onSubmit={this.onSignIn}
       >
         <Field
+          id={null}
           className="control-field"
-          name="authEmail"
+          name="email"
           control={inputTextCtrl}
           placeholder={'Email'}
         />
         <Field
+          id={null}
           className="control-field"
-          name="authPassword"
+          name="password"
           control={inputPasswordCtrl}
           placeholder={'Password'}
         />

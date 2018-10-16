@@ -16,7 +16,20 @@ export default {
   timePickerCtrl
 };
 
-function inputTextCtrl({name, value, maxLength, placeholder, onFocus, onChange, onBlur, onEnter, disabled, tabIndex, ctrl}) {
+function inputTextCtrl({
+  id = name,
+  name,
+  value,
+  maxLength,
+  placeholder,
+  onFocus,
+  onChange,
+  onBlur,
+  onEnter,
+  disabled,
+  tabIndex,
+  ctrl
+}) {
   function onEnterClick(e) {
     if (e.key !== 'Enter') return;
     onEnter(e);
@@ -26,7 +39,7 @@ function inputTextCtrl({name, value, maxLength, placeholder, onFocus, onChange, 
     <input
       tabIndex={tabIndex}
       type="text"
-      id={name}
+      id={id}
       name={name}
       value={value}
       maxLength={maxLength}
@@ -35,15 +48,28 @@ function inputTextCtrl({name, value, maxLength, placeholder, onFocus, onChange, 
       className="form-control field-anchor"
       onChange={onChange}
       onBlur={onBlur}
-      ref={(input) => {
+      ref={input => {
         ctrl.ref = input;
       }}
       onKeyPress={onEnterClick}
-      onFocus={onFocus}/>
+      onFocus={onFocus}
+    />
   );
 }
 
-function textAreaCtrl({name, value, maxLength, placeholder, onFocus, onChange, onBlur, onEnter, disabled, tabIndex, ctrl}) {
+function textAreaCtrl({
+  name,
+  value,
+  maxLength,
+  placeholder,
+  onFocus,
+  onChange,
+  onBlur,
+  onEnter,
+  disabled,
+  tabIndex,
+  ctrl
+}) {
   function onEnterClick(e) {
     if (e.key !== 'Enter') return;
     onEnter(e);
@@ -63,15 +89,28 @@ function textAreaCtrl({name, value, maxLength, placeholder, onFocus, onChange, o
       className="form-control field-anchor"
       onChange={onChange}
       onBlur={onBlur}
-      ref={(input) => {
+      ref={input => {
         ctrl.ref = input;
       }}
       onKeyPress={onEnterClick}
-      onFocus={onFocus}/>
+      onFocus={onFocus}
+    />
   );
 }
 
-function inputPasswordCtrl({name, value, placeholder, onFocus, onChange, onBlur, onEnter, disabled, tabIndex, ctrl}) {
+function inputPasswordCtrl({
+  id = name,
+  name,
+  value,
+  placeholder,
+  onFocus,
+  onChange,
+  onBlur,
+  onEnter,
+  disabled,
+  tabIndex,
+  ctrl
+}) {
   function onEnterClick(e) {
     if (e.key !== 'Enter') return;
     onEnter(e);
@@ -81,7 +120,7 @@ function inputPasswordCtrl({name, value, placeholder, onFocus, onChange, onBlur,
     <input
       tabIndex={tabIndex}
       type="password"
-      id={name}
+      id={id}
       name={name}
       value={value}
       disabled={disabled}
@@ -89,15 +128,26 @@ function inputPasswordCtrl({name, value, placeholder, onFocus, onChange, onBlur,
       className="form-control field-anchor"
       onChange={onChange}
       onBlur={onBlur}
-      ref={(input) => {
+      ref={input => {
         ctrl.ref = input;
       }}
       onKeyPress={onEnterClick}
-      onFocus={onFocus}/>
+      onFocus={onFocus}
+    />
   );
 }
 
-function inputPasswordCtrlWithShowBnt({name, value, placeholder, onFocus, onChange, onBlur, disabled, tabIndex, ctrl}) {
+function inputPasswordCtrlWithShowBnt({
+  name,
+  value,
+  placeholder,
+  onFocus,
+  onChange,
+  onBlur,
+  disabled,
+  tabIndex,
+  ctrl
+}) {
   let icon;
   const showPassword = () => {
     icon.classList.add('fa-eye');
@@ -124,34 +174,36 @@ function inputPasswordCtrlWithShowBnt({name, value, placeholder, onFocus, onChan
         className="form-control"
         onChange={onChange}
         onBlur={onBlur}
-        ref={(input) => {
+        ref={input => {
           ctrl.ref = input;
         }}
-        onFocus={onFocus}/>
+        onFocus={onFocus}
+      />
       <span
-        ref={(element) => {
+        ref={element => {
           icon = element;
         }}
-        className={
-          classNames('field-icon fa',
-            {
-              'fa-eye-slash': ctrl.ref === undefined || ctrl.ref.type === 'password'
-            },
-            {
-              'fa-eye': ctrl.ref && ctrl.ref.type === 'text'
-            }
-          )
-        }
+        className={classNames(
+          'field-icon fa',
+          {
+            'fa-eye-slash':
+              ctrl.ref === undefined || ctrl.ref.type === 'password'
+          },
+          {
+            'fa-eye': ctrl.ref && ctrl.ref.type === 'text'
+          }
+        )}
         onMouseDown={showPassword}
         onTouchStart={showPassword}
         onMouseUp={hidePassword}
         onTouchEnd={hidePassword}
-        onMouseLeave={hidePassword}/>
+        onMouseLeave={hidePassword}
+      />
     </div>
   );
 }
 
-function singleDatePickerCtrl({name, value, onChange, onFocus, ctrl}) {
+function singleDatePickerCtrl({ name, value, onChange, onFocus, ctrl }) {
   const enableAnyDates = () => false;
   const onChangeProxy = (...args) => {
     onChange(...args);
@@ -171,7 +223,7 @@ function singleDatePickerCtrl({name, value, onChange, onFocus, ctrl}) {
   );
 }
 
-function timePickerCtrl({name, value, onChange}) {
+function timePickerCtrl({ name, value, onChange }) {
   return (
     <TimePicker
       name={name}
