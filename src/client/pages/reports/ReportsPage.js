@@ -53,7 +53,13 @@ export default class ReportsPage extends Component {
     );
   }
 
-  renderTable(reports = []) {
+  renderTable(rawReports = []) {
+    const reports = rawReports.map(report => ({
+      ...report,
+      averageDistance: report.averageDistance.toFixed(2),
+      averageSpeed: report.averageSpeed.toFixed(2)
+    }));
+
     return (
       <ReactTable
         className={'reports-table'}
