@@ -5,6 +5,7 @@ import ReactTable from 'react-table';
 import moment from 'moment';
 import { Query, withApollo, graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import { REPORTS_QUERY } from '../reports';
 import { modalManager } from '../../common/features/ModalDialog';
 import { RECORD_QUERY } from '../../common/graphql/queries';
 import { mapRecordToDisplay } from './utils/mappers';
@@ -177,7 +178,15 @@ export default class RecordsPage extends Component {
         await this.props.removeRecord({
           variables: {
             id: recordId
-          }
+          },
+          refetchQueries: [
+            {
+              query: REPORTS_QUERY,
+              variables: {
+                awaitRefetchQueries: true
+              }
+            }
+          ]
         });
 
         this.refetchRecords();

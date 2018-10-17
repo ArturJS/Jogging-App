@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { graphql, withApollo } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import { REPORTS_QUERY } from '../../../reports';
 import { modalManager } from '../../../../common/features/ModalDialog';
 import { RECORD_QUERY } from '../../../../common/graphql/queries';
 import processErrors from '../../../../common/components/ProcessErrors';
@@ -127,18 +128,28 @@ export default class EditRecordModal extends Component {
       distance,
       time
     });
+    const refetchQueries = [
+      {
+        query: REPORTS_QUERY,
+        variables: {
+          awaitRefetchQueries: true
+        }
+      }
+    ];
 
     try {
       if (isAddMode) {
         await this.props.addRecord({
-          variables: recordPayload
+          variables: recordPayload,
+          refetchQueries
         });
       } else {
         await this.props.updateRecord({
           variables: {
             id: recordId,
             ...recordPayload
-          }
+          },
+          refetchQueries
         });
       }
 

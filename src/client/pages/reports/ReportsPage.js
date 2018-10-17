@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import './ReportsPage.scss';
 
-const REPORTS_QUERY = gql`
+export const REPORTS_QUERY = gql`
   query {
     reports {
       week
