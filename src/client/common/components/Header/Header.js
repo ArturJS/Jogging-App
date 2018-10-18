@@ -4,16 +4,11 @@ import classNames from 'classnames';
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
+import * as yup from 'yup';
 import { Router } from 'routes';
 import { IS_LOGGED_IN } from '../../graphql/queries';
 import { setIsLoggedIn } from '../../graphql/utils';
-import {
-  FormStore,
-  Form,
-  Field,
-  Controls,
-  Validators
-} from '../../features/Form';
+import { Form, Field } from '../../features/forms';
 import './Header.scss';
 
 @graphql(
@@ -52,28 +47,28 @@ export default class Header extends Component {
   };
 
   componentWillMount() {
-    this.formStore = new FormStore({
-      email: {
-        value: '',
-        validators: [Validators.required(true)]
-      },
-      password: {
-        value: '',
-        validators: [Validators.required(true)]
-      }
+    this.validationSchema = yup.object().shape({
+      email: yup.string().required(),
+      password: yup.string().required()
     });
   }
 
-  onSignIn = async () => {
-    if (!this.formStore.validate().valid) {
-      this.formStore.setFocusFirstInvalid();
+  onSubmit = async (values, { validateForm, setValues }) => {
+    const errors = await validateForm();
+    const isInvalid = !_.isEmpty(errors);
+
+    if (isInvalid) {
+      // todo implement setFocusFirstInvalid();
       return;
     }
 
     try {
-      await this.performSignIn();
+      await this.performSignIn(values);
 
-      this.formStore.resetFormData();
+      setValues({
+        email: '',
+        password: ''
+      });
       this.setState({ error: null });
       Router.pushRoute('records');
     } catch (error) {
@@ -86,8 +81,7 @@ export default class Header extends Component {
     Router.pushRoute('sign-up');
   };
 
-  performSignIn = async () => {
-    const { email, password } = this.formStore.values;
+  performSignIn = async ({ email, password }) => {
     const { errors } = await this.props.signIn({
       variables: {
         email,
@@ -116,27 +110,24 @@ export default class Header extends Component {
 
   renderLogin() {
     const { error } = this.state;
-    const { inputTextCtrl, inputPasswordCtrl } = Controls;
 
     return (
       <Form
         className="login-form"
-        store={this.formStore}
-        onSubmit={this.onSignIn}
+        validationSchema={this.validationSchema}
+        onSubmit={this.onSubmit}
       >
         <Field
-          id={null}
           className="control-field"
           name="email"
-          control={inputTextCtrl}
-          placeholder={'Email'}
+          component="input"
+          placeholder="Email"
         />
         <Field
-          id={null}
           className="control-field"
           name="password"
-          control={inputPasswordCtrl}
-          placeholder={'Password'}
+          component="input"
+          placeholder="Password"
         />
         {error && (
           <div className="login-error-summary field-error-text">{error}</div>
