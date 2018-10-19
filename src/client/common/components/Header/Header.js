@@ -48,12 +48,13 @@ export default class Header extends Component {
 
   componentWillMount() {
     this.validationSchema = yup.object().shape({
-      email: yup.string().required(),
-      password: yup.string().required()
+      email: yup.string().required('Please enter email'),
+      password: yup.string().required('Please enter password')
     });
   }
 
   onSubmit = async (values, { validateForm, setValues }) => {
+    console.log('before validateForm');
     const errors = await validateForm();
     const isInvalid = !_.isEmpty(errors);
 
@@ -120,13 +121,13 @@ export default class Header extends Component {
         <Field
           className="control-field"
           name="email"
-          component="input"
+          component="text"
           placeholder="Email"
         />
         <Field
           className="control-field"
           name="password"
-          component="input"
+          component="password"
           placeholder="Password"
         />
         {error && (
