@@ -4,15 +4,10 @@ import Helmet from 'react-helmet';
 import { graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import _ from 'lodash';
+import * as yup from 'yup';
 import { Router } from 'routes';
 import ErrorSummary from '../../common/components/ErrorSummary';
-import {
-  FormStore,
-  Form,
-  Field,
-  Validators,
-  Controls
-} from '../../common/features/Form';
+import { Form, Field } from '../../common/features/forms';
 import { setIsLoggedIn } from '../../common/graphql/utils';
 import './SignUpPage.scss';
 
@@ -50,68 +45,48 @@ class SignUpPage extends Component {
   };
 
   componentWillMount() {
-    this.formStore = new FormStore({
-      firstName: {
-        value: '',
-        maxLength: 254,
-        validators: [
-          Validators.required('Please enter your first name'),
-          Validators.regex(/^(\s*[A-Za-z\-\']+)+\s*$/)
-        ]
-      },
-      lastName: {
-        value: '',
-        maxLength: 254,
-        validators: [
-          Validators.required('Please enter your surname'),
-          Validators.regex(/^(\s*[A-Za-z\-\']+)+\s*$/)
-        ]
-      },
-      email: {
-        value: '',
-        maxLength: 254,
-        validators: [
-          Validators.required('Please enter your email'),
-          Validators.email('Please enter email in the correct format'),
-          Validators.minLength(6, 'Please enter email in the correct format')
-        ]
-      },
-      password: {
-        value: '',
-        maxLength: 254,
-        validators: [
-          Validators.required('Please enter your password'),
-          Validators.minLength(
-            8,
-            'Password is too short. Minimal length - 8 characters.'
-          ),
-          Validators.maxLength(30, 'Maximum password length is 30 characters.')
-        ]
-      },
-      repeatPassword: {
-        value: '',
-        maxLength: 254,
-        validators: [
-          Validators.required('Please repeat your password'),
-          (value, values) => {
-            if (values.password !== value) {
-              return 'The password and repeat password do not match.';
-            }
-            return null;
-          }
-        ]
-      }
+    const nameRgx = /^(\s*[A-Za-z\-\']+)+\s*$/;
+
+    this.validationSchema = yup.object().shape({
+      firstName: yup
+        .string()
+        .matches(nameRgx, 'Please enter first name in the correct format')
+        .required('Please enter first name'),
+      lastName: yup
+        .string()
+        .matches(nameRgx, 'Please enter last name in the correct format')
+        .required('Please enter last name'),
+      email: yup
+        .string()
+        .email('Please enter email in the correct format')
+        .required('Please enter email'),
+      password: yup
+        .string()
+        .min(4, 'Password is too short. Minimal length - 4 characters.')
+        .required('Please enter last name'),
+      repeatPassword: yup
+        .string()
+        .oneOf(
+          [yup.ref('password'), null],
+          'The password and repeat password do not match.'
+        )
+        .required('Please repeat password')
     });
   }
 
-  async performSignUp() {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      repeatPassword
-    } = this.formStore.values;
+  onSubmit = async values => {
+    try {
+      await this.performSignUp(values);
+
+      this.setState({ error: null });
+      Router.pushRoute('records');
+    } catch (error) {
+      this.setState({ error });
+    }
+  };
+
+  async performSignUp(values) {
+    const { firstName, lastName, email, password, repeatPassword } = values;
 
     const { errors } = await this.props.signUp({
       variables: {
@@ -130,86 +105,27 @@ class SignUpPage extends Component {
     }
   }
 
-  onSubmit = async () => {
-    if (!this.formStore.validate().valid) {
-      this.formStore.setFocusFirstInvalid();
-      return;
-    }
-
-    try {
-      await this.performSignUp();
-
-      this.formStore.resetFormData();
-      this.setState({ error: null });
-      Router.pushRoute('records');
-    } catch (error) {
-      this.setState({ error });
-    }
-  };
-
   render() {
     const { error } = this.state;
-    const { inputTextCtrl, inputPasswordCtrlWithShowBnt } = Controls;
 
     return (
       <div className="page sign-up-page">
         <Helmet title="Create an account" />
         <Form
           className="sign-up-form"
-          store={this.formStore}
+          validationSchema={this.validationSchema}
           onSubmit={this.onSubmit}
         >
           <h2 className="text-center">Create an account</h2>
-          <div className="form-group">
-            <label htmlFor="firstName" className="control-label">
-              First name
-            </label>
-            <Field
-              className="control-field"
-              name="firstName"
-              control={inputTextCtrl}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="lastName" className="control-label">
-              Surname
-            </label>
-            <Field
-              className="control-field"
-              name="lastName"
-              control={inputTextCtrl}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email" className="control-label">
-              Email
-            </label>
-            <Field
-              className="control-field"
-              name="email"
-              control={inputTextCtrl}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password" className="control-label">
-              Password
-            </label>
-            <Field
-              className="control-field"
-              name="password"
-              control={inputPasswordCtrlWithShowBnt}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="repeatPassword" className="control-label">
-              Repeat password
-            </label>
-            <Field
-              className="control-field"
-              name="repeatPassword"
-              control={inputPasswordCtrlWithShowBnt}
-            />
-          </div>
+          <Field name="firstName" component="text" label="First name" />
+          <Field name="lastName" component="text" label="Last name" />
+          <Field name="email" component="text" label="Email" />
+          <Field name="password" component="passwordShow" label="Password" />
+          <Field
+            name="repeatPassword"
+            component="passwordShow"
+            label="Repeat password"
+          />
           <ErrorSummary error={error} />
           <div className="buttons-group">
             <button type="submit" className="btn btn-primary">

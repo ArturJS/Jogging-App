@@ -53,16 +53,7 @@ export default class Header extends Component {
     });
   }
 
-  onSubmit = async (values, { validateForm, setValues }) => {
-    console.log('before validateForm');
-    const errors = await validateForm();
-    const isInvalid = !_.isEmpty(errors);
-
-    if (isInvalid) {
-      // todo implement setFocusFirstInvalid();
-      return;
-    }
-
+  onSubmit = async (values, { setValues }) => {
     try {
       await this.performSignIn(values);
 
@@ -118,18 +109,8 @@ export default class Header extends Component {
         validationSchema={this.validationSchema}
         onSubmit={this.onSubmit}
       >
-        <Field
-          className="control-field"
-          name="email"
-          component="text"
-          placeholder="Email"
-        />
-        <Field
-          className="control-field"
-          name="password"
-          component="password"
-          placeholder="Password"
-        />
+        <Field name="email" component="text" placeholder="Email" />
+        <Field name="password" component="password" placeholder="Password" />
         {error && (
           <div className="login-error-summary field-error-text">{error}</div>
         )}

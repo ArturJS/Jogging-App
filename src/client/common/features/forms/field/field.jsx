@@ -39,12 +39,18 @@ export default class Field extends Component {
   };
 
   render() {
-    const { className, name, placeholder, autoComplete, label } = this.props;
+    const {
+      className,
+      name,
+      placeholder = label,
+      autoComplete,
+      label
+    } = this.props;
     const hasLabel = !!label;
 
     return (
       <div className={cx('field', className)}>
-        {hasLabel && <label class="field__label">{label}</label>}
+        {hasLabel && <label className="field__label">{label}</label>}
         <FormikField
           name={name}
           className="field__control"

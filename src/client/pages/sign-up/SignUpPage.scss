@@ -1,4 +1,4 @@
-@import "../../common/styles/references/references";
+@import '../../common/styles/references/references';
 
 .container {
   margin: 15px auto;
@@ -12,6 +12,8 @@
   }
 
   .buttons-group {
+    margin-top: 15px;
+
     .btn {
       width: 100%;
 
