@@ -4,6 +4,8 @@ $c-field-error-border: $c-bittersweet;
 $c-field-error-color: $c-bittersweet;
 $c-field-error-color: $c-bittersweet;
 
+$c-label-color: $c-dusty-gray;
+
 $c-input-color: $c-mine-shaft;
 $c-input-select-color-hover: $c-boulder;
 $c-input-select-color-disabled: $c-boulder;
@@ -18,6 +20,12 @@ $c-input-moz-focus-shadow: $c-mine-shaft;
 
 $border-size: 1px;
 $font-size: 16px;
+
+.field__label {
+  display: block;
+  text-align: left;
+  color: $c-label-color;
+}
 
 .field__control,
 .SingleDatePicker {
