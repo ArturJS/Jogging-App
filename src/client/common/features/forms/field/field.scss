@@ -2,7 +2,6 @@
 
 $c-field-error-border: $c-bittersweet;
 $c-field-error-color: $c-bittersweet;
-$c-field-error-color: $c-bittersweet;
 
 $c-label-color: $c-dusty-gray;
 
@@ -25,6 +24,10 @@ $font-size: 16px;
   display: block;
   text-align: left;
   color: $c-label-color;
+}
+
+.field__error {
+  color: $c-field-error-color;
 }
 
 .field__control,

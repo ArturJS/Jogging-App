@@ -52,7 +52,7 @@ export default class Field extends Component {
           autoComplete={autoComplete}
           component={this.renderControl}
         />
-        <small className="field-error-text">
+        <small className="field__error">
           &nbsp;
           <ErrorMessage name={name} />
         </small>
