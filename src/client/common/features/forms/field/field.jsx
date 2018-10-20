@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { Field as FormikField, ErrorMessage } from 'formik';
-import controls from './controls';
-// import './field.scss';
+import controls from './components/controls';
+import './field.scss';
 
 export default class Field extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ export default class Field extends Component {
   static defaultProps = {
     className: '',
     placeholder: '',
-    autoComplete: ''
+    autoComplete: 'nope'
   };
 
   renderControl = params => {
@@ -37,7 +37,7 @@ export default class Field extends Component {
   };
 
   render() {
-    const { className, name, placeholder } = this.props;
+    const { className, name, placeholder, autoComplete } = this.props;
 
     return (
       <div className={cx('field', className)}>
@@ -45,9 +45,10 @@ export default class Field extends Component {
           name={name}
           className="field__control"
           placeholder={placeholder}
+          autoComplete={autoComplete}
           component={this.renderControl}
         />
-        <small className="field-error-text form-text">
+        <small className="field-error-text">
           &nbsp;
           <ErrorMessage name={name} />
         </small>
