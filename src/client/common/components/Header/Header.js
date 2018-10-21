@@ -11,6 +11,11 @@ import { setIsLoggedIn } from '../../graphql/utils';
 import { Form, Field } from '../../features/forms';
 import './Header.scss';
 
+const defaultValues = {
+  email: '',
+  password: ''
+};
+
 @graphql(
   gql`
     mutation {
@@ -106,6 +111,7 @@ export default class Header extends Component {
     return (
       <Form
         className="login-form"
+        initialValues={defaultValues}
         validationSchema={this.validationSchema}
         onSubmit={this.onSubmit}
       >

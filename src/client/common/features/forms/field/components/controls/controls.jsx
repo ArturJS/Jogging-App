@@ -132,8 +132,14 @@ const withScrollToError = renderControl => {
 };
 
 const controls = {
-  text: ({ field, form: { errors }, className, ...props }) => {
-    const hasError = !!errors[field.name];
+  text: ({
+    field,
+    form: { errors, submitCount, touched },
+    className,
+    ...props
+  }) => {
+    const { name } = field;
+    const hasError = !!errors[name] && (submitCount > 0 || touched[name]);
 
     return (
       <input
@@ -145,8 +151,14 @@ const controls = {
     );
   },
 
-  password: ({ field, form: { errors }, className, ...props }) => {
-    const hasError = !!errors[field.name];
+  password: ({
+    field,
+    form: { errors, submitCount, touched },
+    className,
+    ...props
+  }) => {
+    const { name } = field;
+    const hasError = !!errors[name] && (submitCount > 0 || touched[name]);
 
     return (
       <input
@@ -158,9 +170,15 @@ const controls = {
     );
   },
 
-  passwordShow: ({ field, form: { errors }, className, ...props }) => {
+  passwordShow: ({
+    field,
+    form: { errors, submitCount, touched },
+    className,
+    ...props
+  }) => {
     let icon;
-    const hasError = !!errors[field.name];
+    const { name } = field;
+    const hasError = !!errors[name] && (submitCount > 0 || touched[name]);
     const inputRef = props.ref.current;
     const showPassword = () => {
       icon.classList.add('fa-eye');
@@ -215,8 +233,13 @@ const controls = {
     );
   },
 
-  timePicker: ({ field, form: { errors }, className }) => {
-    const hasError = !!errors[field.name];
+  timePicker: ({
+    field,
+    form: { errors, submitCount, touched },
+    className
+  }) => {
+    const { name } = field;
+    const hasError = !!errors[name] && (submitCount > 0 || touched[name]);
 
     return (
       <TimePicker

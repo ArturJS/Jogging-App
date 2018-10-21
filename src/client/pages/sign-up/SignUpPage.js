@@ -11,6 +11,14 @@ import { Form, Field } from '../../common/features/forms';
 import { setIsLoggedIn } from '../../common/graphql/utils';
 import './SignUpPage.scss';
 
+const defaultValues = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  repeatPassword: ''
+};
+
 const SIGN_UP = gql`
   mutation SignUp(
     $firstName: String!
@@ -113,6 +121,7 @@ class SignUpPage extends Component {
         <Helmet title="Create an account" />
         <Form
           className="sign-up-form"
+          initialValues={defaultValues}
           validationSchema={this.validationSchema}
           onSubmit={this.onSubmit}
         >
