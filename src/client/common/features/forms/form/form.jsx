@@ -13,6 +13,7 @@ const Form = ({
     initialValues={initialValues}
     onSubmit={onSubmit}
     validationSchema={validationSchema}
+    enableReinitialize={true}
     render={props => (
       <form className={className} onSubmit={props.handleSubmit} noValidate>
         {children}
