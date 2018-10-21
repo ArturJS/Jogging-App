@@ -111,9 +111,7 @@ export default class Header extends Component {
       >
         <Field name="email" component="text" placeholder="Email" />
         <Field name="password" component="password" placeholder="Password" />
-        {error && (
-          <div className="login-error-summary field-error-text">{error}</div>
-        )}
+        {error && <div className="login-error-summary">{error}</div>}
         <button type="submit" className="btn btn-default btn-submit">
           Log In
         </button>

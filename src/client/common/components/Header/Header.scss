@@ -2,6 +2,7 @@
 
 .header {
   $c-header-bg: $c-white;
+  $c-field-error-color: $c-bittersweet;
   $min-desktop-width: 750px;
 
   display: flex;
@@ -71,6 +72,7 @@
   }
 
   .login-error-summary {
+    color: $c-field-error-color;
     display: flex;
     align-items: center;
     margin-right: 15px;

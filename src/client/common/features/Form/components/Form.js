@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
-import {observer} from 'mobx-react';
-import './Form.scss';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 @observer
@@ -22,9 +21,9 @@ export default class Form extends Component {
     };
   }
 
-  onSubmit = (e) => {
+  onSubmit = e => {
     e.preventDefault();
-    const {store} = this.props;
+    const { store } = this.props;
     if (store) {
       store.submitted = true;
     }
@@ -32,10 +31,14 @@ export default class Form extends Component {
   };
 
   render() {
-    const {children, className} = this.props;
+    const { children, className } = this.props;
 
     return (
-      <form onSubmit={this.onSubmit} className={className} noValidate="noValidate">
+      <form
+        onSubmit={this.onSubmit}
+        className={className}
+        noValidate="noValidate"
+      >
         {children}
       </form>
     );

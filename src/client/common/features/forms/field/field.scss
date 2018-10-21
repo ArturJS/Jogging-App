@@ -35,6 +35,49 @@ $font-size: 16px;
   color: $c-field-error-color;
 }
 
+.field {
+  .SingleDatePicker {
+    padding: 0;
+  }
+
+  .SingleDatePickerInput {
+    width: 100%;
+    height: 38px;
+    background-color: transparent;
+    border: 0;
+  }
+
+  .SingleDatePicker_picker {
+    top: 40px !important; // necessary to override inline styles
+  }
+
+  .DateInput {
+    width: 100%;
+    padding: 0;
+    background-color: transparent;
+
+    &_input {
+      padding-top: 0.5em;
+      padding-bottom: 0;
+
+      &__focused {
+        border: 0;
+      }
+    }
+  }
+}
+
+input {
+  &:-ms-input-placeholder {
+    color: $c-input-placeholder;
+  }
+
+  &::-ms-reveal,
+  &::-ms-clear {
+    display: none;
+  }
+}
+
 .field__control,
 .SingleDatePicker {
   display: block;
