@@ -1,14 +1,15 @@
-@import "./../../styles/references/references";
+@import './../../styles/references/references';
 
 .header {
   $c-header-bg: $c-white;
-  $min-desktop-width: 900px;
+  $c-field-error-color: $c-bittersweet;
+  $min-desktop-width: 750px;
 
   display: flex;
   width: 100%;
   background-color: $c-header-bg;
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-  padding: 15px 10px;
+  padding: 0 10px;
   flex-direction: column;
 
   @media (min-width: $min-desktop-width) {
@@ -16,7 +17,6 @@
     top: 0;
     z-index: 1;
     flex-direction: row;
-    height: 60px;
   }
 
   &.is-logged-in {
@@ -48,13 +48,19 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    padding-top: 15px;
+    margin-bottom: 15px;
 
     @media (min-width: $min-desktop-width) {
       flex-direction: row;
       width: auto;
+      margin-bottom: 0;
+
+      .field {
+        margin-right: 10px;
+      }
     }
 
-    .control-field,
     .btn-submit {
       margin-top: 15px;
 
@@ -66,6 +72,7 @@
   }
 
   .login-error-summary {
+    color: $c-field-error-color;
     display: flex;
     align-items: center;
     margin-right: 15px;
