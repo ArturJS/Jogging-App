@@ -12,8 +12,8 @@ import { Form, Field } from '../../features/forms';
 import './Header.scss';
 
 const defaultValues = {
-  email: '',
-  password: ''
+  authEmail: '',
+  authPassword: ''
 };
 
 @graphql(
@@ -53,19 +53,16 @@ export default class Header extends Component {
 
   componentWillMount() {
     this.validationSchema = yup.object().shape({
-      email: yup.string().required('Please enter email'),
-      password: yup.string().required('Please enter password')
+      authEmail: yup.string().required('Please enter email'),
+      authPassword: yup.string().required('Please enter password')
     });
   }
 
-  onSubmit = async (values, { setValues }) => {
+  onSubmit = async (values, { resetForm }) => {
     try {
       await this.performSignIn(values);
 
-      setValues({
-        email: '',
-        password: ''
-      });
+      resetForm();
       this.setState({ error: null });
       Router.pushRoute('records');
     } catch (error) {
@@ -78,11 +75,11 @@ export default class Header extends Component {
     Router.pushRoute('sign-up');
   };
 
-  performSignIn = async ({ email, password }) => {
+  performSignIn = async ({ authEmail, authPassword }) => {
     const { errors } = await this.props.signIn({
       variables: {
-        email,
-        password
+        email: authEmail,
+        password: authPassword
       },
       errorPolicy: 'all'
     });
@@ -115,8 +112,12 @@ export default class Header extends Component {
         validationSchema={this.validationSchema}
         onSubmit={this.onSubmit}
       >
-        <Field name="email" component="text" placeholder="Email" />
-        <Field name="password" component="password" placeholder="Password" />
+        <Field name="authEmail" component="text" placeholder="Email" />
+        <Field
+          name="authPassword"
+          component="password"
+          placeholder="Password"
+        />
         {error && <div className="login-error-summary">{error}</div>}
         <button type="submit" className="btn btn-default btn-submit">
           Log In

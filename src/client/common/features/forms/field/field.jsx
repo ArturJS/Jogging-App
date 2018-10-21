@@ -15,16 +15,14 @@ export default class Field extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     component: PropTypes.oneOf(Object.keys(controls)).isRequired,
+    id: PropTypes.string,
     className: PropTypes.string,
     placeholder: PropTypes.string,
-    autoComplete: PropTypes.string,
     label: PropTypes.string
   };
 
   static defaultProps = {
     className: '',
-    placeholder: '',
-    autoComplete: 'nope',
     label: ''
   };
 
@@ -39,23 +37,22 @@ export default class Field extends Component {
   };
 
   render() {
-    const {
-      className,
-      name,
-      placeholder = label,
-      autoComplete,
-      label
-    } = this.props;
+    const { className, name, label } = this.props;
+    const { id = name, placeholder = label } = this.props;
     const hasLabel = !!label;
 
     return (
       <div className={cx('field', className)}>
-        {hasLabel && <label className="field__label">{label}</label>}
+        {hasLabel && (
+          <label htmlFor={id} className="field__label">
+            {label}
+          </label>
+        )}
         <FormikField
+          id={id}
           name={name}
           className="field__control"
           placeholder={placeholder}
-          autoComplete={autoComplete}
           component={this.renderControl}
         />
         <small className="field__error">

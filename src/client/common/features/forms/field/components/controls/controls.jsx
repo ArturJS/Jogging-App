@@ -70,6 +70,7 @@ class DatePicker extends Component {
 
 class TimePicker extends Component {
   static propTypes = {
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     hasError: PropTypes.bool.isRequired,
@@ -93,10 +94,11 @@ class TimePicker extends Component {
   };
 
   render() {
-    const { name, value, hasError, className } = this.props;
+    const { name, value, hasError, className, id } = this.props;
 
     return (
       <RcTimePicker
+        id={id}
         className={cx(className, { 'field-error': hasError })}
         name={name}
         value={value}
@@ -170,31 +172,30 @@ const controls = {
     );
   },
 
-  passwordShow: ({
-    field,
-    form: { errors, submitCount, touched },
-    className,
-    ...props
-  }) => {
+  passwordShow: ({ field, form, className, ...props }) => {
     let icon;
+
+    const { errors, submitCount, touched } = form;
     const { name } = field;
     const hasError = !!errors[name] && (submitCount > 0 || touched[name]);
     const inputRef = props.ref.current;
     const showPassword = () => {
       icon.classList.add('fa-eye');
       icon.classList.remove('fa-eye-slash');
-      inputRef.type = 'text';
+      inputRef && (inputRef.type = 'text');
     };
     const hidePassword = () => {
       icon.classList.remove('fa-eye');
       icon.classList.add('fa-eye-slash');
-      inputRef.type = 'password';
+      inputRef && (inputRef.type = 'password');
     };
 
     return (
       <div className="field-password-with-show-btn">
+        <input type="password" name="fakepasswordremembered" />
         <input
           type="password"
+          autoComplete="new-password"
           className={cx(className, { 'field-error': hasError })}
           {...field}
           {...props}
@@ -225,7 +226,7 @@ const controls = {
   singleDatePicker: ({ field }) => {
     return (
       <DatePicker
-        id={field.name}
+        id={field.id}
         name={field.name}
         value={field.value}
         onChange={field.onChange}
@@ -238,11 +239,12 @@ const controls = {
     form: { errors, submitCount, touched },
     className
   }) => {
-    const { name } = field;
+    const { name, id } = field;
     const hasError = !!errors[name] && (submitCount > 0 || touched[name]);
 
     return (
       <TimePicker
+        id={id}
         className={className}
         name={field.name}
         value={field.value}
