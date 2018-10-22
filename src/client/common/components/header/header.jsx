@@ -9,7 +9,7 @@ import { Router } from 'routes';
 import { IS_LOGGED_IN } from '../../graphql/queries';
 import { setIsLoggedIn } from '../../graphql/utils';
 import { Form, Field } from '../../features/forms';
-import './Header.scss';
+import './header.scss';
 
 const defaultValues = {
   authEmail: '',

@@ -5,13 +5,13 @@ import { graphql, withApollo } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import * as yup from 'yup';
 import { REPORTS_QUERY } from '../../../reports';
-import { modalManager } from '../../../../common/features/ModalDialog';
+import { modalManager } from '../../../../common/features/modal-dialog';
 import { RECORD_QUERY } from '../../../../common/graphql/queries';
-import processErrors from '../../../../common/components/ProcessErrors';
-import ErrorSummary from '../../../../common/components/ErrorSummary';
+import processErrors from '../../../../common/components/process-errors';
+import ErrorSummary from '../../../../common/components/error-summary';
 import { Form, Field } from '../../../../common/features/forms';
 import { mapRecordToEdit } from '../../utils/mappers';
-import './EditRecordModal.scss';
+import './edit-record-modal.scss';
 
 const getSecondsFromMidNight = date => {
   const dateMidnight = date.clone().startOf('day');

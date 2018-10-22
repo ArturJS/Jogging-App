@@ -6,10 +6,10 @@ import { gql } from 'apollo-boost';
 import _ from 'lodash';
 import * as yup from 'yup';
 import { Router } from 'routes';
-import ErrorSummary from '../../common/components/ErrorSummary';
+import ErrorSummary from '../../common/components/error-summary';
 import { Form, Field } from '../../common/features/forms';
 import { setIsLoggedIn } from '../../common/graphql/utils';
-import './SignUpPage.scss';
+import './sign-up.scss';
 
 const defaultValues = {
   firstName: '',
@@ -43,7 +43,7 @@ const SIGN_UP = gql`
     update: setIsLoggedIn(true)
   }
 })
-class SignUpPage extends Component {
+export default class SignUp extends Component {
   static propTypes = {
     signUp: PropTypes.func.isRequired
   };
@@ -146,5 +146,3 @@ class SignUpPage extends Component {
     );
   }
 }
-
-export default SignUpPage;

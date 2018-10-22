@@ -1,8 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-import './ErrorSummary.scss';
-
+import './error-summary.scss';
 
 export default class ErrorSummary extends Component {
   static propTypes = {
@@ -10,15 +8,13 @@ export default class ErrorSummary extends Component {
   };
 
   render() {
-    const {error} = this.props;
+    const { error } = this.props;
 
     if (!error) return null;
 
     return (
       <div className="error-summary">
-        <div className="error-item">
-          {error}
-        </div>
+        <div className="error-item">{error}</div>
       </div>
     );
   }

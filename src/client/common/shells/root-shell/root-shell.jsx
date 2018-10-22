@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import Header from '../../components/Header';
-import NavSubHeader from '../../components/NavSubHeader';
-import { ModalDialog } from '../../features/ModalDialog';
+import Header from '../../components/header';
+import NavSubHeader from '../../components/nav-sub-header';
+import { ModalDialog } from '../../features/modal-dialog';
 import config from '../../../../config';
 import '../../styles/base.scss';
-import './RootShell.scss';
+import './root-shell.scss';
 
 export default class RootShell extends Component {
   static propTypes = {

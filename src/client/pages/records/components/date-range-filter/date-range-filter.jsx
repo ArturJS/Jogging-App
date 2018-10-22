@@ -1,9 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DateRangePicker from 'react-dates/lib/components/DateRangePicker';
-
-import './DateRangeFilter.scss';
-
+import './date-range-filter.scss';
 
 export default class DateRangeFilter extends Component {
   static propTypes = {
@@ -16,32 +14,26 @@ export default class DateRangeFilter extends Component {
     endDate: null
   };
 
-  onDatesChange = ({startDate, endDate}) => {
+  onDatesChange = ({ startDate, endDate }) => {
     this.setState({
       startDate,
       endDate
     });
-    this.props.onDatesChange({startDate, endDate});
+    this.props.onDatesChange({ startDate, endDate });
   };
 
-  onFocusChange = (focusedInput) => {
-    this.setState({focusedInput});
+  onFocusChange = focusedInput => {
+    this.setState({ focusedInput });
   };
 
   enableAnyDates = () => false;
 
   render() {
-    const {
-      focusedInput,
-      startDate,
-      endDate
-    } = this.state;
+    const { focusedInput, startDate, endDate } = this.state;
 
     return (
       <div className="date-range-filter">
-        <div className="date-range-filter-title">
-          Filter by date range:
-        </div>
+        <div className="date-range-filter-title">Filter by date range:</div>
         <DateRangePicker
           startDate={startDate}
           endDate={endDate}

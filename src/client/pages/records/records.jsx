@@ -6,12 +6,12 @@ import moment from 'moment';
 import { Query, withApollo, graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { REPORTS_QUERY } from '../reports';
-import { modalManager } from '../../common/features/ModalDialog';
+import { modalManager } from '../../common/features/modal-dialog';
 import { RECORD_QUERY } from '../../common/graphql/queries';
 import { mapRecordToDisplay } from './utils/mappers';
-import EditRecordModal from './components/EditRecordModal';
-import DateRangeFilter from './components/DateRangeFilter';
-import './RecordsPage.scss';
+import EditRecordModal from './components/edit-record-modal';
+import DateRangeFilter from './components/date-range-filter';
+import './records.scss';
 
 const RECORDS_QUERY = gql`
   query($startDate: Long, $endDate: Long) {
@@ -36,7 +36,7 @@ const RECORDS_QUERY = gql`
   }
 )
 @withApollo
-export default class RecordsPage extends Component {
+export default class Records extends Component {
   static propTypes = {
     removeRecord: PropTypes.func.isRequired
   };

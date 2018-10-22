@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Router } from 'routes';
 import Modal from 'react-modal';
 import _ from 'lodash';
-import modalManager, { MODAL_TYPES } from './ModalManager';
-import './ModalDialog.scss';
+import modalManager, { MODAL_TYPES } from './modal-manager';
+import './modal-dialog.scss';
 
 const noBackdropStyle = {
   overlay: {

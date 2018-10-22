@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Router, Link } from 'routes';
-import './NavSubHeader.scss';
+import './nav-sub-header.scss';
 
 export default class NavSubHeader extends Component {
   state = {

@@ -1,1 +1,1 @@
-export { default, REPORTS_QUERY } from './ReportsPage';
+export { default, REPORTS_QUERY } from './reports';

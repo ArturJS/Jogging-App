@@ -2,7 +2,7 @@ import React from 'react';
 import App, { Container } from 'next/app';
 import { ApolloProvider } from 'react-apollo';
 import 'react-table/react-table.css';
-import RootShell from '../common/shells/RootShell';
+import RootShell from '../common/shells/root-shell';
 import withApollo from '../common/graphql/with-apollo';
 
 class BaseApp extends App {

@@ -3,7 +3,7 @@ import Helmet from 'react-helmet';
 import ReactTable from 'react-table';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import './ReportsPage.scss';
+import './reports.scss';
 
 export const REPORTS_QUERY = gql`
   query {
@@ -15,7 +15,7 @@ export const REPORTS_QUERY = gql`
   }
 `;
 
-export default class ReportsPage extends Component {
+export default class Reports extends Component {
   gridColumns = [
     {
       Header: 'Week',
