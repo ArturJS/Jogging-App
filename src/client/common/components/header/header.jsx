@@ -6,6 +6,7 @@ import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
 import * as yup from 'yup';
 import { Router } from 'routes';
+import { withPreloadRoutes } from '../../hocs';
 import { IS_LOGGED_IN } from '../../graphql/queries';
 import { setIsLoggedIn } from '../../graphql/utils';
 import { Form, Field } from '../../features/forms';
@@ -42,6 +43,9 @@ const defaultValues = {
     }
   }
 )
+@withPreloadRoutes({
+  routes: ['records']
+})
 export default class Header extends Component {
   static propTypes = {
     signIn: PropTypes.func.isRequired
