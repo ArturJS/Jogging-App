@@ -3,6 +3,7 @@ import Helmet from 'react-helmet';
 import ReactTable from 'react-table';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
+import { withPreloadRoutes } from '../../common/hocs';
 import './reports.scss';
 
 export const REPORTS_QUERY = gql`
@@ -15,6 +16,9 @@ export const REPORTS_QUERY = gql`
   }
 `;
 
+@withPreloadRoutes({
+  routes: ['sign-up', 'records']
+})
 export default class Reports extends Component {
   gridColumns = [
     {

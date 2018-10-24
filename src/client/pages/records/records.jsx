@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Query, withApollo, graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { REPORTS_QUERY } from '../reports';
+import { withPreloadRoutes } from '../../common/hocs';
 import { modalManager } from '../../common/features/modal-dialog';
 import { RECORD_QUERY } from '../../common/graphql/queries';
 import { mapRecordToDisplay } from './utils/mappers';
@@ -35,6 +36,9 @@ const RECORDS_QUERY = gql`
     name: 'removeRecord'
   }
 )
+@withPreloadRoutes({
+  routes: ['sign-up', 'reports']
+})
 @withApollo
 export default class Records extends Component {
   static propTypes = {

@@ -6,6 +6,7 @@ import { gql } from 'apollo-boost';
 import _ from 'lodash';
 import * as yup from 'yup';
 import { Router } from 'routes';
+import { withPreloadRoutes } from '../../common/hocs';
 import ErrorSummary from '../../common/components/error-summary';
 import { Form, Field } from '../../common/features/forms';
 import { setIsLoggedIn } from '../../common/graphql/utils';
@@ -42,6 +43,9 @@ const SIGN_UP = gql`
   options: {
     update: setIsLoggedIn(true)
   }
+})
+@withPreloadRoutes({
+  routes: ['records']
 })
 export default class SignUp extends Component {
   static propTypes = {
