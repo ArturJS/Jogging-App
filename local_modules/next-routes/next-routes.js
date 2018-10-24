@@ -4,7 +4,7 @@ import { parse } from 'url';
 import NextLink from 'next/link';
 import NextRouter from 'next/router';
 import _ from 'lodash';
-import classNames from 'classnames';
+import cx from 'classnames';
 
 export const performRedirect = ({ req, res, redirectTo }) => {
   res.writeHead(301, {
@@ -162,18 +162,16 @@ class Routes {
           : this.findAndGetUrls(props.route, props.params).urls.as ===
             this.Router.asPath;
 
-      return React.createElement(
-        Link,
-        newProps,
-        React.createElement(
-          'a',
-          {
-            className: classNames(className, {
+      return (
+        <Link {...nextProps}>
+          <a
+            className={cx(className, {
               [activeClassName]: isActiveRoute
-            })
-          },
-          children
-        )
+            })}
+          >
+            {children}
+          </a>
+        </Link>
       );
     };
 

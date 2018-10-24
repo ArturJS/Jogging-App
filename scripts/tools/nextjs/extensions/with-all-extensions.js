@@ -3,10 +3,14 @@ const withExcludeModules = require('./with-exclude-modules');
 const withFonts = require('./with-fonts');
 const withStyles = require('./with-styles');
 const withFixGraphql = require('./with-fix-graphql');
+const withTranspileModules = require('./with-transpile-local-modules');
 
 module.exports = _.flow([
   withExcludeModules,
   withFonts,
   withStyles,
-  withFixGraphql
+  withFixGraphql,
+  withTranspileModules({
+    transpileModules: ['next-routes']
+  })
 ]);
