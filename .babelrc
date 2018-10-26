@@ -9,6 +9,7 @@
     "@babel/preset-react"
   ],
   "plugins": [
+    "import-graphql",
     "lodash",
     "@babel/plugin-transform-runtime",
     "@babel/plugin-transform-react-display-name",

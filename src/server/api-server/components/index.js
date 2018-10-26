@@ -5,7 +5,7 @@ import * as recordsMutations from './records/mutations';
 import * as reportsQueries from './reports/queries';
 import * as authQueries from './auth/queries';
 import * as authMutations from './auth/mutations';
-import typeDefs from './schema';
+import typeDefs from './schema.graphql';
 
 const schema = makeExecutableSchema({
   typeDefs,
