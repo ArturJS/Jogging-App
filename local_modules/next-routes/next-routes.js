@@ -163,7 +163,7 @@ class Routes {
             this.Router.asPath;
 
       return (
-        <Link {...nextProps}>
+        <Link {...newProps}>
           <a
             className={cx(className, {
               [activeClassName]: isActiveRoute
