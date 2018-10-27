@@ -7,7 +7,7 @@ import { Query, withApollo, graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { REPORTS_QUERY } from '../reports';
 import { withPreloadRoutes } from '../../common/hocs';
-import { modalManager } from '../../common/features/modal-dialog';
+import modal from '../../common/features/modal';
 import { RECORD_QUERY } from '../../common/graphql/queries';
 import { mapRecordToDisplay } from './utils/mappers';
 import EditRecordModal from './components/edit-record-modal';
@@ -126,12 +126,12 @@ export default class Records extends Component {
   }
 
   showAddRecordModal = () => {
-    modalManager
+    modal
       .showCustom({
         title: 'Add new record',
-        component: <EditRecordModal isAddMode={true} />
+        body: <EditRecordModal isAddMode={true} />
       })
-      .then(({ success }) => {
+      .result.then(({ success }) => {
         if (success) {
           this.refetchRecords();
         }
@@ -139,12 +139,12 @@ export default class Records extends Component {
   };
 
   showEditRecordModal = recordId => {
-    modalManager
+    modal
       .showCustom({
         title: 'Edit record',
-        component: <EditRecordModal recordId={recordId} />
+        body: <EditRecordModal recordId={recordId} />
       })
-      .then(({ success }) => {
+      .result.then(({ success }) => {
         if (success) {
           this.refetchRecords();
         }
@@ -161,7 +161,7 @@ export default class Records extends Component {
 
     const record = mapRecordToDisplay(rawRecord);
 
-    modalManager
+    modal
       .showConfirm({
         title: 'Confirm your action',
         body: (
@@ -176,7 +176,7 @@ export default class Records extends Component {
           </div>
         )
       })
-      .then(async result => {
+      .result.then(async result => {
         if (!result) return;
 
         await this.props.removeRecord({

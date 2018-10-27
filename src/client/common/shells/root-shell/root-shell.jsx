@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import Header from '../../components/header';
 import NavSubHeader from '../../components/nav-sub-header';
-import { ModalDialog } from '../../features/modal-dialog';
+import { ModalDialog } from '../../features/modal';
 import config from '../../../../config';
 import '../../styles/base.scss';
 import './root-shell.scss';
