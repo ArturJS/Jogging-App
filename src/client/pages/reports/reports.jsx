@@ -7,93 +7,96 @@ import { withPreloadRoutes } from '../../common/hocs';
 import './reports.scss';
 
 export const REPORTS_QUERY = gql`
-  query {
-    reports {
-      week
-      averageSpeed
-      averageDistance
+    query {
+        reports {
+            week
+            averageSpeed
+            averageDistance
+        }
     }
-  }
 `;
 
 @withPreloadRoutes({
-  routes: ['sign-up', 'records']
+    routes: ['sign-up', 'records']
 })
-export default class Reports extends Component {
-  gridColumns = [
-    {
-      Header: 'Week',
-      accessor: 'week',
-      width: 150,
-      sortable: true
-    },
-    {
-      Header: () => (
-        <div>
-          <div>Average distance</div>
-          <div>(Metres)</div>
-        </div>
-      ),
-      accessor: 'averageDistance',
-      sortable: false
-    },
-    {
-      Header: () => (
-        <div>
-          <div>Average speed</div>
-          <div>(Km/hr)</div>
-        </div>
-      ),
-      accessor: 'averageSpeed',
-      sortable: false
+class Reports extends Component {
+    gridColumns = [
+        {
+            Header: 'Week',
+            accessor: 'week',
+            width: 150,
+            sortable: true
+        },
+        {
+            Header: () => (
+                <div>
+                    <div>Average distance</div>
+                    <div>(Metres)</div>
+                </div>
+            ),
+            accessor: 'averageDistance',
+            sortable: false
+        },
+        {
+            Header: () => (
+                <div>
+                    <div>Average speed</div>
+                    <div>(Km/hr)</div>
+                </div>
+            ),
+            accessor: 'averageSpeed',
+            sortable: false
+        }
+    ];
+
+    renderNoReports() {
+        return (
+            <div className="no-reports-placeholder">
+                <p>There are no records to display reports...</p>
+            </div>
+        );
     }
-  ];
 
-  renderNoReports() {
-    return (
-      <div className="no-reports-placeholder">
-        <p>There are no records to display reports...</p>
-      </div>
-    );
-  }
+    renderTable(rawReports = []) {
+        const reports = rawReports.map(report => ({
+            ...report,
+            averageDistance: report.averageDistance.toFixed(2),
+            averageSpeed: report.averageSpeed.toFixed(2)
+        }));
 
-  renderTable(rawReports = []) {
-    const reports = rawReports.map(report => ({
-      ...report,
-      averageDistance: report.averageDistance.toFixed(2),
-      averageSpeed: report.averageSpeed.toFixed(2)
-    }));
+        return (
+            <ReactTable
+                className="reports-table"
+                data={reports}
+                columns={this.gridColumns}
+                pageSize={reports.length}
+                showPageSizeOptions={false}
+                showPagination={false}
+            />
+        );
+    }
 
-    return (
-      <ReactTable
-        className={'reports-table'}
-        data={reports}
-        columns={this.gridColumns}
-        pageSize={reports.length}
-        showPageSizeOptions={false}
-        showPagination={false}
-      />
-    );
-  }
+    render() {
+        return (
+            <div className="page reports-page">
+                <Helmet title="Reports" />
+                <h1>Reports</h1>
 
-  render() {
-    return (
-      <div className="page reports-page">
-        <Helmet title="Reports" />
-        <h1>Reports</h1>
-
-        <Query query={REPORTS_QUERY}>
-          {({ loading, data: { reports } }) =>
-            loading ? (
-              <div>Loading...</div>
-            ) : !reports || reports.length === 0 ? (
-              this.renderNoReports()
-            ) : (
-              this.renderTable(reports || [])
-            )
-          }
-        </Query>
-      </div>
-    );
-  }
+                <Query query={REPORTS_QUERY}>
+                    {({ loading, data: { reports } }) =>
+                        // eslint-disable-next-line no-nested-ternary
+                        loading ? (
+                            <div>Loading...</div>
+                        ) : !reports || reports.length === 0 ? (
+                            this.renderNoReports()
+                        ) : (
+                            this.renderTable(reports || [])
+                        )
+                    }
+                </Query>
+            </div>
+        );
+    }
 }
+
+export default Reports;
