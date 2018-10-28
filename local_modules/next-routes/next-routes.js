@@ -7,316 +7,322 @@ import _ from 'lodash';
 import cx from 'classnames';
 
 const toQueryString = obj =>
-  Object.keys(obj)
-    .filter(key => obj[key] !== null && obj[key] !== undefined)
-    .map(key => {
-      let value = obj[key];
+    Object.keys(obj)
+        .filter(key => obj[key] !== null && obj[key] !== undefined)
+        .map(key => {
+            let value = obj[key];
 
-      if (Array.isArray(value)) {
-        value = value.join('/');
-      }
+            if (Array.isArray(value)) {
+                value = value.join('/');
+            }
 
-      return [encodeURIComponent(key), encodeURIComponent(value)].join('=');
-    })
-    .join('&');
+            return [encodeURIComponent(key), encodeURIComponent(value)].join(
+                '='
+            );
+        })
+        .join('&');
 
 class Route {
-  constructor({
-    name,
-    pattern,
-    page = name,
-    onlyForUnauthenticated,
-    onlyForAuthenticated // todo validate incoming params
-  }) {
-    if (!name && !page) {
-      throw new Error(`Missing page to render for route "${pattern}"`);
+    constructor({
+        name,
+        pattern,
+        page = name,
+        onlyForUnauthenticated,
+        onlyForAuthenticated // todo validate incoming params
+    }) {
+        if (!name && !page) {
+            throw new Error(`Missing page to render for route "${pattern}"`);
+        }
+
+        this.name = name;
+        this.pattern = pattern || `/${name}`;
+        this.page = page.replace(/(^|\/)index$/, '').replace(/^\/?/, '/');
+        this.regex = pathToRegexp(this.pattern, (this.keys = []));
+        this.keyNames = this.keys.map(key => key.name);
+        this.toPath = pathToRegexp.compile(this.pattern);
+        this.onlyForUnauthenticated = onlyForUnauthenticated;
+        this.onlyForAuthenticated = onlyForAuthenticated;
     }
 
-    this.name = name;
-    this.pattern = pattern || `/${name}`;
-    this.page = page.replace(/(^|\/)index$/, '').replace(/^\/?/, '/');
-    this.regex = pathToRegexp(this.pattern, (this.keys = []));
-    this.keyNames = this.keys.map(key => key.name);
-    this.toPath = pathToRegexp.compile(this.pattern);
-    this.onlyForUnauthenticated = onlyForUnauthenticated;
-    this.onlyForAuthenticated = onlyForAuthenticated;
-  }
+    match(path) {
+        const values = this.regex.exec(path);
 
-  match(path) {
-    const values = this.regex.exec(path);
+        if (values) {
+            return this.valuesToParams(values.slice(1));
+        }
 
-    if (values) {
-      return this.valuesToParams(values.slice(1));
+        return null;
     }
 
-    return null;
-  }
+    valuesToParams(values) {
+        return values.reduce((params, val, i) => {
+            if (val === undefined) {
+                return params;
+            }
 
-  valuesToParams(values) {
-    return values.reduce((params, val, i) => {
-      if (val === undefined) {
-        return params;
-      }
-
-      return Object.assign(params, {
-        [this.keys[i].name]: decodeURIComponent(val)
-      });
-    }, {});
-  }
-
-  getHref(params = {}) {
-    return `${this.page}?${toQueryString(params)}`;
-  }
-
-  getAs(params = {}) {
-    const as = this.toPath(params) || '/';
-    const keys = Object.keys(params);
-    const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1);
-
-    if (!qsKeys.length) {
-      return as;
+            return Object.assign(params, {
+                [this.keys[i].name]: decodeURIComponent(val)
+            });
+        }, {});
     }
 
-    const qsParams = qsKeys.reduce(
-      (qs, key) =>
-        Object.assign(qs, {
-          [key]: params[key]
-        }),
-      {}
-    );
+    getHref(params = {}) {
+        return `${this.page}?${toQueryString(params)}`;
+    }
 
-    return `${as}?${toQueryString(qsParams)}`;
-  }
+    getAs(params = {}) {
+        const as = this.toPath(params) || '/';
+        const keys = Object.keys(params);
+        const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1);
 
-  getUrls(params) {
-    const as = this.getAs(params);
-    const href = this.getHref(params);
+        if (!qsKeys.length) {
+            return as;
+        }
 
-    return {
-      as,
-      href
-    };
-  }
+        const qsParams = qsKeys.reduce(
+            (qs, key) =>
+                Object.assign(qs, {
+                    [key]: params[key]
+                }),
+            {}
+        );
+
+        return `${as}?${toQueryString(qsParams)}`;
+    }
+
+    getUrls(params) {
+        const as = this.getAs(params);
+        const href = this.getHref(params);
+
+        return {
+            as,
+            href
+        };
+    }
 }
 
 export const performRedirect = ({ req, res, redirectTo }) => {
-  res.writeHead(301, {
-    Location: `${req.protocol}://${req.headers.host}${redirectTo}`
-  });
-  res.end();
+    res.writeHead(301, {
+        Location: `${req.protocol}://${req.headers.host}${redirectTo}`
+    });
+    res.end();
 };
 
 class Routes {
-  constructor({ Link = NextLink, Router = NextRouter } = {}) {
-    this.routes = [];
-    this.Link = this.getLink(Link);
-    this.Router = this.getRouter(Router);
-  }
-
-  add({ name, pattern, page, onlyForAuthenticated, onlyForUnauthenticated }) {
-    let options;
-
-    if (name instanceof Object) {
-      options = name;
-      // eslint-disable-next-line prefer-destructuring, no-param-reassign
-      name = options.name;
-    } else {
-      if (name[0] === '/') {
-        /* eslint-disable no-param-reassign */
-        page = pattern;
-        pattern = name;
-        name = null;
-        /* eslint-enable no-param-reassign */
-      }
-
-      options = {
-        name,
-        pattern,
-        page
-      };
+    constructor({ Link = NextLink, Router = NextRouter } = {}) {
+        this.routes = [];
+        this.Link = this.getLink(Link);
+        this.Router = this.getRouter(Router);
     }
 
-    if (this.findByName(name)) {
-      throw new Error(`Route "${name}" already exists`);
-    }
+    add({ name, pattern, page, onlyForAuthenticated, onlyForUnauthenticated }) {
+        let options;
 
-    _.extend(options, {
-      onlyForAuthenticated,
-      onlyForUnauthenticated
-    });
-
-    this.routes.push(new Route(options));
-
-    return this;
-  }
-
-  findByName(name) {
-    if (name) {
-      return this.routes.filter(route => route.name === name)[0];
-    }
-
-    return null;
-  }
-
-  match(url) {
-    const parsedUrl = parse(url, true);
-    const { pathname, query } = parsedUrl;
-    const traverseOverRoutes = (result, route) => {
-      if (result.route) {
-        return result;
-      }
-
-      const params = route.match(pathname);
-
-      if (!params) {
-        return result;
-      }
-
-      return _.extend({}, result, {
-        route,
-        params,
-        query: _.extend({}, query, params)
-      });
-    };
-
-    return this.routes.reduce(traverseOverRoutes, {
-      query,
-      parsedUrl
-    });
-  }
-
-  findAndGetUrls(nameOrUrl, params) {
-    const foundRoute = this.findByName(nameOrUrl);
-
-    if (foundRoute) {
-      return {
-        route: foundRoute,
-        urls: foundRoute.getUrls(params),
-        byName: true
-      };
-    }
-    const { route, query } = this.match(nameOrUrl);
-    const href = route ? route.getHref(query) : nameOrUrl;
-    const urls = { href, as: nameOrUrl };
-
-    return {
-      route,
-      urls
-    };
-  }
-
-  getRequestHandler(app, customHandler) {
-    const nextHandler = app.getRequestHandler();
-
-    return (req, res) => {
-      const { route, query, parsedUrl } = this.match(req.url);
-
-      if (route) {
-        if (customHandler) {
-          customHandler({ req, res, route, query });
+        if (name instanceof Object) {
+            options = name;
+            // eslint-disable-next-line prefer-destructuring, no-param-reassign
+            name = options.name;
         } else {
-          const isAuthenticated = req.isAuthenticated();
+            if (name[0] === '/') {
+                /* eslint-disable no-param-reassign */
+                page = pattern;
+                pattern = name;
+                name = null;
+                /* eslint-enable no-param-reassign */
+            }
 
-          if (route.onlyForUnauthenticated && isAuthenticated) {
-            const { redirectTo } = route.onlyForUnauthenticated;
-            performRedirect({ req, res, redirectTo });
-
-            return;
-          }
-          if (route.onlyForAuthenticated && !isAuthenticated) {
-            const { redirectTo } = route.onlyForAuthenticated;
-            performRedirect({ req, res, redirectTo });
-
-            return;
-          }
-
-          app.render(req, res, route.page, query);
+            options = {
+                name,
+                pattern,
+                page
+            };
         }
-      } else {
-        nextHandler(req, res, parsedUrl);
-      }
-    };
-  }
 
-  getLink(Link) {
-    const LinkRoutes = props => {
-      const {
-        route,
-        params,
-        className,
-        activeClassName,
-        children,
-        ...newProps
-      } = props;
-      const nameOrUrl = route;
+        if (this.findByName(name)) {
+            throw new Error(`Route "${name}" already exists`);
+        }
 
-      if (nameOrUrl) {
-        // eslint-disable-next-line react/no-this-in-sfc
-        Object.assign(newProps, this.findAndGetUrls(nameOrUrl, params).urls);
-      }
+        _.extend(options, {
+            onlyForAuthenticated,
+            onlyForUnauthenticated
+        });
 
-      const isActiveRoute =
-        route === undefined
-          ? false
-          : // eslint-disable-next-line react/no-this-in-sfc
-            this.findAndGetUrls(route, params).urls.as === this.Router.asPath;
+        this.routes.push(new Route(options));
 
-      return (
-        // eslint-disable-next-line react/jsx-filename-extension
-        <Link {...newProps}>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a
-            className={cx(className, {
-              [activeClassName]: isActiveRoute
-            })}
-          >
-            {children}
-          </a>
-        </Link>
-      );
-    };
+        return this;
+    }
 
-    return LinkRoutes;
-  }
+    findByName(name) {
+        if (name) {
+            return this.routes.filter(route => route.name === name)[0];
+        }
 
-  getRouter(Router) {
-    const disallowTransition = routePath => {
-      const { route } = this.match(routePath);
-      const { isAuthenticated } = Router;
-
-      return (
-        route &&
-        ((route.onlyForUnauthenticated && isAuthenticated) ||
-          (route.onlyForAuthenticated && !isAuthenticated))
-      );
-    };
-    const wrap = method => (route, params, options) => {
-      const {
-        byName,
-        urls: { as, href }
-      } = this.findAndGetUrls(route, params);
-
-      if (disallowTransition(route)) {
         return null;
-      }
+    }
 
-      return Router[method](href, as, byName ? options : params);
-    };
+    match(url) {
+        const parsedUrl = parse(url, true);
+        const { pathname, query } = parsedUrl;
+        const traverseOverRoutes = (result, route) => {
+            if (result.route) {
+                return result;
+            }
 
-    /* eslint-disable no-param-reassign */
-    Router.pushRoute = wrap('push');
-    Router.replaceRoute = wrap('replace');
-    Router.prefetchRoute = wrap('prefetch');
+            const params = route.match(pathname);
 
-    Router.toggleAuth = isAuthenticated => {
-      Router.isAuthenticated = _.isBoolean(isAuthenticated)
-        ? isAuthenticated
-        : !Router.isAuthenticated;
-    };
-    /* eslint-enable no-param-reassign */
+            if (!params) {
+                return result;
+            }
 
-    return Router;
-  }
+            return _.extend({}, result, {
+                route,
+                params,
+                query: _.extend({}, query, params)
+            });
+        };
+
+        return this.routes.reduce(traverseOverRoutes, {
+            query,
+            parsedUrl
+        });
+    }
+
+    findAndGetUrls(nameOrUrl, params) {
+        const foundRoute = this.findByName(nameOrUrl);
+
+        if (foundRoute) {
+            return {
+                route: foundRoute,
+                urls: foundRoute.getUrls(params),
+                byName: true
+            };
+        }
+        const { route, query } = this.match(nameOrUrl);
+        const href = route ? route.getHref(query) : nameOrUrl;
+        const urls = { href, as: nameOrUrl };
+
+        return {
+            route,
+            urls
+        };
+    }
+
+    getRequestHandler(app, customHandler) {
+        const nextHandler = app.getRequestHandler();
+
+        return (req, res) => {
+            const { route, query, parsedUrl } = this.match(req.url);
+
+            if (route) {
+                if (customHandler) {
+                    customHandler({ req, res, route, query });
+                } else {
+                    const isAuthenticated = req.isAuthenticated();
+
+                    if (route.onlyForUnauthenticated && isAuthenticated) {
+                        const { redirectTo } = route.onlyForUnauthenticated;
+                        performRedirect({ req, res, redirectTo });
+
+                        return;
+                    }
+                    if (route.onlyForAuthenticated && !isAuthenticated) {
+                        const { redirectTo } = route.onlyForAuthenticated;
+                        performRedirect({ req, res, redirectTo });
+
+                        return;
+                    }
+
+                    app.render(req, res, route.page, query);
+                }
+            } else {
+                nextHandler(req, res, parsedUrl);
+            }
+        };
+    }
+
+    getLink(Link) {
+        const LinkRoutes = props => {
+            const {
+                route,
+                params,
+                className,
+                activeClassName,
+                children,
+                ...newProps
+            } = props;
+            const nameOrUrl = route;
+
+            if (nameOrUrl) {
+                Object.assign(
+                    newProps,
+                    // eslint-disable-next-line react/no-this-in-sfc
+                    this.findAndGetUrls(nameOrUrl, params).urls
+                );
+            }
+
+            const isActiveRoute =
+                route === undefined
+                    ? false
+                    : // eslint-disable-next-line react/no-this-in-sfc
+                      this.findAndGetUrls(route, params).urls.as ===
+                      this.Router.asPath; // eslint-disable-line react/no-this-in-sfc
+
+            return (
+                // eslint-disable-next-line react/jsx-filename-extension
+                <Link {...newProps}>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <a
+                        className={cx(className, {
+                            [activeClassName]: isActiveRoute
+                        })}
+                    >
+                        {children}
+                    </a>
+                </Link>
+            );
+        };
+
+        return LinkRoutes;
+    }
+
+    getRouter(Router) {
+        const disallowTransition = routePath => {
+            const { route } = this.match(routePath);
+            const { isAuthenticated } = Router;
+
+            return (
+                route &&
+                ((route.onlyForUnauthenticated && isAuthenticated) ||
+                    (route.onlyForAuthenticated && !isAuthenticated))
+            );
+        };
+        const wrap = method => (route, params, options) => {
+            const {
+                byName,
+                urls: { as, href }
+            } = this.findAndGetUrls(route, params);
+
+            if (disallowTransition(route)) {
+                return null;
+            }
+
+            return Router[method](href, as, byName ? options : params);
+        };
+
+        /* eslint-disable no-param-reassign */
+        Router.pushRoute = wrap('push');
+        Router.replaceRoute = wrap('replace');
+        Router.prefetchRoute = wrap('prefetch');
+
+        Router.toggleAuth = isAuthenticated => {
+            Router.isAuthenticated = _.isBoolean(isAuthenticated)
+                ? isAuthenticated
+                : !Router.isAuthenticated;
+        };
+        /* eslint-enable no-param-reassign */
+
+        return Router;
+    }
 }
 
 export default opts => new Routes(opts);
