@@ -9,70 +9,70 @@ import corsMiddleware from './middlewares/cors.middleware';
 import noCacheMiddleware from './middlewares/no-cache.middleware';
 import db from './models';
 
-export const initAPIServer = app => {
-  _initPassport();
+const initPassport = () => {
+    // Serialize Sessions
+    passport.serializeUser((user, done) => {
+        done(null, user);
+    });
 
-  app.use(
-    expressSession({
-      secret: 'secret123',
-      cookie: {
-        httpOnly: true
-      }
-    })
-  );
-  app.use(bodyParser.json());
-  app.use(corsMiddleware);
-  app.use(noCacheMiddleware);
-  app.use(passport.initialize());
-  app.use(passport.session());
+    // Deserialize Sessions
+    passport.deserializeUser((user, done) => {
+        db.User.find({ where: { email: user.email } })
+            // eslint-disable-next-line no-shadow
+            .then(user => {
+                done(null, user);
+            })
+            .catch(err => {
+                done(err, null);
+            });
+    });
 
-  // The GraphQL endpoint
-  app.use(
-    '/graphql',
-    bodyParser.json(),
-    graphqlExpress((req, res) => ({
-      schema,
-      context: {
-        userId: _.get(req, 'user.id', null),
-        req,
-        res
-      },
-      pretty: true
-    }))
-  );
+    // For Authentication Purposes
+    passport.use(
+        new Strategy((username, password, done) => {
+            db.User.find({ where: { email: username } }).then(user => {
+                if (!user) {
+                    done(null, false);
+                }
 
-  // GraphiQL, a visual editor for queries
-  app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+                db.User.validPassword(password, user.password, done, user);
+            });
+        })
+    );
 };
 
-// private methods
+export const initAPIServer = app => {
+    initPassport();
 
-function _initPassport() {
-  // Serialize Sessions
-  passport.serializeUser((user, done) => {
-    done(null, user);
-  });
+    app.use(
+        expressSession({
+            secret: 'secret123',
+            cookie: {
+                httpOnly: true
+            }
+        })
+    );
+    app.use(bodyParser.json());
+    app.use(corsMiddleware);
+    app.use(noCacheMiddleware);
+    app.use(passport.initialize());
+    app.use(passport.session());
 
-  //Deserialize Sessions
-  passport.deserializeUser((user, done) => {
-    db.User.find({ where: { email: user.email } })
-      .then(user => {
-        done(null, user);
-      })
-      .catch(err => {
-        done(err, null);
-      });
-  });
+    // The GraphQL endpoint
+    app.use(
+        '/graphql',
+        bodyParser.json(),
+        graphqlExpress((req, res) => ({
+            schema,
+            context: {
+                userId: _.get(req, 'user.id', null),
+                req,
+                res
+            },
+            pretty: true
+        }))
+    );
 
-  // For Authentication Purposes
-  passport.use(
-    new Strategy((username, password, done) => {
-      db.User.find({ where: { email: username } }).then(user => {
-        if (!user) {
-          return done(null, false);
-        }
-        db.User.validPassword(password, user.password, done, user);
-      });
-    })
-  );
-}
+    // GraphiQL, a visual editor for queries
+    app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+};

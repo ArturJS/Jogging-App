@@ -1,53 +1,51 @@
 import { isAuthenticatedResolver } from '../acl';
 import db from '../../models';
 
+const calcAverageSpeed = record => (record.distance / record.time) * 3.6;
+
 export const addRecord = isAuthenticatedResolver.createResolver(
-  async (root, args, context) => {
-    const { record } = args;
+    async (root, args, context) => {
+        const { record } = args;
 
-    record.userId = context.userId;
-    record.averageSpeed = _calcAverageSpeed(record);
+        record.userId = context.userId;
+        record.averageSpeed = calcAverageSpeed(record);
 
-    const createdRecord = await db.Record.create(record);
+        const createdRecord = await db.Record.create(record);
 
-    return createdRecord;
-  }
+        return createdRecord;
+    }
 );
 
 export const updateRecord = isAuthenticatedResolver.createResolver(
-  async (root, args, context) => {
-    const { record, id } = args;
+    async (root, args, context) => {
+        const { record, id } = args;
 
-    record.averageSpeed = _calcAverageSpeed(record);
+        record.averageSpeed = calcAverageSpeed(record);
 
-    await db.Record.update(record, {
-      where: {
-        id,
-        userId: context.userId
-      },
-      returning: true,
-      plain: true
-    });
+        await db.Record.update(record, {
+            where: {
+                id,
+                userId: context.userId
+            },
+            returning: true,
+            plain: true
+        });
 
-    return {
-      // todo reconsider the data we're returning
-      id,
-      ...record
-    };
-  }
+        return {
+            // todo reconsider the data we're returning
+            id,
+            ...record
+        };
+    }
 );
 
 export const deleteRecord = isAuthenticatedResolver.createResolver(
-  async (root, args, context) => {
-    await db.Record.destroy({
-      where: {
-        id: args.id,
-        userId: context.userId
-      }
-    });
-  }
+    async (root, args, context) => {
+        await db.Record.destroy({
+            where: {
+                id: args.id,
+                userId: context.userId
+            }
+        });
+    }
 );
-
-function _calcAverageSpeed(record) {
-  return (record.distance / record.time) * 3.6;
-}

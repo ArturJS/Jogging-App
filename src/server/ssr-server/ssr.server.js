@@ -8,9 +8,7 @@ const nextApp = next({ dir: uiDirectory, dev });
 const handle = routes.getRequestHandler(nextApp);
 
 export const initSSRServer = async app => {
-  await nextApp.prepare();
+    await nextApp.prepare();
 
-  app.get('*', (req, res) => {
-    return handle(req, res);
-  });
+    app.get('*', (req, res) => handle(req, res));
 };

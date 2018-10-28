@@ -14,21 +14,25 @@ initAPIServer(app, server);
 initSSRServer(app);
 
 if (config.port) {
-  server.listen(config.port, err => {
-    if (err) {
-      console.error(err);
-    }
-    console.info(
-      `----\n==> ✅  ${config.app.title} is running, talking to API server on ${
-        config.uiTargetUrl
-      }.`
-    );
-    console.info(
-      `==> 💻  Open ${config.uiTargetUrl} in a browser to view the app.`
-    );
-  });
+    server.listen(config.port, err => {
+        if (err) {
+            // eslint-disable-next-line no-console
+            console.error(err);
+        }
+        // eslint-disable-next-line no-console
+        console.info(
+            `----\n==> ✅  ${
+                config.app.title
+            } is running, talking to API server on ${config.uiTargetUrl}.`
+        );
+        // eslint-disable-next-line no-console
+        console.info(
+            `==> 💻  Open ${config.uiTargetUrl} in a browser to view the app.`
+        );
+    });
 } else {
-  console.error(
-    '==>     ERROR: No PORT environment variable has been specified'
-  );
+    // eslint-disable-next-line no-console
+    console.error(
+        '==>     ERROR: No PORT environment variable has been specified'
+    );
 }

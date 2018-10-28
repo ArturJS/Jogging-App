@@ -2,108 +2,109 @@ import { UserError } from 'graphql-errors';
 import db from '../../models';
 
 const waitForLogin = (req, user) =>
-  new Promise((resolve, reject) => {
-    req.login(user, {}, err => {
-      if (err) {
-        reject(new UserError(`Sign In failed. ${err}`));
-      }
+    new Promise((resolve, reject) => {
+        req.login(user, {}, err => {
+            if (err) {
+                reject(new UserError(`Sign In failed. ${err}`));
+            }
 
-      return resolve(user);
+            return resolve(user);
+        });
     });
-  });
+
+const passwordValidator = async signUpPayload => {
+    const { password, repeatPassword } = signUpPayload;
+
+    if (password !== repeatPassword) {
+        throw new UserError('Password and repeat password do not match!');
+    }
+};
+
+const emailUniquenessValidator = async signUpPayload => {
+    const { email } = signUpPayload;
+    const userWithSameEmail = await db.User.find({ where: { email } });
+
+    if (userWithSameEmail) {
+        throw new UserError('User with the same email already exists!');
+    }
+};
+
+const validateSignUp = async signUpPayload => {
+    await passwordValidator(signUpPayload);
+    await emailUniquenessValidator(signUpPayload);
+};
 
 export const signIn = async (root, args, { req }) => {
-  const { email, password } = args;
+    const { email, password } = args;
 
-  return new Promise((resolve, reject) => {
-    db.User.find({
-      where: {
-        email
-      }
-    }).then(user => {
-      if (!user) {
-        reject(new UserError('Wrong email or password'));
+    return new Promise((resolve, reject) => {
+        db.User.find({
+            where: {
+                email
+            }
+        }).then(user => {
+            if (!user) {
+                reject(new UserError('Wrong email or password'));
 
-        return;
-      }
+                return;
+            }
 
-      db.User.validPassword(
-        password,
-        user.password,
-        (error, user) => {
-          if (error) {
-            reject(new UserError(error));
+            db.User.validPassword(
+                password,
+                user.password,
+                // eslint-disable-next-line no-shadow
+                (error, user) => {
+                    if (error) {
+                        reject(new UserError(error));
 
-            return;
-          }
+                        return;
+                    }
 
-          resolve(user);
-        },
-        user
-      );
+                    resolve(user);
+                },
+                user
+            );
 
-      req.login(user, {}, err => {
-        if (err) {
-          reject(new UserError(`Sign In failed. ${err}`));
-        }
-      });
+            req.login(user, {}, err => {
+                if (err) {
+                    reject(new UserError(`Sign In failed. ${err}`));
+                }
+            });
+        });
     });
-  });
 };
 
 export const signOut = async (root, args, { req }) => {
-  req.logOut();
+    req.logOut();
 
-  if (req.session) {
-    req.session.destroy();
-  }
+    if (req.session) {
+        req.session.destroy();
+    }
 
-  return true;
+    return true;
 };
 
 export const signUp = async (root, args, { req }) => {
-  await _validateSignUp(args);
+    await validateSignUp(args);
 
-  const { firstName, lastName, email, password } = args;
+    const { firstName, lastName, email, password } = args;
 
-  const user = {
-    firstName,
-    lastName,
-    email
-  };
+    const user = {
+        firstName,
+        lastName,
+        email
+    };
 
-  try {
-    await db.User.create({
-      ...user,
-      password
-    });
-  } catch (err) {
-    throw new UserError(`Sign Up failed. ${err}`);
-  }
+    try {
+        await db.User.create({
+            ...user,
+            password
+        });
+    } catch (err) {
+        throw new UserError(`Sign Up failed. ${err}`);
+    }
 
-  await waitForLogin(req, user);
+    await waitForLogin(req, user);
 
-  return user;
+    return user;
 };
-
-async function _validateSignUp(signUpPayload) {
-  await _passwordValidator(signUpPayload);
-  await _emailUniquenessValidator(signUpPayload);
-}
-
-async function _passwordValidator(signUpPayload) {
-  const { password, repeatPassword } = signUpPayload;
-
-  if (password !== repeatPassword) {
-    throw new UserError('Password and repeat password do not match!');
-  }
-}
-
-async function _emailUniquenessValidator(signUpPayload) {
-  const { email } = signUpPayload;
-  const userWithSameEmail = await db.User.find({ where: { email } });
-
-  if (userWithSameEmail) {
-    throw new UserError('User with the same email already exists!');
-  }
-}
