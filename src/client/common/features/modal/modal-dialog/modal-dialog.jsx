@@ -10,7 +10,8 @@ import {
   lifecycle
 } from 'recompose';
 import _ from 'lodash';
-import modalProvider, { MODAL_TYPES } from '../modal.provider';
+import { Router } from 'routes';
+import modalProvider, { MODAL_TYPES, CLOSE_DELAY_MS } from '../modal.provider';
 import './modal-dialog.scss';
 
 const defaultBackdropStyle = {
@@ -27,9 +28,7 @@ const noBackdropStyle = {
   }
 };
 
-// todo close modal when Router.events.on('routeChangeComplete', this.dismiss);
-
-const enhance = compose(
+const withModalsSubscription = compose(
   withStateHandlers(
     {
       modals: []
@@ -47,7 +46,28 @@ const enhance = compose(
     componentWillUnmount() {
       this.unlisten();
     }
+  })
+);
+
+const withCloseAllOnRouteChange = compose(
+  withHandlers({
+    dismissAll: () => () => {
+      modalProvider.closeAll(false);
+    }
   }),
+  lifecycle({
+    componentDidMount() {
+      Router.events.on('routeChangeComplete', this.props.dismissAll);
+    },
+    componentWillUnmount() {
+      Router.events.off('routeChangeComplete', this.props.dismissAll);
+    }
+  })
+);
+
+const enhance = compose(
+  withCloseAllOnRouteChange,
+  withModalsSubscription,
   withHandlers({
     close: () => id => {
       modalProvider.closeModal({
@@ -129,7 +149,7 @@ const ModalDialog = ({
         style={modal.noBackdrop ? noBackdropStyle : defaultBackdropStyle}
         className={`modal ${modal.className}`}
         shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
-        closeTimeoutMS={300}
+        closeTimeoutMS={CLOSE_DELAY_MS}
         contentLabel=""
         ariaHideApp={false}
       >
@@ -138,7 +158,7 @@ const ModalDialog = ({
             <CSSTransition
               key={modal.id}
               appear
-              timeout={300}
+              timeout={CLOSE_DELAY_MS}
               classNames="modal-show"
               mountOnEnter
               unmountOnExit

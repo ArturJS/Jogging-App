@@ -6,12 +6,11 @@ export const MODAL_TYPES = {
   info: 'INFO_MODAL',
   custom: 'CUSTOM_MODAL'
 };
+// it's necessary to perform exit animation in modal-dialog.jsx
+export const CLOSE_DELAY_MS = 300;
 
 let id = 0;
 const generateId = () => ++id;
-
-// it's necessary to perform exit animation in modal-dialog.jsx
-const CLOSE_DELAY_MS = 10;
 
 class Modal {
   constructor({
@@ -139,6 +138,11 @@ class ModalProvider {
 
     modalToClose.isOpen = false;
     modalToClose.close(reason);
+
+    this._store.setState({
+      // necessary to trigger update
+      modals: [...modals]
+    });
 
     await sleep(CLOSE_DELAY_MS);
 
