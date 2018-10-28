@@ -11,7 +11,7 @@ const timePicker = ({
 
   return (
     <TimePickerInput
-      id={id}
+      id={name || id}
       className={className}
       name={field.name}
       value={field.value}

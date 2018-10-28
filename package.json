@@ -131,7 +131,7 @@
     "postcss-loader": "^2.1.4",
     "postcss-scss": "^1.0.5",
     "prop-types": "15.5.10",
-    "rc-time-picker": "3.0.0",
+    "rc-time-picker": "^3.4.0",
     "react": "^16.5.2",
     "react-apollo": "^2.1.9",
     "react-dates": "^18.1.0",
