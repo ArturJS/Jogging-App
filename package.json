@@ -26,6 +26,7 @@
         "start": "npx cross-env NODE_ENV=production node ./src/index.js",
         "dev": "npx cross-env NODE_ENV=development node ./src/index.js",
         "build": "cd ./src/client && next build",
+        "flow": "npx flow",
         "lint": "eslint -c .eslintrc src local_modules",
         "test": "jest --env=jsdom",
         "test:coverage": "jest --env=jsdom --coverage",
@@ -37,11 +38,13 @@
     },
     "lint-staged": {
         "src/**/*.{js,jsx,mjs}": [
+            "flow",
             "prettier --write",
             "eslint --fix",
             "git add"
         ],
         "local_modules/**/*.{js,jsx,mjs}": [
+            "flow",
             "prettier --write",
             "eslint --fix",
             "git add"
@@ -176,6 +179,7 @@
         "yup": "^0.26.6"
     },
     "devDependencies": {
+        "@babel/preset-flow": "^7.0.0",
         "babel-eslint": "^10.0.1",
         "eslint": "^5.8.0",
         "eslint-config-airbnb": "^17.1.0",
@@ -188,6 +192,7 @@
         "eslint-plugin-jsx-a11y": "^6.1.2",
         "eslint-plugin-prettier": "^3.0.0",
         "eslint-plugin-react": "^7.11.1",
+        "flow-bin": "^0.84.0",
         "husky": "^1.1.2",
         "lint-staged": "^7.3.0",
         "prettier": "^1.14.3"
