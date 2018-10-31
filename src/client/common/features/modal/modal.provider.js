@@ -1,4 +1,6 @@
-import { sleep, createStore } from './utils';
+// @flow
+import type { Node } from 'react';
+import { sleep, createStore, Store } from './utils';
 
 export const MODAL_TYPES = {
     error: 'ERROR_MODAL',
@@ -16,7 +18,49 @@ const generateId = () => {
     return modalId;
 };
 
+type TModalResult = {|
+    result: Promise<string>,
+    close: (reason?: string) => void
+|};
+
+type TModalConfig = {|
+    title?: string,
+    body: string | Node,
+    className?: string
+|};
+
+type TModalType = $Values<typeof MODAL_TYPES>;
+
+type TModalOpenConfig = {|
+    ...TModalConfig,
+    type: TModalType,
+    noBackdrop?: boolean
+|};
+
+type TState = {
+    // eslint-disable-next-line flowtype/no-weak-types
+    [string]: mixed
+};
+
 class Modal {
+    id: number;
+
+    title: string;
+
+    body: string | Node;
+
+    type: TModalType;
+
+    close: (reason?: string) => void;
+
+    className: string;
+
+    shouldCloseOnOverlayClick: ?boolean;
+
+    noBackdrop: boolean;
+
+    isOpen: boolean;
+
     constructor({
         id,
         title = '',
@@ -40,13 +84,15 @@ class Modal {
 }
 
 class ModalProvider {
+    _store: Store;
+
     constructor() {
         this._store = createStore({
             modals: []
         });
     }
 
-    showConfirm({ title, body, className }) {
+    showConfirm({ title, body, className }: TModalConfig) {
         const { result, close } = this._openModal({
             title,
             body,
@@ -60,7 +106,7 @@ class ModalProvider {
         };
     }
 
-    showError({ title, body, className = '' }) {
+    showError({ title, body, className = '' }: TModalConfig): TModalResult {
         const { result, close } = this._openModal({
             title,
             body,
@@ -75,7 +121,7 @@ class ModalProvider {
         };
     }
 
-    showCustom({ title, body, className }) {
+    showCustom({ title, body, className }: TModalConfig): TModalResult {
         const { result, close } = this._openModal({
             title,
             body,
@@ -89,7 +135,7 @@ class ModalProvider {
         };
     }
 
-    async closeAll(reason) {
+    async closeAll(reason?: string) {
         const { modals } = this._store.getState();
 
         modals.forEach(modal => {
@@ -103,14 +149,20 @@ class ModalProvider {
         this._store.setState({ modals: [] });
     }
 
-    subscribe(callback) {
+    subscribe(callback: (state: TState) => void): () => void {
         callback(this._store.getState());
 
         return this._store.subscribe(callback);
     }
 
-    _openModal({ title, body, type, className, noBackdrop }) {
-        let close;
+    _openModal({
+        title,
+        body,
+        type,
+        className,
+        noBackdrop
+    }: TModalOpenConfig): TModalResult {
+        let close = () => {};
         const result = new Promise(resolve => {
             close = resolve;
         });
@@ -122,7 +174,8 @@ class ModalProvider {
             type,
             className,
             close,
-            noBackdrop
+            noBackdrop,
+            shouldCloseOnOverlayClick: true
         });
 
         this._store.setState(({ modals }) => ({
@@ -137,7 +190,7 @@ class ModalProvider {
         };
     }
 
-    async closeModal({ id, reason }) {
+    async closeModal({ id, reason }: { id: number, reason?: string }) {
         const { modals } = this._store.getState();
         const modalToClose = modals.find(modal => modal.id === id);
 

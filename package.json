@@ -38,13 +38,11 @@
     },
     "lint-staged": {
         "src/**/*.{js,jsx,mjs}": [
-            "flow",
             "prettier --write",
             "eslint --fix",
             "git add"
         ],
         "local_modules/**/*.{js,jsx,mjs}": [
-            "flow",
             "prettier --write",
             "eslint --fix",
             "git add"
@@ -53,7 +51,7 @@
     "husky": {
         "hooks": {
             "post-commit": "git update-index --again",
-            "pre-commit": "npm run lint-staged"
+            "pre-commit": "flow check && npm run lint-staged"
         }
     },
     "jest": {
