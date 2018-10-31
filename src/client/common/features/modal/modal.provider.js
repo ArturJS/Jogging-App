@@ -18,9 +18,11 @@ const generateId = () => {
     return modalId;
 };
 
+type TCloseFn = (reason?: string) => void;
+
 type TModalResult = {|
     result: Promise<string>,
-    close: (reason?: string) => void
+    close: TCloseFn
 |};
 
 type TModalConfig = {|
@@ -37,11 +39,6 @@ type TModalOpenConfig = {|
     noBackdrop?: boolean
 |};
 
-type TState = {
-    // eslint-disable-next-line flowtype/no-weak-types
-    [string]: mixed
-};
-
 class Modal {
     id: number;
 
@@ -51,7 +48,7 @@ class Modal {
 
     type: TModalType;
 
-    close: (reason?: string) => void;
+    close: TCloseFn;
 
     className: string;
 
@@ -82,6 +79,10 @@ class Modal {
         this.isOpen = true;
     }
 }
+
+type TState = {|
+    modals: Array<Modal>
+|};
 
 class ModalProvider {
     _store: Store;
@@ -136,7 +137,7 @@ class ModalProvider {
     }
 
     async closeAll(reason?: string) {
-        const { modals } = this._store.getState();
+        const { modals }: { modals: Array<Modal> } = this._store.getState();
 
         modals.forEach(modal => {
             // eslint-disable-next-line no-param-reassign
@@ -182,7 +183,7 @@ class ModalProvider {
             modals: [...modals, newModal]
         }));
 
-        result.then(reason => this.closeModal({ id, reason }));
+        result.then((reason: string) => this.closeModal({ id, reason }));
 
         return {
             result,
@@ -191,8 +192,12 @@ class ModalProvider {
     }
 
     async closeModal({ id, reason }: { id: number, reason?: string }) {
-        const { modals } = this._store.getState();
+        const { modals }: { modals: Array<Modal> } = this._store.getState();
         const modalToClose = modals.find(modal => modal.id === id);
+
+        if (!modalToClose) {
+            return;
+        }
 
         modalToClose.isOpen = false;
         modalToClose.close(reason);
