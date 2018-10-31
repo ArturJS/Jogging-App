@@ -1,6 +1,8 @@
 // @flow
+
 import type { Node } from 'react';
-import { sleep, createStore, Store } from './utils';
+import sleep from './utils/sleep';
+import { createStore, Store } from './utils/store';
 
 export const MODAL_TYPES = {
     error: 'ERROR_MODAL',
@@ -179,7 +181,7 @@ class ModalProvider {
             shouldCloseOnOverlayClick: true
         });
 
-        this._store.setState(({ modals }) => ({
+        this._store.setState(({ modals }: { modals: Array<Modal> }) => ({
             modals: [...modals, newModal]
         }));
 

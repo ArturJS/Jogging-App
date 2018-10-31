@@ -1,17 +1,25 @@
+// @flow
+
+// eslint-disable-next-line flowtype/no-weak-types
+type TNotifyPayload = Array<any>;
+type TSubscribeFn = (...args: TNotifyPayload) => void;
+
 export default class Observer {
-  constructor() {
-    this._subscribers = [];
-  }
+    _subscribers: Array<TSubscribeFn>;
 
-  subscribe(fn) {
-    this._subscribers.push(fn);
-  }
+    constructor() {
+        this._subscribers = [];
+    }
 
-  unsubscribe(fn) {
-    this._subscribers = this._subscribers.filter(sub => sub !== fn);
-  }
+    subscribe(fn: TSubscribeFn) {
+        this._subscribers.push(fn);
+    }
 
-  trigger(...args) {
-    this._subscribers.forEach(fn => fn(...args));
-  }
+    unsubscribe(fn: TSubscribeFn) {
+        this._subscribers = this._subscribers.filter(sub => sub !== fn);
+    }
+
+    trigger(...args: TNotifyPayload) {
+        this._subscribers.forEach(fn => fn(...args));
+    }
 }

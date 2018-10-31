@@ -1,12 +1,23 @@
+// @flow
+
 import Observer from './observer';
 
+// eslint-disable-next-line flowtype/no-weak-types
+type TState = Object;
+
+type TNextStateOrUpdateFn = TState | ((prevState: TState) => TState);
+
 export class Store {
-    constructor(initialState) {
+    _state: TState;
+
+    _observer: Observer;
+
+    constructor(initialState: TState) {
         this._state = initialState;
         this._observer = new Observer();
     }
 
-    subscribe(callback) {
+    subscribe(callback: (state: TState) => void) {
         this._observer.subscribe(callback);
 
         return () => {
@@ -14,53 +25,35 @@ export class Store {
         };
     }
 
-    getState() {
+    getState(): TState {
         return this._state;
     }
 
-    setState(nextStateOrUpdateFn) {
+    setState(nextStateOrUpdateFn: TNextStateOrUpdateFn): void {
         const nextState = this._extractNextState(nextStateOrUpdateFn);
-
-        if (!nextState) {
-            // eslint-disable-next-line no-console
-            console.error(
-                [
-                    '`setState` method waiting for object or function but got: ',
-                    `value: ${nextStateOrUpdateFn}`,
-                    `typeof: ${typeof nextStateOrUpdateFn}`
-                ].join('')
-            );
-
-            return;
-        }
 
         this._mergeNextState(nextState);
 
         this._notifySubscribers(this.getState());
     }
 
-    _notifySubscribers(state) {
+    _notifySubscribers(state: TState) {
         this._observer.trigger(state);
     }
 
-    _extractNextState(nextStateOrUpdateFn) {
+    _extractNextState(nextStateOrUpdateFn: TNextStateOrUpdateFn): TState {
         if (typeof nextStateOrUpdateFn === 'function') {
             const updateFn = nextStateOrUpdateFn;
             const nextState = updateFn(this.getState());
 
             return nextState;
         }
+        const nextState = nextStateOrUpdateFn;
 
-        if (nextStateOrUpdateFn && typeof nextStateOrUpdateFn === 'object') {
-            const nextState = nextStateOrUpdateFn;
-
-            return nextState;
-        }
-
-        return null;
+        return nextState;
     }
 
-    _mergeNextState(nextState) {
+    _mergeNextState(nextState: TState) {
         this._state = {
             ...this._state,
             ...nextState
@@ -68,4 +61,4 @@ export class Store {
     }
 }
 
-export const createStore = initialState => new Store(initialState);
+export const createStore = (initialState: TState) => new Store(initialState);
