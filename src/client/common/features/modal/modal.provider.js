@@ -86,7 +86,7 @@ type TState = {|
     modals: Array<Modal>
 |};
 
-class ModalProvider {
+export class ModalProvider {
     _store: Store;
 
     constructor() {
@@ -95,7 +95,7 @@ class ModalProvider {
         });
     }
 
-    showConfirm({ title, body, className }: TModalConfig) {
+    confirm({ title, body, className }: TModalConfig) {
         const { result, close } = this._openModal({
             title,
             body,
@@ -109,7 +109,7 @@ class ModalProvider {
         };
     }
 
-    showError({ title, body, className = '' }: TModalConfig): TModalResult {
+    error({ title, body, className = '' }: TModalConfig): TModalResult {
         const { result, close } = this._openModal({
             title,
             body,
@@ -124,7 +124,7 @@ class ModalProvider {
         };
     }
 
-    showCustom({ title, body, className }: TModalConfig): TModalResult {
+    custom({ title, body, className }: TModalConfig): TModalResult {
         const { result, close } = this._openModal({
             title,
             body,

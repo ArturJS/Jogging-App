@@ -3,7 +3,7 @@
 <PROJECT_ROOT>/node_modules/config-chain/test/.*
 
 [include]
-<PROJECT_ROOT>/flow-typed
+./flow-typed
 
 [libs]
 

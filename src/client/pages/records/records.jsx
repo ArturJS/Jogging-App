@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
@@ -46,7 +48,7 @@ const enhance = compose(
     withHandlers({
         showAddRecordModal: ({ getRef }) => () => {
             modal
-                .showCustom({
+                .custom({
                     title: 'Add new record',
                     body: <EditRecordModal isAddMode />
                 })
@@ -58,7 +60,7 @@ const enhance = compose(
         },
         showEditRecordModal: ({ getRef }) => recordId => {
             modal
-                .showCustom({
+                .custom({
                     title: 'Edit record',
                     body: <EditRecordModal recordId={recordId} />
                 })
@@ -83,7 +85,7 @@ const enhance = compose(
             const record = mapRecordToDisplay(rawRecord);
 
             modal
-                .showConfirm({
+                .custom({
                     title: 'Confirm your action',
                     body: (
                         <div>
@@ -223,7 +225,7 @@ const enhance = compose(
 
             return (
                 <Query query={RECORDS_QUERY} variables={filters}>
-                    {({ loading, refetch, data: { records } }) => {
+                    {({ loading, refetch, data }) => {
                         if (loading) {
                             return <div>Loading...</div>;
                         }
@@ -231,7 +233,7 @@ const enhance = compose(
                         setRef('refetchRecords', refetch);
 
                         // eslint-disable-next-line no-param-reassign
-                        records = records || [];
+                        const records = (data && data.records) || [];
 
                         const noRecords = records.length === 0;
 
