@@ -19,7 +19,7 @@ export default class Observer {
         this._subscribers = this._subscribers.filter(sub => sub !== fn);
     }
 
-    trigger(...args: TNotifyPayload) {
+    notify(...args: TNotifyPayload) {
         this._subscribers.forEach(fn => fn(...args));
     }
 }

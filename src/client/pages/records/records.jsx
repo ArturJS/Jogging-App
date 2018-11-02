@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import ReactTable from 'react-table';
+import { compose, withProps, withStateHandlers, withHandlers } from 'recompose';
 import moment from 'moment';
 import { Query, withApollo, graphql } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { REPORTS_QUERY } from '../reports';
-import { withPreloadRoutes } from '../../common/hocs';
+import { withPreloadRoutes, withRefs } from '../../common/hocs';
 import modal from '../../common/features/modal';
 import { RECORD_QUERY } from '../../common/graphql/queries';
 import { mapRecordToDisplay } from './utils/mappers';
@@ -26,37 +27,103 @@ const RECORDS_QUERY = gql`
     }
 `;
 
-@graphql(
-    gql`
-        mutation($id: ID!) {
-            deleteRecord(id: $id)
+const enhance = compose(
+    graphql(
+        gql`
+            mutation($id: ID!) {
+                deleteRecord(id: $id)
+            }
+        `,
+        {
+            name: 'removeRecord'
         }
-    `,
-    {
-        name: 'removeRecord'
-    }
-)
-@withPreloadRoutes({
-    routes: ['sign-up', 'reports']
-})
-@withApollo
-class Records extends Component {
-    static propTypes = {
-        removeRecord: PropTypes.func.isRequired,
-        client: PropTypes.shape({
-            query: PropTypes.func.isRequired
-        }).isRequired
-    };
+    ),
+    withPreloadRoutes({
+        routes: ['sign-up', 'reports']
+    }),
+    withApollo,
+    withRefs,
+    withHandlers({
+        showAddRecordModal: ({ getRef }) => () => {
+            modal
+                .showCustom({
+                    title: 'Add new record',
+                    body: <EditRecordModal isAddMode />
+                })
+                .result.then(({ success }) => {
+                    if (success) {
+                        getRef('refetchRecords')();
+                    }
+                });
+        },
+        showEditRecordModal: ({ getRef }) => recordId => {
+            modal
+                .showCustom({
+                    title: 'Edit record',
+                    body: <EditRecordModal recordId={recordId} />
+                })
+                .result.then(({ success }) => {
+                    if (success) {
+                        getRef('refetchRecords')();
+                    }
+                });
+        },
+        showRemoveRecordModal: ({
+            getRef,
+            removeRecord,
+            client
+        }) => async recordId => {
+            const {
+                data: { record: rawRecord }
+            } = await client.query({
+                query: RECORD_QUERY,
+                variables: { id: recordId }
+            });
 
-    state = {
-        filters: {
-            startDate: null,
-            endDate: null
+            const record = mapRecordToDisplay(rawRecord);
+
+            modal
+                .showConfirm({
+                    title: 'Confirm your action',
+                    body: (
+                        <div>
+                            <div>
+                                Are you sure you want to delete this record?
+                            </div>
+                            <div>
+                                {`Date: ${moment(record.date).format(
+                                    'DD.MM.YYYY'
+                                )};
+                                Distance: ${record.distance};
+                                Time: ${record.time};
+                                Average speed: ${record.averageSpeed}.`}
+                            </div>
+                        </div>
+                    )
+                })
+                .result.then(async result => {
+                    if (!result) return;
+
+                    await removeRecord({
+                        variables: {
+                            id: recordId
+                        },
+                        refetchQueries: [
+                            {
+                                query: REPORTS_QUERY,
+                                variables: {
+                                    awaitRefetchQueries: true
+                                }
+                            }
+                        ]
+                    });
+
+                    getRef('refetchRecords')();
+                });
         }
-    };
-
-    componentWillMount() {
-        this.recordsGridColumns = [
+    }),
+    withProps(({ showEditRecordModal, showRemoveRecordModal }) => ({
+        recordsGridColumns: [
             {
                 Header: 'Date',
                 accessor: 'date',
@@ -93,7 +160,7 @@ class Records extends Component {
                 Header: 'Edit',
                 Cell: cellInfo => {
                     const { id } = cellInfo.original;
-                    const onEditClick = () => this.showEditRecordModal(id);
+                    const onEditClick = () => showEditRecordModal(id);
 
                     // eslint-disable-next-line no-param-reassign
                     cellInfo.onEditClick = cellInfo.onEditClick || onEditClick;
@@ -114,7 +181,7 @@ class Records extends Component {
                 Header: 'Delete',
                 Cell: cellInfo => {
                     const { id } = cellInfo.original;
-                    const onDeleteClick = () => this.showRemoveRecordModal(id);
+                    const onDeleteClick = () => showRemoveRecordModal(id);
 
                     // eslint-disable-next-line no-param-reassign
                     cellInfo.onDeleteClick =
@@ -132,171 +199,107 @@ class Records extends Component {
                 resizable: false,
                 sortable: false
             }
-        ];
-    }
-
-    showAddRecordModal = () => {
-        modal
-            .showCustom({
-                title: 'Add new record',
-                body: <EditRecordModal isAddMode />
-            })
-            .result.then(({ success }) => {
-                if (success) {
-                    this.refetchRecords();
-                }
-            });
-    };
-
-    showEditRecordModal = recordId => {
-        modal
-            .showCustom({
-                title: 'Edit record',
-                body: <EditRecordModal recordId={recordId} />
-            })
-            .result.then(({ success }) => {
-                if (success) {
-                    this.refetchRecords();
-                }
-            });
-    };
-
-    showRemoveRecordModal = async recordId => {
-        const { client } = this.props;
-        const {
-            data: { record: rawRecord }
-        } = await client.query({
-            query: RECORD_QUERY,
-            variables: { id: recordId }
-        });
-
-        const record = mapRecordToDisplay(rawRecord);
-
-        modal
-            .showConfirm({
-                title: 'Confirm your action',
-                body: (
-                    <div>
-                        <div>Are you sure you want to delete this record?</div>
-                        <div>
-                            {`Date: ${moment(record.date).format('DD.MM.YYYY')};
-              Distance: ${record.distance};
-              Time: ${record.time};
-              Average speed: ${record.averageSpeed}.`}
-                        </div>
-                    </div>
-                )
-            })
-            .result.then(async result => {
-                if (!result) return;
-
-                const { removeRecord } = this.props;
-
-                await removeRecord({
-                    variables: {
-                        id: recordId
-                    },
-                    refetchQueries: [
-                        {
-                            query: REPORTS_QUERY,
-                            variables: {
-                                awaitRefetchQueries: true
-                            }
-                        }
-                    ]
-                });
-
-                this.refetchRecords();
-            });
-    };
-
-    filterRecords = ({ startDate, endDate }) => {
-        this.setState({
+        ]
+    })),
+    withStateHandlers(
+        {
             filters: {
-                startDate: startDate && startDate.startOf('day').valueOf(),
-                endDate: endDate && endDate.startOf('day').valueOf()
+                startDate: null,
+                endDate: null
             }
-        });
-    };
+        },
+        {
+            filterRecords: () => ({ startDate, endDate }) => ({
+                filters: {
+                    startDate: startDate && startDate.startOf('day').valueOf(),
+                    endDate: endDate && endDate.startOf('day').valueOf()
+                }
+            })
+        }
+    ),
+    withHandlers({
+        renderRecordsGrid: ({ filters, recordsGridColumns, setRef }) => () => {
+            const hasFilters = !!(filters.startDate || filters.endDate);
 
-    renderRecordsGrid() {
-        const { filters } = this.state;
-        const hasFilters = !!(filters.startDate || filters.endDate);
+            return (
+                <Query query={RECORDS_QUERY} variables={filters}>
+                    {({ loading, refetch, data: { records } }) => {
+                        if (loading) {
+                            return <div>Loading...</div>;
+                        }
 
-        return (
-            <Query query={RECORDS_QUERY} variables={filters}>
-                {({ loading, refetch, data: { records } }) => {
-                    if (loading) {
-                        return <div>Loading...</div>;
-                    }
+                        setRef('refetchRecords', refetch);
 
-                    this.refetchRecords = refetch;
+                        // eslint-disable-next-line no-param-reassign
+                        records = records || [];
 
-                    // eslint-disable-next-line no-param-reassign
-                    records = records || [];
+                        const noRecords = records.length === 0;
 
-                    const noRecords = records.length === 0;
+                        if (noRecords) {
+                            if (hasFilters) {
+                                return (
+                                    <div className="no-records-placeholder">
+                                        <p>
+                                            There are no records in selected
+                                            date range...
+                                        </p>
+                                    </div>
+                                );
+                            }
 
-                    if (noRecords) {
-                        if (hasFilters) {
                             return (
                                 <div className="no-records-placeholder">
-                                    <p>
-                                        There are no records in selected date
-                                        range...
-                                    </p>
+                                    <p>Your records list is empty...</p>
+                                    <p>Feel free to create new record!</p>
                                 </div>
                             );
                         }
 
+                        const recordsGridData = records.map(mapRecordToDisplay);
+
                         return (
-                            <div className="no-records-placeholder">
-                                <p>Your records list is empty...</p>
-                                <p>Feel free to create new record!</p>
-                            </div>
+                            <ReactTable
+                                className="records-table"
+                                data={recordsGridData}
+                                columns={recordsGridColumns}
+                                pageSize={recordsGridData.length}
+                                showPageSizeOptions={false}
+                                showPagination={false}
+                            />
                         );
-                    }
+                    }}
+                </Query>
+            );
+        }
+    })
+);
 
-                    const recordsGridData = records.map(mapRecordToDisplay);
+const Records = ({ filterRecords, renderRecordsGrid, showAddRecordModal }) => (
+    <div className="page records-page">
+        <Helmet title="Records" />
+        <h1>Records</h1>
 
-                    return (
-                        <ReactTable
-                            className="records-table"
-                            data={recordsGridData}
-                            columns={this.recordsGridColumns}
-                            pageSize={recordsGridData.length}
-                            showPageSizeOptions={false}
-                            showPagination={false}
-                        />
-                    );
-                }}
-            </Query>
-        );
-    }
+        <DateRangeFilter onDatesChange={filterRecords} />
 
-    render() {
-        return (
-            <div className="page records-page">
-                <Helmet title="Records" />
-                <h1>Records</h1>
+        {renderRecordsGrid()}
 
-                <DateRangeFilter onDatesChange={this.filterRecords} />
+        <div className="buttons-group">
+            <button
+                type="button"
+                className="btn btn-primary"
+                onClick={showAddRecordModal}
+            >
+                <i className="fa fa-plus" />
+                Add new record
+            </button>
+        </div>
+    </div>
+);
 
-                {this.renderRecordsGrid()}
+Records.propTypes = {
+    filterRecords: PropTypes.func.isRequired,
+    renderRecordsGrid: PropTypes.func.isRequired,
+    showAddRecordModal: PropTypes.func.isRequired
+};
 
-                <div className="buttons-group">
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={this.showAddRecordModal}
-                    >
-                        <i className="fa fa-plus" />
-                        Add new record
-                    </button>
-                </div>
-            </div>
-        );
-    }
-}
-
-export default Records;
+export default enhance(Records);

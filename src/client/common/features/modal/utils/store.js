@@ -38,7 +38,7 @@ export class Store {
     }
 
     _notifySubscribers(state: TState) {
-        this._observer.trigger(state);
+        this._observer.notify(state);
     }
 
     _extractNextState(nextStateOrUpdateFn: TNextStateOrUpdateFn): TState {
