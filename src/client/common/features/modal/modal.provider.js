@@ -1,6 +1,6 @@
 // @flow
 
-import type { Node } from 'react';
+import type { Element } from 'react';
 import sleep from './utils/sleep';
 import { createStore, Store } from './utils/store';
 
@@ -27,6 +27,9 @@ type TCloseFn = (reason?: TReason) => void;
 
 type TDismissFn = (reason?: TReason) => void;
 
+// eslint-disable-next-line flowtype/no-weak-types
+type TBody = string | Element<any>;
+
 type TModalResult = {|
     result: Promise<TReason>,
     close: TCloseFn
@@ -34,7 +37,7 @@ type TModalResult = {|
 
 type TModalConfig = {|
     title?: string,
-    body: string | Node,
+    body: TBody,
     className?: string,
     throwCancelError?: boolean
 |};
@@ -54,7 +57,7 @@ export class Modal {
 
     title: string;
 
-    body: string | Node;
+    body: TBody;
 
     type: TModalType;
 
@@ -83,7 +86,9 @@ export class Modal {
     }: {|
         id: number,
         title: string,
-        body: string | Node,
+
+        // eslint-disable-next-line flowtype/no-weak-types
+        body: string | Element<any>,
         type: TModalType,
         close: TCloseFn,
         dismiss: TDismissFn,

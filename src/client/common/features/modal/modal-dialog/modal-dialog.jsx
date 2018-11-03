@@ -11,7 +11,6 @@ import {
     withStateHandlers,
     lifecycle
 } from 'recompose';
-import _ from 'lodash';
 import { Router } from 'routes';
 import modalProvider, {
     MODAL_TYPES,
@@ -19,6 +18,11 @@ import modalProvider, {
     Modal
 } from '../modal.provider';
 import './modal-dialog.scss';
+
+// eslint-disable-next-line flowtype/no-weak-types
+type TRenderFn = (modal: Modal) => Element<any>;
+
+type TClose = (id: number) => void;
 
 const defaultBackdropStyle = {
     overlay: {
@@ -46,7 +50,11 @@ const withModalsSubscription = compose(
     lifecycle({
         componentDidMount() {
             this.unlisten = modalProvider.subscribe(({ modals }) => {
-                this.props.setModals(modals);
+                const {
+                    setModals
+                }: { setModals: (modals: Array<Modal>) => void } = this.props;
+
+                setModals(modals);
             });
         },
         componentWillUnmount() {
@@ -63,10 +71,14 @@ const withCloseAllOnRouteChange = compose(
     }),
     lifecycle({
         componentDidMount() {
-            Router.events.on('routeChangeComplete', this.props.dismissAll);
+            const { dismissAll }: { dismissAll: () => void } = this.props;
+
+            Router.events.on('routeChangeComplete', dismissAll);
         },
         componentWillUnmount() {
-            Router.events.off('routeChangeComplete', this.props.dismissAll);
+            const { dismissAll }: { dismissAll: () => void } = this.props;
+
+            Router.events.off('routeChangeComplete', dismissAll);
         }
     })
 );
@@ -86,33 +98,39 @@ const enhance = compose(
                 id
             });
         },
-        renderModalBody: () => modal => {
-            const isArrayOfStrings = _.isArray(modal.body);
-
-            return (
-                <Fragment>
-                    {// eslint-disable-next-line no-nested-ternary
-                    isArrayOfStrings
-                        ? _.map(modal.body, item => <p key={item}>{item}</p>)
-                        : React.isValidElement(modal.body)
-                            ? React.cloneElement(modal.body, {
-                                  closeModal: reason => {
-                                      modalProvider.close({
-                                          id: modal.id,
-                                          reason
-                                      });
-                                  }
-                              })
-                            : modal.body}
-                </Fragment>
-            );
-        }
+        renderModalBody: () => (modal: Modal) => (
+            <Fragment>
+                {typeof modal.body === 'string'
+                    ? modal.body
+                    : React.cloneElement(modal.body, {
+                          // eslint-disable-next-line flowtype/no-weak-types
+                          closeModal: (reason?: mixed) => {
+                              modalProvider.close({
+                                  id: modal.id,
+                                  reason
+                              });
+                          }
+                      })}
+            </Fragment>
+        )
     }),
     withHandlers({
-        renderCustomType: ({ renderModalBody }) => modal => (
+        renderCustomType: ({
+            renderModalBody
+        }: {
+            renderModalBody: TRenderFn
+        }) => (modal: Modal) => (
             <div className="modal-custom-body">{renderModalBody(modal)}</div>
         ),
-        renderStandardType: ({ renderModalBody, close, dismiss }) => modal => (
+        renderStandardType: ({
+            renderModalBody,
+            close,
+            dismiss
+        }: {
+            renderModalBody: TRenderFn,
+            close: TClose,
+            dismiss: TClose
+        }) => (modal: Modal) => (
             <div>
                 <div className="modal-body">{renderModalBody(modal)}</div>
                 <div className="modal-footer">
@@ -144,16 +162,12 @@ const ModalDialog = ({
     dismiss,
     renderCustomType,
     renderStandardType
-}: {|
+}: {
     modals: Array<Modal>,
-    dismiss: (id: number) => void,
-
-    // eslint-disable-next-line flowtype/no-weak-types
-    renderCustomType: (modal: Modal) => Element<any>,
-
-    // eslint-disable-next-line flowtype/no-weak-types
-    renderStandardType: (modal: Modal) => Element<any>
-|}) => (
+    dismiss: TClose,
+    renderCustomType: TRenderFn,
+    renderStandardType: TRenderFn
+}) => (
     <Fragment>
         {modals.map(modal => (
             <ReactModal
