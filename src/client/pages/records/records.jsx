@@ -81,7 +81,7 @@ const enhance = compose(
             const record = mapRecordToDisplay(rawRecord);
 
             modal
-                .custom({
+                .confirm({
                     title: 'Confirm your action',
                     body: (
                         <div>

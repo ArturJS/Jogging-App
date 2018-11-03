@@ -37,13 +37,7 @@
         "postinstall": "node ./scripts/tasks/heroku-build.js"
     },
     "lint-staged": {
-        "src/**/*.{js,jsx,mjs}": [
-            "prettier --write",
-            "eslint --fix",
-            "flow focus-check",
-            "git add"
-        ],
-        "local_modules/**/*.{js,jsx,mjs}": [
+        "{src,local_modules}/**/*.{js,jsx,mjs}": [
             "prettier --write",
             "eslint --fix",
             "flow focus-check",
