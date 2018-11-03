@@ -52,10 +52,8 @@ const enhance = compose(
                     title: 'Add new record',
                     body: <EditRecordModal isAddMode />
                 })
-                .result.then(({ success }) => {
-                    if (success) {
-                        getRef('refetchRecords')();
-                    }
+                .result.then(() => {
+                    getRef('refetchRecords')();
                 });
         },
         showEditRecordModal: ({ getRef }) => recordId => {
@@ -64,10 +62,8 @@ const enhance = compose(
                     title: 'Edit record',
                     body: <EditRecordModal recordId={recordId} />
                 })
-                .result.then(({ success }) => {
-                    if (success) {
-                        getRef('refetchRecords')();
-                    }
+                .result.then(() => {
+                    getRef('refetchRecords')();
                 });
         },
         showRemoveRecordModal: ({

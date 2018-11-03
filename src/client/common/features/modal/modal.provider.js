@@ -20,17 +20,23 @@ const generateId = () => {
     return modalId;
 };
 
-type TCloseFn = (reason?: string) => void;
+// eslint-disable-next-line flowtype/no-weak-types
+type TReason = mixed;
+
+type TCloseFn = (reason?: TReason) => void;
+
+type TDismissFn = (reason?: TReason) => void;
 
 type TModalResult = {|
-    result: Promise<string>,
+    result: Promise<TReason>,
     close: TCloseFn
 |};
 
 type TModalConfig = {|
     title?: string,
     body: string | Node,
-    className?: string
+    className?: string,
+    throwCancelError?: boolean
 |};
 
 type TModalType = $Values<typeof MODAL_TYPES>;
@@ -41,7 +47,9 @@ type TModalOpenConfig = {|
     noBackdrop?: boolean
 |};
 
-class Modal {
+class CancelError extends Error {}
+
+export class Modal {
     id: number;
 
     title: string;
@@ -51,6 +59,8 @@ class Modal {
     type: TModalType;
 
     close: TCloseFn;
+
+    dismiss: TDismissFn;
 
     className: string;
 
@@ -66,15 +76,27 @@ class Modal {
         body,
         type,
         close = () => {},
+        dismiss = () => {},
         className = '',
         shouldCloseOnOverlayClick = true,
         noBackdrop = false
-    }) {
+    }: {|
+        id: number,
+        title: string,
+        body: string | Node,
+        type: TModalType,
+        close: TCloseFn,
+        dismiss: TDismissFn,
+        className: string,
+        shouldCloseOnOverlayClick?: boolean,
+        noBackdrop: boolean
+    |}) {
         this.id = id;
         this.title = title;
         this.body = body;
         this.type = type;
         this.close = close;
+        this.dismiss = dismiss;
         this.className = className;
         this.shouldCloseOnOverlayClick = shouldCloseOnOverlayClick;
         this.noBackdrop = noBackdrop;
@@ -95,10 +117,11 @@ export class ModalProvider {
         });
     }
 
-    confirm({ title, body, className }: TModalConfig) {
-        const { result, close } = this._openModal({
+    confirm({ title, body, className, throwCancelError }: TModalConfig) {
+        const { result, close } = this._performOpen({
             title,
             body,
+            throwCancelError,
             type: MODAL_TYPES.confirm,
             className
         });
@@ -109,10 +132,16 @@ export class ModalProvider {
         };
     }
 
-    error({ title, body, className = '' }: TModalConfig): TModalResult {
-        const { result, close } = this._openModal({
+    error({
+        title,
+        body,
+        className = '',
+        throwCancelError
+    }: TModalConfig): TModalResult {
+        const { result, close } = this._performOpen({
             title,
             body,
+            throwCancelError,
             type: MODAL_TYPES.error,
             className: `modal-error ${className}`,
             noBackdrop: true
@@ -124,10 +153,16 @@ export class ModalProvider {
         };
     }
 
-    custom({ title, body, className }: TModalConfig): TModalResult {
-        const { result, close } = this._openModal({
+    custom({
+        title,
+        body,
+        className,
+        throwCancelError
+    }: TModalConfig): TModalResult {
+        const { result, close } = this._performOpen({
             title,
             body,
+            throwCancelError,
             type: MODAL_TYPES.custom,
             className
         });
@@ -138,45 +173,51 @@ export class ModalProvider {
         };
     }
 
-    async closeAll(reason?: string) {
-        const { modals }: { modals: Array<Modal> } = this._store.getState();
-
-        modals.forEach(modal => {
-            // eslint-disable-next-line no-param-reassign
-            modal.isOpen = false;
-            modal.close(reason);
-        });
-
-        await sleep(CLOSE_DELAY_MS);
-
-        this._store.setState({ modals: [] });
-    }
-
     subscribe(callback: (state: TState) => void): () => void {
         callback(this._store.getState());
 
         return this._store.subscribe(callback);
     }
 
-    _openModal({
-        title,
+    async closeAll(reason?: TReason) {
+        await this._performCloseAll({ reason, isClose: true });
+    }
+
+    async dismissAll(reason?: TReason) {
+        await this._performCloseAll({ reason, isClose: false });
+    }
+
+    async close({ id, reason }: { id: number, reason?: TReason }) {
+        await this._performClose({ id, reason, isClose: true });
+    }
+
+    async dismiss({ id, reason }: { id: number, reason?: TReason }) {
+        await this._performClose({ id, reason, isClose: false });
+    }
+
+    _performOpen({
+        title = '',
         body,
         type,
-        className,
-        noBackdrop
+        className = '',
+        throwCancelError = false,
+        noBackdrop = false
     }: TModalOpenConfig): TModalResult {
         let close = () => {};
-        const result = new Promise(resolve => {
+        let dismiss = () => {};
+        const proxyResult = new Promise((resolve, reject) => {
             close = resolve;
+            dismiss = reject;
         });
         const id = generateId();
-        const newModal = new Modal({
+        const newModal: Modal = new Modal({
             id,
             title,
             body,
             type,
             className,
             close,
+            dismiss,
             noBackdrop,
             shouldCloseOnOverlayClick: true
         });
@@ -185,7 +226,23 @@ export class ModalProvider {
             modals: [...modals, newModal]
         }));
 
-        result.then((reason: string) => this.closeModal({ id, reason }));
+        const result = proxyResult
+            .then((reason?: TReason) => {
+                this.close({ id, reason });
+
+                return reason;
+            })
+            .catch((reason?: TReason = new CancelError()) => {
+                this.dismiss({ id, reason });
+
+                if (reason instanceof CancelError) {
+                    if (throwCancelError) {
+                        throw new CancelError();
+                    }
+                } else {
+                    throw reason;
+                }
+            });
 
         return {
             result,
@@ -193,7 +250,40 @@ export class ModalProvider {
         };
     }
 
-    async closeModal({ id, reason }: { id: number, reason?: string }) {
+    async _performCloseAll({
+        reason,
+        isClose
+    }: {
+        reason?: TReason,
+        isClose: boolean
+    }) {
+        const { modals }: { modals: Array<Modal> } = this._store.getState();
+
+        modals.forEach(modal => {
+            // eslint-disable-next-line no-param-reassign
+            modal.isOpen = false;
+
+            if (isClose) {
+                modal.close(reason);
+            } else {
+                modal.dismiss(reason);
+            }
+        });
+
+        await sleep(CLOSE_DELAY_MS);
+
+        this._store.setState({ modals: [] });
+    }
+
+    async _performClose({
+        id,
+        reason,
+        isClose
+    }: {
+        id: number,
+        reason?: TReason,
+        isClose: boolean
+    }) {
         const { modals }: { modals: Array<Modal> } = this._store.getState();
         const modalToClose = modals.find(modal => modal.id === id);
 
@@ -202,7 +292,12 @@ export class ModalProvider {
         }
 
         modalToClose.isOpen = false;
-        modalToClose.close(reason);
+
+        if (isClose) {
+            modalToClose.close(reason);
+        } else {
+            modalToClose.dismiss(reason);
+        }
 
         this._store.setState({
             // necessary to trigger update
