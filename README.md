@@ -3,8 +3,10 @@
 ## Requirements
 
 NodeJS version should be at least 8.12.0.
+
 npm version should be at least 6.4.1.
-Docker version at least 18.06.1-ce.
+
+Docker version at least 18.06.1-ce. (only if you need to run via docker)
 
 ## Installation
 
