@@ -217,7 +217,7 @@ class Routes {
                 if (customHandler) {
                     customHandler({ req, res, route, query });
                 } else {
-                    const isAuthenticated = req.isAuthenticated();
+                    const isAuthenticated = req.isLoggedIn;
 
                     if (route.onlyForUnauthenticated && isAuthenticated) {
                         const { redirectTo } = route.onlyForUnauthenticated;
