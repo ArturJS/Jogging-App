@@ -25,7 +25,7 @@
     "scripts": {
         "start": "npx cross-env NODE_ENV=production node ./src/index.js",
         "dev": "npx cross-env NODE_ENV=development node ./src/index.js",
-        "build": "cd ./src/client && next build",
+        "build": "cd ./src/client && npx next build",
         "flow": "npx flow",
         "lint": "eslint -c .eslintrc src local_modules",
         "test": "jest --env=jsdom",
@@ -80,6 +80,7 @@
         "@babel/plugin-transform-runtime": "^7.0.0",
         "@babel/polyfill": "^7.0.0",
         "@babel/preset-env": "^7.0.0",
+        "@babel/preset-flow": "^7.0.0",
         "@babel/preset-react": "^7.0.0",
         "@babel/register": "^7.0.0",
         "@babel/runtime": "^7.1.2",
@@ -173,7 +174,6 @@
         "yup": "^0.26.6"
     },
     "devDependencies": {
-        "@babel/preset-flow": "^7.0.0",
         "babel-eslint": "^10.0.1",
         "eslint": "^5.8.0",
         "eslint-config-airbnb": "^17.1.0",
