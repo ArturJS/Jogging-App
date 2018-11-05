@@ -1,18 +1,18 @@
-import Express from 'express';
+import Koa from 'koa';
 import http from 'http';
-
+import mount from 'koa-mount';
 import config from './config';
-import { initStaticServer } from './server/static-server';
 import { initAPIServer } from './server/api-server';
-import { initSSRServer } from './server/ssr-server';
+import { ssrServer } from './server/ssr-server';
 
-const app = new Express();
-const server = new http.Server(app);
+const app = new Koa();
+const server = new http.Server(app.callback());
 
-initStaticServer(app);
-initAPIServer(app, server);
-initSSRServer(app);
+initAPIServer(app);
 
+app.use(mount('/', ssrServer));
+
+// todo introduce config validation
 if (config.port) {
     server.listen(config.port, err => {
         if (err) {

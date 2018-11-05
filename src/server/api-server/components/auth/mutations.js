@@ -1,17 +1,6 @@
 import { UserError } from 'graphql-errors';
 import db from '../../models';
 
-const waitForLogin = (req, user) =>
-    new Promise((resolve, reject) => {
-        req.login(user, {}, err => {
-            if (err) {
-                reject(new UserError(`Sign In failed. ${err}`));
-            }
-
-            return resolve(user);
-        });
-    });
-
 const passwordValidator = async signUpPayload => {
     const { password, repeatPassword } = signUpPayload;
 
@@ -34,7 +23,7 @@ const validateSignUp = async signUpPayload => {
     await emailUniquenessValidator(signUpPayload);
 };
 
-export const signIn = async (root, args, { req }) => {
+export const signIn = async (root, args, { auth }) => {
     const { email, password } = args;
 
     return new Promise((resolve, reject) => {
@@ -65,26 +54,18 @@ export const signIn = async (root, args, { req }) => {
                 user
             );
 
-            req.login(user, {}, err => {
-                if (err) {
-                    reject(new UserError(`Sign In failed. ${err}`));
-                }
-            });
+            auth.login(user);
         });
     });
 };
 
-export const signOut = async (root, args, { req }) => {
-    req.logOut();
-
-    if (req.session) {
-        req.session.destroy();
-    }
+export const signOut = async (root, args, { auth }) => {
+    await auth.logout();
 
     return true;
 };
 
-export const signUp = async (root, args, { req }) => {
+export const signUp = async (root, args, { auth }) => {
     await validateSignUp(args);
 
     const { firstName, lastName, email, password } = args;
@@ -104,7 +85,7 @@ export const signUp = async (root, args, { req }) => {
         throw new UserError(`Sign Up failed. ${err}`);
     }
 
-    await waitForLogin(req, user);
+    auth.login(user);
 
     return user;
 };

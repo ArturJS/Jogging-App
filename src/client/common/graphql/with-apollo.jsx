@@ -37,9 +37,9 @@ const withApollo = App =>
             const apollo = initApollo(
                 {},
                 {
-                    cookie: req.header('Cookie'),
-                    isLoggedIn: req.isAuthenticated(),
-                    baseUrl: `${req.protocol}://${req.get('host')}/graphql`
+                    cookie: req.headers.cookie,
+                    isLoggedIn: req.isLoggedIn,
+                    baseUrl: `${req.protocol}://${req.headers.host}/graphql`
                 }
             );
 

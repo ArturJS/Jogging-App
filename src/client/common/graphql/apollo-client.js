@@ -9,49 +9,49 @@ import resolvers from './resolvers';
 let apolloClient = null;
 
 function create(
-  initialState,
-  { cookie, isLoggedIn = false, baseUrl = '/graphql' } = {}
+    initialState,
+    { cookie, isLoggedIn = false, baseUrl = '/graphql' } = {}
 ) {
-  const cache = new InMemoryCache().restore(initialState || {});
-  const defaultClientState = !process.browser
-    ? {
-        authState: {
-          __typename: 'AuthState',
-          isLoggedIn
-        }
-      }
-    : null;
+    const cache = new InMemoryCache().restore(initialState || {});
+    const defaultClientState = !process.browser
+        ? {
+              authState: {
+                  __typename: 'AuthState',
+                  isLoggedIn
+              }
+          }
+        : null;
 
-  return new ApolloClient({
-    link: ApolloLink.from([
-      withClientState({
-        cache,
-        defaults: defaultClientState,
-        resolvers
-      }),
-      createHttpLink({
-        uri: baseUrl,
-        fetch,
-        headers: {
-          cookie
-        }
-      })
-    ]),
-    cache
-  });
+    return new ApolloClient({
+        link: ApolloLink.from([
+            withClientState({
+                cache,
+                defaults: defaultClientState,
+                resolvers
+            }),
+            createHttpLink({
+                uri: baseUrl,
+                fetch,
+                headers: {
+                    cookie
+                }
+            })
+        ]),
+        cache
+    });
 }
 
 export const initApollo = (initialState, options) => {
-  // Make sure to create a new client for every server-side request so that data
-  // isn't shared between connections (which would be bad)
-  if (!process.browser) {
-    return create(initialState, options);
-  }
+    // Make sure to create a new client for every server-side request so that data
+    // isn't shared between connections (which would be bad)
+    if (!process.browser) {
+        return create(initialState, options);
+    }
 
-  // Reuse client on the client-side
-  if (!apolloClient) {
-    apolloClient = create(initialState, options);
-  }
+    // Reuse client on the client-side
+    if (!apolloClient) {
+        apolloClient = create(initialState, options);
+    }
 
-  return apolloClient;
+    return apolloClient;
 };

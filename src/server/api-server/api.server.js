@@ -1,15 +1,15 @@
 import _ from 'lodash';
-import bodyParser from 'body-parser';
-import passport from 'passport';
+import bodyParser from 'koa-bodyparser';
+import session from 'koa-session';
+import passport from 'koa-passport';
 import { Strategy } from 'passport-local';
-import expressSession from 'express-session';
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-koa';
+import cors from '@koa/cors';
+import noCache from 'koa-no-cache';
 import schema from './components/index';
-import corsMiddleware from './middlewares/cors.middleware';
-import noCacheMiddleware from './middlewares/no-cache.middleware';
 import db from './models';
 
-const initPassport = () => {
+const initPassport = app => {
     // Serialize Sessions
     passport.serializeUser((user, done) => {
         done(null, user);
@@ -17,14 +17,7 @@ const initPassport = () => {
 
     // Deserialize Sessions
     passport.deserializeUser((user, done) => {
-        db.User.find({ where: { email: user.email } })
-            // eslint-disable-next-line no-shadow
-            .then(user => {
-                done(null, user);
-            })
-            .catch(err => {
-                done(err, null);
-            });
+        done(null, user);
     });
 
     // For Authentication Purposes
@@ -39,40 +32,46 @@ const initPassport = () => {
             });
         })
     );
+
+    app.use(passport.initialize());
+    app.use(passport.session());
 };
 
 export const initAPIServer = app => {
-    initPassport();
+    // todo use .env
+    const AUTH_SESSION_SECRET = 'AUTH_SESSION_SECRET123';
 
-    app.use(
-        expressSession({
-            secret: 'secret123',
-            cookie: {
-                httpOnly: true
-            }
-        })
-    );
-    app.use(bodyParser.json());
-    app.use(corsMiddleware);
-    app.use(noCacheMiddleware);
-    app.use(passport.initialize());
-    app.use(passport.session());
+    // eslint-disable-next-line no-param-reassign
+    app.keys = [AUTH_SESSION_SECRET];
 
-    // The GraphQL endpoint
-    app.use(
-        '/graphql',
-        bodyParser.json(),
-        graphqlExpress((req, res) => ({
-            schema,
-            context: {
-                userId: _.get(req, 'user.id', null),
+    app.use(bodyParser())
+        .use(session({}, app))
+        .use(cors())
+        .use(
+            noCache({
+                paths: ['/graphql']
+            })
+        );
+
+    initPassport(app);
+
+    const apolloServer = new ApolloServer({
+        schema,
+        pretty: true,
+        context: async ({ ctx }) => {
+            const { login, logout, req, res } = ctx;
+
+            return {
+                userId: _.get(ctx, 'session.passport.user.id', null),
+                auth: {
+                    login,
+                    logout
+                },
                 req,
                 res
-            },
-            pretty: true
-        }))
-    );
+            };
+        }
+    });
 
-    // GraphiQL, a visual editor for queries
-    app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+    apolloServer.applyMiddleware({ app });
 };
