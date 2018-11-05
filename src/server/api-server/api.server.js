@@ -17,15 +17,7 @@ const initPassport = app => {
 
     // Deserialize Sessions
     passport.deserializeUser((user, done) => {
-        // todo use user from cookie
-        db.User.find({ where: { email: user.email } })
-            // eslint-disable-next-line no-shadow
-            .then(user => {
-                done(null, user);
-            })
-            .catch(err => {
-                done(err, null);
-            });
+        done(null, user);
     });
 
     // For Authentication Purposes
