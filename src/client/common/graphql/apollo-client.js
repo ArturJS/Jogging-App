@@ -3,7 +3,7 @@ import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { withClientState } from 'apollo-link-state';
-import fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-unfetch';
 import resolvers from './resolvers';
 
 let apolloClient = null;

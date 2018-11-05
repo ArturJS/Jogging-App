@@ -16,14 +16,20 @@ const server = new Koa();
 
 nextApp.prepare().then(() => {
     router.get('*', async ctx => {
-        ctx.req.isLoggedIn = ctx.isAuthenticated();
-        ctx.req.protocol = ctx.protocol;
+        const baseUrl = `${ctx.protocol}://${ctx.host}`;
+
+        ctx.req.appMeta = {
+            isLoggedIn: ctx.isAuthenticated(),
+            cookie: ctx.header.cookie,
+            baseUrl,
+            baseApiUrl: `${baseUrl}/graphql`
+        };
+
         await handle(ctx.req, ctx.res);
+
         ctx.respond = false;
     });
 
-    // todo use compression and
-    // res.header('Cache-Control', 'public, max-age=31536000, immutable');
     server
         .use(
             favicon(
