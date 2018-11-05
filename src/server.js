@@ -10,6 +10,14 @@ import config from './config';
 import { initAPIServer } from './server/api-server';
 import { ssrServer } from './server/ssr-server';
 
+const enforceHttps = () => {
+    new Koa()
+        .use(ctx => {
+            ctx.status = 301;
+            ctx.redirect(`https://${ctx.host}${ctx.originalUrl}`);
+        })
+        .listen(80);
+};
 const app = new Koa();
 const server = http2.createSecureServer(
     {
@@ -24,6 +32,10 @@ app.use(connect(compression()));
 initAPIServer(app);
 
 app.use(mount('/', ssrServer));
+
+if (process.env.NODE_ENV === 'production') {
+    enforceHttps();
+}
 
 // todo introduce config validation
 if (config.port) {
