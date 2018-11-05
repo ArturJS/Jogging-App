@@ -16,7 +16,7 @@ export default class Error extends Component {
         const statusCode = res ? res.statusCode : err ? err.statusCode : null;
 
         if (statusCode === 404) {
-            const redirectTo = req.isLoggedIn ? '/records' : '/sign-up';
+            const redirectTo = req.appMeta.isLoggedIn ? '/records' : '/sign-up';
 
             performRedirect({ req, res, redirectTo });
         }

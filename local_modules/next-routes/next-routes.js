@@ -102,8 +102,10 @@ class Route {
 }
 
 export const performRedirect = ({ req, res, redirectTo }) => {
+    const { baseUrl } = req.appMeta;
+
     res.writeHead(301, {
-        Location: `${req.protocol}://${req.headers.host}${redirectTo}`
+        Location: baseUrl + redirectTo
     });
     res.end();
 };
@@ -217,7 +219,7 @@ class Routes {
                 if (customHandler) {
                     customHandler({ req, res, route, query });
                 } else {
-                    const isAuthenticated = req.isLoggedIn;
+                    const isAuthenticated = req.appMeta.isLoggedIn;
 
                     if (route.onlyForUnauthenticated && isAuthenticated) {
                         const { redirectTo } = route.onlyForUnauthenticated;

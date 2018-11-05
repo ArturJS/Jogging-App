@@ -1,21 +1,41 @@
+import path from 'path';
+import fs from 'fs';
+import http2 from 'http2';
 import Koa from 'koa';
-import http from 'http';
 import mount from 'koa-mount';
 // koa-compress not working due to https://github.com/zeit/next.js/tree/canary/examples/custom-server-koa
-import compression from 'compression';
 import connect from 'koa-connect';
+import compression from './server/common/middlewares/compression';
 import config from './config';
 import { initAPIServer } from './server/api-server';
 import { ssrServer } from './server/ssr-server';
 
+const enforceHttps = () => {
+    new Koa()
+        .use(ctx => {
+            ctx.status = 301;
+            ctx.redirect(`https://${ctx.host}${ctx.originalUrl}`);
+        })
+        .listen(80);
+};
 const app = new Koa();
-const server = new http.Server(app.callback());
+const server = http2.createSecureServer(
+    {
+        key: fs.readFileSync(path.resolve(__dirname, './certs/selfsigned.key')),
+        cert: fs.readFileSync(path.resolve(__dirname, './certs/selfsigned.crt'))
+    },
+    app.callback()
+);
 
 app.use(connect(compression()));
 
 initAPIServer(app);
 
 app.use(mount('/', ssrServer));
+
+if (process.env.NODE_ENV === 'production') {
+    enforceHttps();
+}
 
 // todo introduce config validation
 if (config.port) {

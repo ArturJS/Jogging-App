@@ -1,3 +1,4 @@
+require('../scripts/tools/babel/fix-node-modules');
 require('@babel/register')();
 
 const noop = () => {};
