@@ -31,7 +31,7 @@ const withApollo = App =>
             const {
                 Component,
                 router,
-                ctx: { req, res, protocol, host }
+                ctx: { req, res }
             } = ctx;
 
             const apollo = initApollo(
@@ -39,7 +39,7 @@ const withApollo = App =>
                 {
                     cookie: req.headers.cookie,
                     isLoggedIn: req.isLoggedIn,
-                    baseUrl: `${protocol}://${host}/graphql`
+                    baseUrl: `${req.protocol}://${req.headers.host}/graphql`
                 }
             );
 

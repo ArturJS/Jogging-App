@@ -25,6 +25,7 @@
     "scripts": {
         "start": "npx cross-env NODE_ENV=production node ./src/index.js",
         "dev": "npx cross-env NODE_ENV=development node ./src/index.js",
+        "debug": "ndb cross-env NODE_ENV=development node ./src/index.js",
         "build": "cd ./src/client && npx next build",
         "flow": "npx flow",
         "lint": "eslint -c .eslintrc src local_modules",
