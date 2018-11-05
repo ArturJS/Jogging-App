@@ -4,8 +4,8 @@ import session from 'koa-session';
 import passport from 'koa-passport';
 import { Strategy } from 'passport-local';
 import { ApolloServer } from 'apollo-server-koa';
-// import cors from '@koa/cors';
-// import noCache from 'koa-no-cache';
+import cors from '@koa/cors';
+import noCache from 'koa-no-cache';
 import schema from './components/index';
 import db from './models';
 
@@ -49,15 +49,17 @@ export const initAPIServer = app => {
     // todo use .env
     const AUTH_SESSION_SECRET = 'AUTH_SESSION_SECRET123';
 
+    // eslint-disable-next-line no-param-reassign
     app.keys = [AUTH_SESSION_SECRET];
 
-    app.use(bodyParser()).use(session({}, app));
-    // app.use(cors());
-    // app.use(
-    //     noCache({
-    //         paths: ['/graphql']
-    //     })
-    // );
+    app.use(bodyParser())
+        .use(session({}, app))
+        .use(cors())
+        .use(
+            noCache({
+                paths: ['/graphql']
+            })
+        );
 
     initPassport(app);
 
