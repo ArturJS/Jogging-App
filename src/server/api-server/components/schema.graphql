@@ -4,6 +4,6 @@ type Mutation
 
 scalar Long
 
-#import "./auth/schema.graphql"
-#import "./reports/schema.graphql"
-#import "./records/schema.graphql"
+#import "./auth/auth.schema.graphql"
+#import "./reports/reports.schema.graphql"
+#import "./records/records.schema.graphql"
