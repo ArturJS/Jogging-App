@@ -6,7 +6,7 @@ import mount from 'koa-mount';
 // koa-compress not working due to https://github.com/zeit/next.js/tree/canary/examples/custom-server-koa
 import connect from 'koa-connect';
 import compression from './server/common/middlewares/compression';
-import config from './config';
+import config from './server/common/config';
 import { initAPIServer } from './server/api-server';
 import { ssrServer } from './server/ssr-server';
 
@@ -33,31 +33,14 @@ initAPIServer(app);
 
 app.use(mount('/', ssrServer));
 
-if (process.env.NODE_ENV === 'production') {
+if (config.isProduction) {
     enforceHttps();
 }
 
-// todo introduce config validation
-if (config.port) {
-    server.listen(config.port, err => {
-        if (err) {
-            // eslint-disable-next-line no-console
-            console.error(err);
-        }
-        // eslint-disable-next-line no-console
-        console.info(
-            `----\n==> ✅  ${
-                config.app.title
-            } is running, talking to API server on ${config.uiTargetUrl}.`
-        );
-        // eslint-disable-next-line no-console
-        console.info(
-            `==> 💻  Open ${config.uiTargetUrl} in a browser to view the app.`
-        );
-    });
-} else {
+server.listen(config.port, err => {
+    if (err) {
+        throw err;
+    }
     // eslint-disable-next-line no-console
-    console.error(
-        '==>     ERROR: No PORT environment variable has been specified'
-    );
-}
+    console.info(`==> 💻 ✅ Server is up and running on ${config.port} port.`);
+});
