@@ -6,8 +6,9 @@ import Router from 'koa-router';
 import mount from 'koa-mount';
 import serveStatic from 'koa-static';
 import favicon from 'koa-favicon';
+import config from '../common/config';
 
-const dev = process.env.NODE_ENV !== 'production';
+const dev = config.isDevelopment;
 const uiDirectory = path.resolve(__dirname, '../../client');
 const nextApp = next({ dir: uiDirectory, dev });
 const handle = routes.getRequestHandler(nextApp);

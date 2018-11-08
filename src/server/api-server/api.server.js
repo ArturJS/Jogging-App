@@ -6,7 +6,8 @@ import { Strategy } from 'passport-local';
 import { ApolloServer } from 'apollo-server-koa';
 import cors from '@koa/cors';
 import noCache from 'koa-no-cache';
-import schema from './components/index';
+import config from '../common/config';
+import graphqlSchema from './components/index';
 import db from './models';
 
 const initPassport = app => {
@@ -38,11 +39,8 @@ const initPassport = app => {
 };
 
 export const initAPIServer = app => {
-    // todo use .env
-    const AUTH_SESSION_SECRET = 'AUTH_SESSION_SECRET123';
-
     // eslint-disable-next-line no-param-reassign
-    app.keys = [AUTH_SESSION_SECRET];
+    app.keys = [config.authSessionSecret];
 
     app.use(bodyParser())
         .use(session({}, app))
@@ -56,7 +54,7 @@ export const initAPIServer = app => {
     initPassport(app);
 
     const apolloServer = new ApolloServer({
-        schema,
+        schema: graphqlSchema,
         pretty: true,
         context: async ({ ctx }) => {
             const { login, logout, req, res } = ctx;
