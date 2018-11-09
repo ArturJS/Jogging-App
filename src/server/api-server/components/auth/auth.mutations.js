@@ -1,12 +1,19 @@
-import { UserError } from 'graphql-errors';
+import { createError } from 'apollo-errors';
 import db from '../../models';
+
+const ErrorUserAlreadyExists = createError('ErrorUserAlreadyExists', {
+    message: 'User with the same email already exists!'
+});
+const ErrorWrongCredentials = createError('ErrorWrongCredentials', {
+    message: 'Wrong email or password'
+});
 
 const emailUniquenessValidator = async signUpPayload => {
     const { email } = signUpPayload;
     const userWithSameEmail = await db.User.find({ where: { email } });
 
     if (userWithSameEmail) {
-        throw new UserError('User with the same email already exists!');
+        throw new ErrorUserAlreadyExists();
     }
 };
 
@@ -24,7 +31,7 @@ export const signIn = async (root, args, { auth }) => {
             }
         }).then(user => {
             if (!user) {
-                reject(new UserError('Wrong email or password'));
+                reject(new ErrorWrongCredentials());
 
                 return;
             }
@@ -35,7 +42,7 @@ export const signIn = async (root, args, { auth }) => {
                 // eslint-disable-next-line no-shadow
                 (error, user) => {
                     if (error) {
-                        reject(new UserError(error));
+                        reject(new ErrorWrongCredentials());
 
                         return;
                     }
@@ -60,21 +67,16 @@ export const signUp = async (root, args, { auth }) => {
     await validateSignUp(args);
 
     const { firstName, lastName, email, password } = args;
-
     const user = {
         firstName,
         lastName,
         email
     };
 
-    try {
-        await db.User.create({
-            ...user,
-            password
-        });
-    } catch (err) {
-        throw new UserError(`Sign Up failed. ${err}`);
-    }
+    await db.User.create({
+        ...user,
+        password
+    });
 
     auth.login(user);
 
