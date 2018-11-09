@@ -26,14 +26,12 @@ const SIGN_UP = gql`
         $lastName: String!
         $email: String!
         $password: String!
-        $repeatPassword: String!
     ) {
         signUp(
             firstName: $firstName
             lastName: $lastName
             email: $email
             password: $password
-            repeatPassword: $repeatPassword
         )
     }
 `;
@@ -104,15 +102,14 @@ class SignUp extends Component {
     };
 
     async performSignUp(values) {
-        const { firstName, lastName, email, password, repeatPassword } = values;
+        const { firstName, lastName, email, password } = values;
         const { signUp } = this.props;
         const { errors } = await signUp({
             variables: {
                 firstName,
                 lastName,
                 email,
-                password,
-                repeatPassword
+                password
             },
             errorPolicy: 'all'
         });

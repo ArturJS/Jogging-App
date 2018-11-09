@@ -1,14 +1,6 @@
 import { UserError } from 'graphql-errors';
 import db from '../../models';
 
-const passwordValidator = async signUpPayload => {
-    const { password, repeatPassword } = signUpPayload;
-
-    if (password !== repeatPassword) {
-        throw new UserError('Password and repeat password do not match!');
-    }
-};
-
 const emailUniquenessValidator = async signUpPayload => {
     const { email } = signUpPayload;
     const userWithSameEmail = await db.User.find({ where: { email } });
@@ -19,7 +11,6 @@ const emailUniquenessValidator = async signUpPayload => {
 };
 
 const validateSignUp = async signUpPayload => {
-    await passwordValidator(signUpPayload);
     await emailUniquenessValidator(signUpPayload);
 };
 
