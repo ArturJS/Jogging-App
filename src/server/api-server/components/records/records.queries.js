@@ -1,24 +1,17 @@
-import _ from 'lodash';
 import { isAuthenticatedResolver } from '../acl';
-import db from '../../models/index';
-
-const MAX_DATE = Number.MAX_SAFE_INTEGER;
-const MIN_DATE = -MAX_DATE;
+import recordsBLL from './records.bll';
 
 export const records = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
         const { filter: { startDate, endDate } = {} } = args;
-
-        const recordsList = await db.Record.findAll({
-            where: {
-                userId: context.userId,
-                date: {
-                    $between: [startDate || MIN_DATE, endDate || MAX_DATE]
-                }
-            }
+        // eslint-disable-next-line no-shadow
+        const records = await recordsBLL.getAllRecords({
+            userId: context.userId,
+            startDate,
+            endDate
         });
 
-        return _.sortBy(recordsList, 'date');
+        return records;
     }
 );
 
@@ -27,11 +20,9 @@ export const record = isAuthenticatedResolver.createResolver(
         const { id } = args;
         const { userId } = context;
         // eslint-disable-next-line no-shadow
-        const record = await db.Record.findOne({
-            where: {
-                userId,
-                id
-            }
+        const record = await recordsBLL.getRecord({
+            id,
+            userId
         });
 
         return record;
