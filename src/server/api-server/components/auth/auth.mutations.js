@@ -1,12 +1,5 @@
-import { createError } from 'apollo-errors';
 import db from '../../models';
-
-const ErrorUserAlreadyExists = createError('ErrorUserAlreadyExists', {
-    message: 'User with the same email already exists!'
-});
-const ErrorWrongCredentials = createError('ErrorWrongCredentials', {
-    message: 'Wrong email or password'
-});
+import { ErrorUserAlreadyExists, ErrorWrongCredentials } from './auth.errors';
 
 const emailUniquenessValidator = async signUpPayload => {
     const { email } = signUpPayload;
