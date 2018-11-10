@@ -1,16 +1,15 @@
 import { isAuthenticatedResolver } from '../acl';
-import db from '../../models';
-
-const calcAverageSpeed = record => (record.distance / record.time) * 3.6;
+import recordsBLL from './records.bll';
 
 export const addRecord = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
         const { record } = args;
-
-        record.userId = context.userId;
-        record.averageSpeed = calcAverageSpeed(record);
-
-        const createdRecord = await db.Record.create(record);
+        const createdRecord = await recordsBLL.createRecord({
+            date: record.date,
+            distance: record.distance,
+            time: record.time,
+            userId: context.userId
+        });
 
         return createdRecord;
     }
@@ -19,33 +18,23 @@ export const addRecord = isAuthenticatedResolver.createResolver(
 export const updateRecord = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
         const { record, id } = args;
-
-        record.averageSpeed = calcAverageSpeed(record);
-
-        await db.Record.update(record, {
-            where: {
-                id,
-                userId: context.userId
-            },
-            returning: true,
-            plain: true
+        const updatedRecord = await recordsBLL.updateRecord({
+            id,
+            date: record.date,
+            distance: record.distance,
+            time: record.time,
+            userId: context.userId
         });
 
-        return {
-            // todo reconsider the data we're returning
-            id,
-            ...record
-        };
+        return updatedRecord;
     }
 );
 
 export const deleteRecord = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
-        await db.Record.destroy({
-            where: {
-                id: args.id,
-                userId: context.userId
-            }
+        await recordsBLL.deleteRecord({
+            id: args.id,
+            userId: context.userId
         });
     }
 );

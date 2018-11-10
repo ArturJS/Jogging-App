@@ -99,9 +99,7 @@ const enhance = compose(
                         </div>
                     )
                 })
-                .result.then(async result => {
-                    if (!result) return;
-
+                .result.then(async () => {
                     await removeRecord({
                         variables: {
                             id: recordId
