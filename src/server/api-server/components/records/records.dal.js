@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import db from '../../models';
 
 const mapRecord = record => ({
@@ -14,7 +15,7 @@ const recordsDAL = {
             where: {
                 userId,
                 date: {
-                    $between: [startDate, endDate]
+                    [Op.between]: [startDate, endDate]
                 }
             }
         });

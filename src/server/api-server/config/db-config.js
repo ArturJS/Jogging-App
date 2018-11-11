@@ -43,7 +43,8 @@ const dbconfig = {
     ssl: true,
     dialectOptions: {
         ssl: true
-    }
+    },
+    operatorsAliases: false
 };
 
 module.exports = {
