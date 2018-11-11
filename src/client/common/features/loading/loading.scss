@@ -1,0 +1,73 @@
+.loading {
+    position: fixed;
+    z-index: 1000;
+    width: 100vw;
+    top: 0;
+
+    &.--appear-anim {
+        &-enter {
+            &-active,
+            &-done {
+                animation: loading-appear-anim 350ms ease-out both;
+                animation-delay: 300ms;
+            }
+        }
+
+        &-exit {
+            &-active {
+                animation: loading-appear-anim 350ms ease-out both reverse;
+            }
+        }
+    }
+
+    &__progress {
+        $height: 2px;
+
+        height: $height;
+        border-radius: $height / 2;
+        background-color: #1890ff;
+        transition: all 100ms linear;
+        position: relative;
+
+        &::before {
+            content: '';
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            border-radius: 10px;
+            animation: loading-progress-anim 2.4s cubic-bezier(0.23, 1, 0.32, 1)
+                infinite;
+        }
+    }
+}
+
+@keyframes loading-progress-anim {
+    0% {
+        opacity: 0.1;
+        width: 0;
+    }
+
+    20% {
+        opacity: 0.5;
+        width: 0;
+    }
+
+    100% {
+        opacity: 0;
+        width: 100%;
+    }
+}
+
+@keyframes loading-appear-anim {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

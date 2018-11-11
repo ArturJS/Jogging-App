@@ -176,6 +176,7 @@
         "shortid": "2.2.8",
         "strip-loader": "^0.1.0",
         "style-loader": "^0.21.0",
+        "unstated": "^2.1.1",
         "url-loader": "^1.0.1",
         "warning": "^2.1.0",
         "webpack": "^4.20.2",

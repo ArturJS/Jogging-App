@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import Header from '../../components/header';
 import NavSubHeader from '../../components/nav-sub-header';
 import { ModalDialog } from '../../features/modal';
+import Loading from '../../features/loading';
 import '../../styles/base.scss';
 import './root-shell.scss';
 
@@ -33,22 +34,19 @@ const head = {
     ]
 };
 
-export default class RootShell extends Component {
-    static propTypes = {
-        children: PropTypes.object.isRequired
-    };
+const RootShell = ({ children }) => (
+    <div className="root-shell">
+        <Helmet {...head} />
+        <Header />
+        <NavSubHeader />
+        <Loading />
+        <div className="page-container">{children}</div>
+        <ModalDialog />
+    </div>
+);
 
-    render() {
-        const { children } = this.props;
+RootShell.propTypes = {
+    children: PropTypes.node.isRequired
+};
 
-        return (
-            <div className="root-shell">
-                <Helmet {...head} />
-                <Header />
-                <NavSubHeader />
-                <div className="page-container">{children}</div>
-                <ModalDialog />
-            </div>
-        );
-    }
-}
+export default RootShell;

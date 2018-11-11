@@ -4,6 +4,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { withClientState } from 'apollo-link-state';
 import fetch from 'isomorphic-unfetch';
+import { loadingHttpLink } from '../features/loading';
 import resolvers from './resolvers';
 
 let apolloClient = null;
@@ -24,6 +25,7 @@ function create(
 
     return new ApolloClient({
         link: ApolloLink.from([
+            loadingHttpLink,
             withClientState({
                 cache,
                 defaults: defaultClientState,
