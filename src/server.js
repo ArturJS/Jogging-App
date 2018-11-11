@@ -27,15 +27,14 @@ const server = http2.createSecureServer(
     app.callback()
 );
 
-app.use(connect(compression()));
+if (config.isProduction) {
+    app.use(connect(compression()));
+    enforceHttps();
+}
 
 initAPIServer(app);
 
 app.use(mount('/', ssrServer));
-
-if (config.isProduction) {
-    enforceHttps();
-}
 
 server.listen(config.port, err => {
     if (err) {
