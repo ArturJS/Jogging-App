@@ -23,7 +23,7 @@ const recordsDAL = {
         return records.map(mapRecord);
     },
 
-    async getRecord({ id, userId }) {
+    async getRecordById({ id, userId }) {
         const record = await db.Record.findOne({
             where: {
                 id,
@@ -31,7 +31,25 @@ const recordsDAL = {
             }
         });
 
+        if (!record) {
+            return null;
+        }
+
         return mapRecord(record);
+    },
+
+    async hasRecordByDate({ id, date, userId }) {
+        const recordsCount = await db.Record.count({
+            where: {
+                id: {
+                    [Op.not]: id
+                },
+                date,
+                userId
+            }
+        });
+
+        return recordsCount > 0;
     },
 
     async createRecord({ date, distance, time, averageSpeed, userId }) {

@@ -4,9 +4,9 @@ import moment from 'moment';
 import { graphql, withApollo } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import * as yup from 'yup';
+import _ from 'lodash';
 import { REPORTS_QUERY } from '../../../reports';
 import { RECORD_QUERY } from '../../../../common/graphql/queries';
-import processErrors from '../../../../common/components/process-errors';
 import ErrorSummary from '../../../../common/components/error-summary';
 import { Form, Field } from '../../../../common/features/forms';
 import { mapRecordToEdit } from '../../utils/mappers';
@@ -53,25 +53,21 @@ const mapRecord = ({ date, distance, time }) => ({
     }
 )
 @withApollo
-@processErrors
 class EditRecordModal extends Component {
     static propTypes = {
         updateRecord: PropTypes.func.isRequired,
         addRecord: PropTypes.func.isRequired,
-        processAjaxError: PropTypes.func.isRequired,
         closeModal: PropTypes.func.isRequired,
         client: PropTypes.shape({
             query: PropTypes.func.isRequired
         }).isRequired,
         recordId: PropTypes.number,
-        isAddMode: PropTypes.bool,
-        error: PropTypes.string
+        isAddMode: PropTypes.bool
     };
 
     static defaultProps = {
         recordId: null,
-        isAddMode: false,
-        error: null
+        isAddMode: false
     };
 
     state = {
@@ -79,7 +75,8 @@ class EditRecordModal extends Component {
             date: moment().startOf('day'),
             distance: 0,
             time: moment().startOf('day')
-        }
+        },
+        error: null
     };
 
     componentWillMount() {
@@ -145,35 +142,46 @@ class EditRecordModal extends Component {
             if (isAddMode) {
                 const { addRecord } = this.props;
 
-                await addRecord({
+                const { errors } = await addRecord({
                     variables: recordPayload,
-                    refetchQueries
+                    refetchQueries,
+                    errorPolicy: 'all'
                 });
+
+                const error = _.get(errors, '[0].message');
+
+                if (error) {
+                    throw error;
+                }
             } else {
                 const { updateRecord } = this.props;
 
-                await updateRecord({
+                const { errors } = await updateRecord({
                     variables: {
                         id: recordId,
                         ...recordPayload
                     },
-                    refetchQueries
+                    refetchQueries,
+                    errorPolicy: 'all'
                 });
+
+                const error = _.get(errors, '[0].message');
+
+                if (error) {
+                    throw error;
+                }
             }
 
             const { closeModal } = this.props;
 
             closeModal({ success: true });
-        } catch (err) {
-            const { processAjaxError } = this.props;
-
-            processAjaxError(err);
+        } catch (error) {
+            this.setState({ error });
         }
     };
 
     render() {
-        const { error } = this.props;
-        const { formData } = this.state;
+        const { formData, error } = this.state;
 
         return (
             <Form
