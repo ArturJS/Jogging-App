@@ -73,6 +73,8 @@ export class Modal {
 
     isOpen: boolean;
 
+    throwCancelError: boolean;
+
     constructor({
         id,
         title = '',
@@ -82,7 +84,8 @@ export class Modal {
         dismiss = () => {},
         className = '',
         shouldCloseOnOverlayClick = true,
-        noBackdrop = false
+        noBackdrop = false,
+        throwCancelError = false
     }: {|
         id: number,
         title: string,
@@ -94,7 +97,8 @@ export class Modal {
         dismiss: TDismissFn,
         className: string,
         shouldCloseOnOverlayClick?: boolean,
-        noBackdrop: boolean
+        noBackdrop: boolean,
+        throwCancelError: boolean
     |}) {
         this.id = id;
         this.title = title;
@@ -106,6 +110,7 @@ export class Modal {
         this.shouldCloseOnOverlayClick = shouldCloseOnOverlayClick;
         this.noBackdrop = noBackdrop;
         this.isOpen = true;
+        this.throwCancelError = throwCancelError;
     }
 }
 
@@ -224,7 +229,8 @@ export class ModalProvider {
             close,
             dismiss,
             noBackdrop,
-            shouldCloseOnOverlayClick: true
+            shouldCloseOnOverlayClick: true,
+            throwCancelError
         });
 
         this._store.setState(({ modals }: { modals: Array<Modal> }) => ({
@@ -240,13 +246,7 @@ export class ModalProvider {
             .catch((reason?: TReason = new CancelError()) => {
                 this.dismiss({ id, reason });
 
-                if (reason instanceof CancelError) {
-                    if (throwCancelError) {
-                        throw new CancelError();
-                    }
-                } else {
-                    throw reason;
-                }
+                throw reason;
             });
 
         return {
@@ -300,9 +300,9 @@ export class ModalProvider {
 
         if (isClose) {
             modalToClose.close(reason);
-        } else {
-            modalToClose.dismiss(reason);
-        }
+        } else if (reason || modalToClose.throwCancelError) {
+                modalToClose.dismiss(reason);
+            }
 
         this._store.setState({
             // necessary to trigger update
