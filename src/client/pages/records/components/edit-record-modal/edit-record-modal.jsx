@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { graphql, withApollo } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import * as yup from 'yup';
-import _ from 'lodash';
 import { REPORTS_QUERY } from '../../../reports';
 import { RECORD_QUERY } from '../../../../common/graphql/queries';
+import withGraphql from '../../../../common/graphql/with-graphql';
 import ErrorSummary from '../../../../common/components/error-summary';
 import { Form, Field } from '../../../../common/features/forms';
 import { mapRecordToEdit } from '../../utils/mappers';
@@ -23,8 +22,17 @@ const mapRecord = ({ date, distance, time }) => ({
     time: getSecondsFromMidNight(time)
 });
 
-@graphql(
-    gql`
+const refetchQueries = [
+    {
+        query: REPORTS_QUERY,
+        variables: {
+            awaitRefetchQueries: true
+        }
+    }
+];
+
+@withGraphql({
+    gql: gql`
         mutation($date: Long!, $distance: Float!, $time: Int!) {
             addRecord(
                 record: { date: $date, distance: $distance, time: $time }
@@ -33,12 +41,11 @@ const mapRecord = ({ date, distance, time }) => ({
             }
         }
     `,
-    {
-        name: 'addRecord'
-    }
-)
-@graphql(
-    gql`
+    name: 'addRecord',
+    refetchQueries
+})
+@withGraphql({
+    gql: gql`
         mutation($id: ID!, $date: Long!, $distance: Float!, $time: Int!) {
             updateRecord(
                 id: $id
@@ -48,19 +55,18 @@ const mapRecord = ({ date, distance, time }) => ({
             }
         }
     `,
-    {
-        name: 'updateRecord'
-    }
-)
-@withApollo
+    name: 'updateRecord',
+    refetchQueries
+})
+@withGraphql({
+    gql: RECORD_QUERY,
+    name: 'getRecordById'
+})
 class EditRecordModal extends Component {
     static propTypes = {
         updateRecord: PropTypes.func.isRequired,
         addRecord: PropTypes.func.isRequired,
         closeModal: PropTypes.func.isRequired,
-        client: PropTypes.shape({
-            query: PropTypes.func.isRequired
-        }).isRequired,
         recordId: PropTypes.number,
         isAddMode: PropTypes.bool
     };
@@ -95,18 +101,13 @@ class EditRecordModal extends Component {
     }
 
     async componentDidMount() {
-        const { recordId, client } = this.props;
+        const { recordId, getRecordById } = this.props;
 
         if (!recordId) {
             return;
         }
 
-        const {
-            data: { record: rawRecord }
-        } = await client.query({
-            query: RECORD_QUERY,
-            variables: { id: recordId }
-        });
+        const { record: rawRecord } = await getRecordById({ id: recordId });
 
         const record = mapRecordToEdit(rawRecord);
 
@@ -129,47 +130,19 @@ class EditRecordModal extends Component {
             distance,
             time
         });
-        const refetchQueries = [
-            {
-                query: REPORTS_QUERY,
-                variables: {
-                    awaitRefetchQueries: true
-                }
-            }
-        ];
 
         try {
             if (isAddMode) {
                 const { addRecord } = this.props;
 
-                const { errors } = await addRecord({
-                    variables: recordPayload,
-                    refetchQueries,
-                    errorPolicy: 'all'
-                });
-
-                const error = _.get(errors, '[0].message');
-
-                if (error) {
-                    throw error;
-                }
+                await addRecord(recordPayload);
             } else {
                 const { updateRecord } = this.props;
 
-                const { errors } = await updateRecord({
-                    variables: {
-                        id: recordId,
-                        ...recordPayload
-                    },
-                    refetchQueries,
-                    errorPolicy: 'all'
+                await updateRecord({
+                    id: recordId,
+                    ...recordPayload
                 });
-
-                const error = _.get(errors, '[0].message');
-
-                if (error) {
-                    throw error;
-                }
             }
 
             const { closeModal } = this.props;
