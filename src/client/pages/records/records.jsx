@@ -50,7 +50,10 @@ const enhance = compose(
             modal
                 .custom({
                     title: 'Add new record',
-                    body: <EditRecordModal isAddMode />
+                    // eslint-disable-next-line react/prop-types
+                    body: ({ closeModal }) => (
+                        <EditRecordModal isAddMode closeModal={closeModal} />
+                    )
                 })
                 .result.then(() => {
                     getRef('refetchRecords')();
@@ -60,7 +63,13 @@ const enhance = compose(
             modal
                 .custom({
                     title: 'Edit record',
-                    body: <EditRecordModal recordId={recordId} />
+                    // eslint-disable-next-line react/prop-types
+                    body: ({ closeModal }) => (
+                        <EditRecordModal
+                            recordId={recordId}
+                            closeModal={closeModal}
+                        />
+                    )
                 })
                 .result.then(() => {
                     getRef('refetchRecords')();
@@ -83,7 +92,7 @@ const enhance = compose(
             modal
                 .confirm({
                     title: 'Confirm your action',
-                    body: (
+                    body: () => (
                         <div>
                             <div>
                                 Are you sure you want to delete this record?

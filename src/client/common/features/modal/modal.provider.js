@@ -27,8 +27,13 @@ type TCloseFn = (reason?: TReason) => void;
 
 type TDismissFn = (reason?: TReason) => void;
 
-// eslint-disable-next-line flowtype/no-weak-types
-type TBody = string | Element<any>;
+type TBody =
+    | string
+    | (({|
+          // eslint-disable-next-line flowtype/no-weak-types
+          closeModal: (reason?: mixed) => void
+          // eslint-disable-next-line flowtype/no-weak-types
+      |}) => Element<any>);
 
 type TModalResult = {|
     result: Promise<TReason>,
@@ -89,9 +94,7 @@ export class Modal {
     }: {|
         id: number,
         title: string,
-
-        // eslint-disable-next-line flowtype/no-weak-types
-        body: string | Element<any>,
+        body: TBody,
         type: TModalType,
         close: TCloseFn,
         dismiss: TDismissFn,
@@ -301,8 +304,8 @@ export class ModalProvider {
         if (isClose) {
             modalToClose.close(reason);
         } else if (reason || modalToClose.throwCancelError) {
-                modalToClose.dismiss(reason);
-            }
+            modalToClose.dismiss(reason);
+        }
 
         this._store.setState({
             // necessary to trigger update

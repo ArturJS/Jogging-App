@@ -102,7 +102,7 @@ const enhance = compose(
             <Fragment>
                 {typeof modal.body === 'string'
                     ? modal.body
-                    : React.cloneElement(modal.body, {
+                    : modal.body({
                           // eslint-disable-next-line flowtype/no-weak-types
                           closeModal: (reason?: mixed) => {
                               modalProvider.close({
