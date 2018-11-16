@@ -6,9 +6,10 @@ import Helmet from 'react-helmet';
 import ReactTable from 'react-table';
 import { compose, withProps, withStateHandlers, withHandlers } from 'recompose';
 import moment from 'moment';
-import { Query, withApollo, graphql } from 'react-apollo';
+import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { REPORTS_QUERY } from '../reports';
+import withGraphql from '../../common/graphql/with-graphql';
 import { withPreloadRoutes, withRefs } from '../../common/hocs';
 import modal from '../../common/features/modal';
 import { RECORD_QUERY } from '../../common/graphql/queries';
@@ -30,20 +31,30 @@ const RECORDS_QUERY = gql`
 `;
 
 const enhance = compose(
-    graphql(
-        gql`
+    withGraphql({
+        gql: RECORD_QUERY,
+        name: 'getRecordById',
+        mapResponseData: ({ record }) => mapRecordToDisplay(record)
+    }),
+    withGraphql({
+        gql: gql`
             mutation($id: ID!) {
                 deleteRecord(id: $id)
             }
         `,
-        {
-            name: 'removeRecord'
-        }
-    ),
+        name: 'removeRecord',
+        refetchQueries: [
+            {
+                query: REPORTS_QUERY,
+                variables: {
+                    awaitRefetchQueries: true
+                }
+            }
+        ]
+    }),
     withPreloadRoutes({
         routes: ['sign-up', 'reports']
     }),
-    withApollo,
     withRefs,
     withHandlers({
         showAddRecordModal: ({ getRef }) => () => {
@@ -78,16 +89,9 @@ const enhance = compose(
         showRemoveRecordModal: ({
             getRef,
             removeRecord,
-            client
+            getRecordById
         }) => async recordId => {
-            const {
-                data: { record: rawRecord }
-            } = await client.query({
-                query: RECORD_QUERY,
-                variables: { id: recordId }
-            });
-
-            const record = mapRecordToDisplay(rawRecord);
+            const record = await getRecordById({ id: recordId });
 
             modal
                 .confirm({
@@ -110,17 +114,7 @@ const enhance = compose(
                 })
                 .result.then(async () => {
                     await removeRecord({
-                        variables: {
-                            id: recordId
-                        },
-                        refetchQueries: [
-                            {
-                                query: REPORTS_QUERY,
-                                variables: {
-                                    awaitRefetchQueries: true
-                                }
-                            }
-                        ]
+                        id: recordId
                     });
 
                     getRef('refetchRecords')();
