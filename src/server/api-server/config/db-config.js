@@ -1,6 +1,6 @@
 const joi = require('joi');
 
-require('../../../dotenv-import');
+require('../../dotenv-import');
 
 const { DATABASE_URL } = process.env;
 const validationSchema = joi
