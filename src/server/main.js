@@ -16,13 +16,16 @@ const enforceHttps = () => {
         })
         .listen(80);
 };
-const app = new Koa();
 
+if (config.enforceHttps) {
+    enforceHttps();
+}
+
+const app = new Koa();
 const server = initHttpServer(app.callback());
 
 if (config.isProduction) {
     app.use(connect(compression()));
-    enforceHttps();
 }
 
 initAPIServer(app);

@@ -1,12 +1,14 @@
 import joi from 'joi';
 
-const { PORT } = process.env;
+const { PORT, ENFORCE_HTTPS } = process.env;
 const validationSchema = joi.object({
-    PORT: joi.string().required()
+    PORT: joi.string().required(),
+    ENFORCE_HTTPS: joi.boolean().required()
 });
 const { error } = joi.validate(
     {
-        PORT
+        PORT,
+        ENFORCE_HTTPS
     },
     validationSchema
 );
@@ -16,5 +18,6 @@ if (error) {
 }
 
 export const server = {
-    port: PORT
+    port: PORT,
+    enforceHttps: ENFORCE_HTTPS === 'true'
 };
