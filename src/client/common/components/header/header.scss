@@ -1,81 +1,82 @@
 @import './../../styles/references/references';
 
 .header {
-  $c-header-bg: $c-white;
-  $c-field-error-color: $c-bittersweet;
-  $min-desktop-width: 750px;
+    $c-header-bg: $c-white;
+    $c-field-error-color: $c-bittersweet;
+    $min-desktop-width: 750px;
 
-  display: flex;
-  width: 100%;
-  background-color: $c-header-bg;
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-  padding: 0 10px;
-  flex-direction: column;
-
-  @media (min-width: $min-desktop-width) {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    flex-direction: row;
-  }
-
-  &.is-logged-in {
-    flex-direction: row;
-
-    .header-auth {
-      width: auto;
-    }
-  }
-
-  &-brand {
     display: flex;
-    align-items: center;
-    font-size: 24px;
-  }
-
-  &-auth {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
     width: 100%;
-
-    @media (min-width: $min-desktop-width) {
-      width: auto;
-    }
-  }
-
-  .login-form {
-    display: flex;
+    min-height: 75px;
+    background-color: $c-header-bg;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    padding: 0 10px;
     flex-direction: column;
-    width: 100%;
-    padding-top: 15px;
-    margin-bottom: 15px;
 
     @media (min-width: $min-desktop-width) {
-      flex-direction: row;
-      width: auto;
-      margin-bottom: 0;
-
-      .field {
-        margin-right: 10px;
-      }
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        flex-direction: row;
     }
 
-    .btn-submit {
-      margin-top: 15px;
+    &.is-logged-in {
+        flex-direction: row;
 
-      @media (min-width: $min-desktop-width) {
-        margin-top: 0;
+        .header-auth {
+            width: auto;
+        }
+    }
+
+    &-brand {
+        display: flex;
+        align-items: center;
+        font-size: 24px;
+    }
+
+    &-auth {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+        width: 100%;
+
+        @media (min-width: $min-desktop-width) {
+            width: auto;
+        }
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding-top: 15px;
+        margin-bottom: 15px;
+
+        @media (min-width: $min-desktop-width) {
+            flex-direction: row;
+            width: auto;
+            margin-bottom: 0;
+
+            .field {
+                margin-right: 10px;
+            }
+        }
+
+        .btn-submit {
+            margin-top: 15px;
+
+            @media (min-width: $min-desktop-width) {
+                margin-top: 0;
+                margin-right: 15px;
+            }
+        }
+    }
+
+    .login-error-summary {
+        color: $c-field-error-color;
+        display: flex;
+        align-items: center;
         margin-right: 15px;
-      }
+        width: 12em;
     }
-  }
-
-  .login-error-summary {
-    color: $c-field-error-color;
-    display: flex;
-    align-items: center;
-    margin-right: 15px;
-    width: 12em;
-  }
 }
