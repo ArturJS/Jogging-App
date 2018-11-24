@@ -20,28 +20,29 @@ $unsupported-link-text-hover: $c-midnight-blue;
 *,
 *:before,
 *:after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .page {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 10px 15px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10px 15px;
 }
 
 html,
 body,
 #content {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(34, 167, 22);
 }
 
 body {
-  margin: 0;
-  font-family: sans-serif;
-  font-size: 14px;
-  line-height: 1.42857143;
-  color: $c-body-color;
-  min-width: $min-mobile-width;
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: $c-body-color;
+    min-width: $min-mobile-width;
 }
