@@ -1,0 +1,16 @@
+input UserDataInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+}
+
+input AllDataInput {
+    records: [RecordInput!]!
+    users: [UserDataInput!]!
+}
+
+extend type Mutation {
+    createAll(allData: AllDataInput!): Boolean
+    dropAll: Boolean
+}
