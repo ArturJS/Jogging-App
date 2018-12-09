@@ -3,10 +3,10 @@ input UserDataInput {
     lastName: String!
     email: String!
     password: String!
+    records: [RecordInput!]!
 }
 
 input AllDataInput {
-    records: [RecordInput!]!
     users: [UserDataInput!]!
 }
 
