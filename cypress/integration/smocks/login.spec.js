@@ -1,28 +1,31 @@
+import config from '../../config';
 import createAllPayload from '../../fixtures/create-all';
 import dropAllPayload from '../../fixtures/drop-all';
 
-const defaultTimeout = 30000;
-const requestTimeout = defaultTimeout;
-const visitTimeout = defaultTimeout;
+// todo load fixtures correctly
+
+// todo create page objects
+
+const { baseUrl, baseApiUrl, requestTimeout, visitTimeout } = config;
 
 context('Login', () => {
     beforeEach(() => {
         cy.request({
             method: 'POST',
-            url: 'http://localhost:3000/graphql',
+            url: baseApiUrl,
             body: dropAllPayload,
             timeout: requestTimeout
         });
         cy.request({
             method: 'POST',
-            url: 'http://localhost:3000/graphql',
+            url: baseApiUrl,
             body: createAllPayload,
             timeout: requestTimeout
         });
     });
 
     it('should render sign-up page', () => {
-        cy.visit('http://localhost:3000/sign-up');
+        cy.visit(`${baseUrl}/sign-up`);
         cy.title().should('eq', 'Jogging App: Create an account');
     });
 
