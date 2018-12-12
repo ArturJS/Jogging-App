@@ -5,9 +5,13 @@
         "airbnb-base",
         "prettier",
         "plugin:jest/recommended",
-        "plugin:flowtype/recommended"
+        "plugin:flowtype/recommended",
+        "plugin:cypress/recommended"
     ],
-    "plugins": ["flowtype", "jest", "import"],
+    "env": {
+        "cypress/globals": true
+    },
+    "plugins": ["flowtype", "jest", "import", "cypress"],
     "parser": "babel-eslint",
     "rules": {
         "flowtype/require-exact-type": [2, "always"],

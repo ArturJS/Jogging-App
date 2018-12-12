@@ -4,8 +4,7 @@ const baseUrl = 'http://localhost:3000';
 const config = {
     baseUrl,
     baseApiUrl: `${baseUrl}/graphql`,
-    requestTimeout: defaultTimeout,
-    visitTimeout: defaultTimeout
+    requestTimeout: defaultTimeout
 };
 
 export default config;

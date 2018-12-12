@@ -25,7 +25,9 @@ context('Login', () => {
         cy.get('.login-form [name="authEmail"]').type('e2e-test@user.com');
         cy.get('.login-form [name="authPassword"]').type('e2e123456');
         cy.get('.login-form button[type="submit"]').click();
-        cy.wait(5000);
-        cy.title().should('eq', 'Jogging App: Records');
+
+        cy.title({
+            timeout: visitTimeout
+        }).should('eq', 'Jogging App: Records');
     });
 });
