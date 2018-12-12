@@ -11,6 +11,5 @@ input AllDataInput {
 }
 
 extend type Mutation {
-    createAll(allData: AllDataInput!): Boolean
-    dropAll: Boolean
+    resetAll(allData: AllDataInput!): Boolean
 }

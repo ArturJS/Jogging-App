@@ -1,8 +1,4 @@
 import config from '../../config';
-import createAllPayload from '../../fixtures/create-all';
-import dropAllPayload from '../../fixtures/drop-all';
-
-// todo load fixtures correctly
 
 // todo create page objects
 
@@ -10,17 +6,13 @@ const { baseUrl, baseApiUrl, requestTimeout, visitTimeout } = config;
 
 context('Login', () => {
     beforeEach(() => {
-        cy.request({
-            method: 'POST',
-            url: baseApiUrl,
-            body: dropAllPayload,
-            timeout: requestTimeout
-        });
-        cy.request({
-            method: 'POST',
-            url: baseApiUrl,
-            body: createAllPayload,
-            timeout: requestTimeout
+        cy.fixture('reset-all').then(resetAllPayload => {
+            cy.request({
+                method: 'POST',
+                url: baseApiUrl,
+                body: resetAllPayload,
+                timeout: requestTimeout
+            });
         });
     });
 

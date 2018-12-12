@@ -3,9 +3,11 @@ import e2eTestsDAL from './e2e-tests.dal';
 import authBLL from '../auth/auth.bll';
 import recordsBLL from '../records/records.bll';
 
-export const createAll = baseResolver.createResolver(async (root, args) => {
-    const { users } = args.allData;
+const dropAll = async () => {
+    await e2eTestsDAL.dropAll();
+};
 
+const createAll = async ({ users }) => {
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users) {
         // eslint-disable-next-line no-await-in-loop
@@ -28,12 +30,11 @@ export const createAll = baseResolver.createResolver(async (root, args) => {
             });
         }
     }
+};
 
-    return true;
-});
-
-export const dropAll = baseResolver.createResolver(async () => {
-    await e2eTestsDAL.dropAll();
+export const resetAll = baseResolver.createResolver(async (root, args) => {
+    await dropAll();
+    await createAll(args.allData);
 
     return true;
 });
