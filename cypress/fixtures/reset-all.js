@@ -3,7 +3,7 @@ module.exports = {
     variables: {},
     query: `
     mutation {
-        createAll(allData: {
+        resetAll(allData: {
             users: [
                 {
                     firstName: "e2e_name", 
