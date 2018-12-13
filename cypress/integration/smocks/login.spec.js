@@ -1,19 +1,13 @@
 import config from '../../config';
+import { SignUpPage } from '../../support/page-objects/sign-up.page';
 
-// todo create page objects
-
-const { baseUrl, baseApiUrl, requestTimeout, visitTimeout } = config;
+const { baseUrl, visitTimeout } = config;
 
 context('Login', () => {
+    const signUpPage = new SignUpPage();
+
     beforeEach(() => {
-        cy.fixture('reset-all').then(resetAllPayload => {
-            cy.request({
-                method: 'POST',
-                url: baseApiUrl,
-                body: resetAllPayload,
-                timeout: requestTimeout
-            });
-        });
+        signUpPage.resetDatabase();
     });
 
     it('should render sign-up page', () => {
@@ -22,9 +16,10 @@ context('Login', () => {
     });
 
     it('should redirect to /records page after login', () => {
-        cy.get('.login-form [name="authEmail"]').type('e2e-test@user.com');
-        cy.get('.login-form [name="authPassword"]').type('e2e123456');
-        cy.get('.login-form button[type="submit"]').click();
+        signUpPage.signIn({
+            email: 'e2e-test@user.com',
+            password: 'e2e123456'
+        });
 
         cy.title({
             timeout: visitTimeout
