@@ -1,7 +1,4 @@
-import config from '../../config';
 import { SignUpPage } from '../../support/page-objects/sign-up.page';
-
-const { baseUrl, visitTimeout } = config;
 
 context('Login', () => {
     const signUpPage = new SignUpPage();
@@ -11,7 +8,7 @@ context('Login', () => {
     });
 
     it('should render sign-up page', () => {
-        cy.visit(`${baseUrl}/sign-up`);
+        cy.visit('/sign-up');
         cy.title().should('eq', 'Jogging App: Create an account');
     });
 
@@ -21,8 +18,6 @@ context('Login', () => {
             password: 'e2e123456'
         });
 
-        cy.title({
-            timeout: visitTimeout
-        }).should('eq', 'Jogging App: Records');
+        cy.title().should('eq', 'Jogging App: Records');
     });
 });
