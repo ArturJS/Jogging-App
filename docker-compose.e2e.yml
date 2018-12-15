@@ -1,0 +1,53 @@
+version: '3'
+services:
+    jogging-app:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        env_file: ./.env
+        environment:
+            - IS_E2E=true
+            - PORT=3000
+        command: bash -c 'npm run db:migrate && node ./src/server/index.js'
+        networks:
+            internal-network:
+                aliases:
+                    - jogging-app
+        depends_on:
+            - postgres
+
+    postgres:
+        image: ibmcom/isam-postgresql
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_DB=jogging-app
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=root
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        networks:
+            internal-network:
+                aliases:
+                    - postgres
+
+    cypress:
+        build:
+            context: .
+            dockerfile: Dockerfile.cypress
+        environment:
+            - CYPRESS_baseUrl=http://jogging-app:3000
+        #command: bash -c 'sleep 10 && npm run test:e2e:ci'
+        command: npm run test:e2e:ci
+        networks:
+            internal-network:
+                aliases:
+                    - cypress
+        depends_on:
+            - jogging-app
+
+networks:
+    internal-network:
+        driver: bridge
+
+volumes:
+    ? pgdata

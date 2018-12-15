@@ -33,11 +33,12 @@
         "test": "jest --env=jsdom",
         "test:coverage": "jest --env=jsdom --coverage",
         "test:e2e": "npx cypress open",
+        "test:e2e:ci": "npx cypress run",
+        "test:e2e:docker": "docker-compose --file docker-compose.e2e.yml up --abort-on-container-exit",
         "db:migrate": "npx sequelize db:migrate",
         "db:create:dev": "npx cross-env NODE_ENV=development node ./scripts/tasks/db-create.js",
         "db:create:prod": "npx cross-env NODE_ENV=production node ./scripts/tasks/db-create.js",
-        "lint-staged": "npx lint-staged",
-        "postinstall": "node ./scripts/tasks/heroku-build.js"
+        "lint-staged": "npx lint-staged"
     },
     "lint-staged": {
         "{src,local_modules,cypress}/**/*.{js,jsx,mjs}": [

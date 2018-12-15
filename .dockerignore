@@ -14,3 +14,4 @@ dist
 npm-debug.log
 coverage
 .next
+docker-compose.e2e.yml
