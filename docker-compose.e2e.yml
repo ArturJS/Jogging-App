@@ -36,7 +36,6 @@ services:
             dockerfile: Dockerfile.cypress
         environment:
             - CYPRESS_baseUrl=http://jogging-app:3000
-        #command: bash -c 'sleep 10 && npm run test:e2e:ci'
         command: npm run test:e2e:ci
         networks:
             internal-network:
