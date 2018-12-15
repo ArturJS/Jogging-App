@@ -1,10 +1,12 @@
 import Long from 'graphql-type-long';
 import { makeExecutableSchema } from 'graphql-tools';
+import config from '../../common/config';
 import * as recordsQueries from './records/records.queries';
 import * as recordsMutations from './records/records.mutations';
 import * as reportsQueries from './reports/reports.queries';
 import * as authQueries from './auth/auth.queries';
 import * as authMutations from './auth/auth.mutations';
+import * as e2eTestsMutations from './e2e-tests/e2e-tests.mutations';
 import typeDefs from './schema.graphql';
 
 const schema = makeExecutableSchema({
@@ -17,7 +19,8 @@ const schema = makeExecutableSchema({
         },
         Mutation: {
             ...recordsMutations,
-            ...authMutations
+            ...authMutations,
+            ...(config.isE2E ? e2eTestsMutations : {})
         },
         Long
     }

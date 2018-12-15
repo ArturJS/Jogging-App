@@ -1,0 +1,15 @@
+input UserDataInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    records: [RecordInput!]!
+}
+
+input AllDataInput {
+    users: [UserDataInput!]!
+}
+
+extend type Mutation {
+    resetAll(allData: AllDataInput!): Boolean
+}

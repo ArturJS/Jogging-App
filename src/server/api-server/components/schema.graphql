@@ -7,3 +7,4 @@ scalar Long
 #import "./auth/auth.schema.graphql"
 #import "./reports/reports.schema.graphql"
 #import "./records/records.schema.graphql"
+#import "./e2e-tests/e2e-tests.schema.graphql"
