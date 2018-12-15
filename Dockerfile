@@ -17,4 +17,4 @@ RUN npm install --production && \
 ENV DOCKER_BUILD=true
 ENV NODE_ENV=production
 
-ENTRYPOINT ["node", "./src/index.js"]
+ENTRYPOINT ["node", "./src/server/index.js"]
