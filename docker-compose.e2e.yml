@@ -4,7 +4,7 @@ services:
         build:
             context: ./
             dockerfile: Dockerfile
-        env_file: ./.env
+        env_file: ./.env.e2e
         environment:
             - IS_E2E=true
             - PORT=3000
