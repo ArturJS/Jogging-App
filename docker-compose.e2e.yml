@@ -34,7 +34,7 @@ services:
             dockerfile: Dockerfile.cypress
         environment:
             - CYPRESS_baseUrl=http://jogging-app:3000
-        command: npm run test:e2e:ci
+        command: bash -c './wait-for-it.sh jogging-app:3000 -t 30 && npm run test:e2e:ci'
         networks:
             internal-network:
                 aliases:
