@@ -5,6 +5,7 @@ WORKDIR /home/node/app
 
 COPY cypress.json package.json package-lock.json ./
 COPY cypress ./cypress
+COPY wait-for-it.sh ./
 
 # avoid many lines of progress bars during install
 # https://github.com/cypress-io/cypress/issues/1243
