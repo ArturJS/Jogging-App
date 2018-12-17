@@ -9,10 +9,10 @@ USER node
 
 COPY --chown=node:node package.json .
 COPY --chown=node:node package-lock.json .
-COPY --chown=node:node ./ ./
+RUN npm install --production
 
-RUN npm install --production && \
-    npm run build
+COPY --chown=node:node ./ ./
+RUN npm run build
 
 ENV DOCKER_BUILD=true
 ENV NODE_ENV=production
