@@ -1,6 +1,6 @@
 import { SignUpPage } from '../../support/page-objects/sign-up.page';
 
-context('Login', () => {
+context('Sign In', () => {
     const signUpPage = new SignUpPage();
 
     beforeEach(() => {
@@ -12,7 +12,7 @@ context('Login', () => {
         cy.title().should('eq', 'Jogging App: Create an account');
     });
 
-    it('should redirect to /records page after login', () => {
+    it('should redirect to /records page after sign in', () => {
         signUpPage.signIn({
             email: 'e2e-test@user.com',
             password: 'e2e123456'
