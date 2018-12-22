@@ -4,7 +4,6 @@ import session from 'koa-session';
 import passport from 'koa-passport';
 import { Strategy } from 'passport-local';
 import { ApolloServer } from 'apollo-server-koa';
-import cors from '@koa/cors';
 import noCache from 'koa-no-cache';
 import config from '../common/config';
 import graphqlSchema from './components/index';
@@ -44,7 +43,6 @@ export const initAPIServer = app => {
 
     app.use(bodyParser())
         .use(session({}, app))
-        .use(cors())
         .use(
             noCache({
                 paths: ['/graphql']
@@ -71,5 +69,5 @@ export const initAPIServer = app => {
         }
     });
 
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({ app, cors: false });
 };

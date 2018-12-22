@@ -285,7 +285,7 @@ const Records = ({ filterRecords, renderRecordsGrid, showAddRecordModal }) => (
         <div className="buttons-group">
             <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-primary btn-add-record"
                 onClick={showAddRecordModal}
             >
                 <i className="fa fa-plus" />
