@@ -3,7 +3,7 @@ import { SignUpPage } from '../../support/page-objects/sign-up.page';
 context('Sign In', () => {
     const signUpPage = new SignUpPage();
 
-    beforeEach(() => {
+    before(() => {
         signUpPage.resetDatabase();
     });
 
