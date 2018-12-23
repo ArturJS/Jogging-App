@@ -36,6 +36,16 @@ export class RecordsPage extends BasePage {
         this._editRecordForm({ date, distance, time });
     }
 
+    removeRecordByIndex(index) {
+        this._getTableRowByIndex(index)
+            .find('.btn-remove')
+            .click();
+
+        cy.get('.modal-content')
+            .find('.btn-ok')
+            .click();
+    }
+
     checkTableRow({ index, cells }) {
         cells.forEach((cellText, cellIndex) => {
             const cellSelector = `.rt-td:nth-child(${cellIndex + 1})`;
