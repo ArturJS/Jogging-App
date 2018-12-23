@@ -4,23 +4,7 @@ context('Records', () => {
     const recordsPage = new RecordsPage();
 
     beforeEach(() => {
-        recordsPage.resetDatabase({
-            query: `
-            mutation {
-                resetAll(allData: {
-                    users: [
-                        {
-                            firstName: "e2e_name", 
-                            lastName: "e2e_lastname", 
-                            email: "e2e-test@user.com", 
-                            password: "e2e123456", 
-                            records: []
-                        }
-                    ]
-                })
-            }
-            `
-        });
+        recordsPage.resetDatabaseAndRecords([]);
         recordsPage.signInViaNetwork({
             email: 'e2e-test@user.com',
             password: 'e2e123456'
@@ -49,6 +33,41 @@ context('Records', () => {
 
         recordsPage.checkTableRow({
             index: 'last',
+            cells: ['22.12.2018', '1500', '00:03:00', '30.00']
+        });
+    });
+
+    it('should edit record', () => {
+        const initialRecord = {
+            date: 1520971200000, // 14.03.2018
+            distance: 5000,
+            time: 2460
+        };
+
+        recordsPage.resetDatabaseAndRecords([initialRecord]);
+        recordsPage.signInViaNetwork({
+            email: 'e2e-test@user.com',
+            password: 'e2e123456'
+        });
+
+        cy.visit('/records');
+
+        recordsPage.checkTableRow({
+            index: 1,
+            cells: ['14.03.2018', '5000', '00:41:00', '7.32']
+        });
+
+        recordsPage.editRecord({
+            index: 1,
+            payload: {
+                date: '22.12.2018',
+                distance: '1500',
+                time: '00:03:00'
+            }
+        });
+
+        recordsPage.checkTableRow({
+            index: 1,
             cells: ['22.12.2018', '1500', '00:03:00', '30.00']
         });
     });

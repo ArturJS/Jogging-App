@@ -167,7 +167,7 @@ const enhance = compose(
                     return (
                         <button
                             type="button"
-                            className="btn btn-default fa fa-pencil"
+                            className="btn btn-default btn-edit fa fa-pencil"
                             onClick={cellInfo.onEditClick}
                         />
                     );
@@ -189,7 +189,7 @@ const enhance = compose(
                     return (
                         <button
                             type="button"
-                            className="btn btn-default fa fa-trash-o"
+                            className="btn btn-default btn-remove fa fa-trash-o"
                             onClick={cellInfo.onDeleteClick}
                         />
                     );
