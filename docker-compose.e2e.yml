@@ -8,7 +8,12 @@ services:
         environment:
             - IS_E2E=true
             - PORT=3000
-        command: bash -c './wait-for-it.sh postgres:5432 -t 30 && npm run db:migrate && node ./src/server/index.js'
+            - TZ=Europe/Samara
+        command: bash -c '
+            date &&
+            ./wait-for-it.sh postgres:5432 -t 30 &&
+            npm run db:migrate &&
+            node ./src/server/index.js'
         networks:
             internal-network:
                 aliases:
