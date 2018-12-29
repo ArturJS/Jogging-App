@@ -2,9 +2,9 @@ version: '3'
 services:
     jogging-app:
         build:
-            context: ./
+            context: ./jogging-app
             dockerfile: Dockerfile
-        env_file: ./.env.e2e
+        env_file: ./jogging-app/.env.e2e
         environment:
             - IS_E2E=true
             - PORT=3000
@@ -35,15 +35,15 @@ services:
 
     cypress:
         build:
-            context: .
-            dockerfile: Dockerfile.cypress
+            context: ./e2e
+            dockerfile: Dockerfile
         environment:
             - CYPRESS_baseUrl=http://jogging.app:3000
             - TZ=Europe/Samara
         command: bash -c '
             date &&
             ./wait-for-it.sh jogging.app:3000 -t 30 &&
-            npm run test:e2e'
+            npm run e2e'
         networks:
             internal-network:
                 aliases:
