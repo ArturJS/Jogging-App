@@ -29,7 +29,7 @@
         "debug": "ndb cross-env NODE_ENV=development node ./src/server/index.js",
         "build": "cd ./src/client && npx next build",
         "flow": "npx flow",
-        "lint": "eslint -c .eslintrc src local_modules",
+        "lint": "eslint -c .eslintrc '{src,scripts,local_modules}/**/*.{js,jsx,mjs}'",
         "test": "jest --env=jsdom",
         "test:coverage": "jest --env=jsdom --coverage",
         "db:migrate": "npx sequelize db:migrate",
@@ -38,7 +38,7 @@
         "lint-staged": "npx lint-staged"
     },
     "lint-staged": {
-        "{src,local_modules}/**/*.{js,jsx,mjs}": [
+        "{src,scripts,local_modules}/**/*.{js,jsx,mjs}": [
             "prettier --write",
             "eslint --fix",
             "git add"
