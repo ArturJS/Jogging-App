@@ -11,12 +11,13 @@ export default class TimePickerInput extends Component {
         name: PropTypes.string.isRequired,
         onChange: PropTypes.func.isRequired,
         hasError: PropTypes.bool.isRequired,
-        value: PropTypes.object,
+        value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
         className: PropTypes.string
     };
 
     static defaultProps = {
-        value: null
+        value: null,
+        className: ''
     };
 
     handleChange = value => {

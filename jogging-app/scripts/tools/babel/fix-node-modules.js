@@ -1,4 +1,4 @@
-const addHook = require('pirates').addHook;
+const { addHook } = require('pirates');
 
 // in order to fix issues with http2 and apollo (in "node-fetch" library)
 // see also
@@ -6,7 +6,7 @@ const addHook = require('pirates').addHook;
 // https://github.com/bitinn/node-fetch/issues/401
 
 addHook(
-    (code, filename) =>
+    code =>
         code.replace(
             'const invalidTokenRegex =',
             'const invalidTokenRegex = { test: () => false }; // '

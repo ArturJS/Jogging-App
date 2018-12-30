@@ -6,17 +6,13 @@ import controls from './components/controls';
 import './field.scss';
 
 export default class Field extends Component {
-    constructor(props) {
-        super(props);
-
-        this.inputRef = React.createRef();
-    }
-
     static propTypes = {
         name: PropTypes.string.isRequired,
         component: PropTypes.oneOf(Object.keys(controls)).isRequired,
+        // eslint-disable-next-line react/require-default-props
         id: PropTypes.string,
         className: PropTypes.string,
+        // eslint-disable-next-line react/require-default-props
         placeholder: PropTypes.string,
         label: PropTypes.string
     };
@@ -25,6 +21,12 @@ export default class Field extends Component {
         className: '',
         label: ''
     };
+
+    constructor(props) {
+        super(props);
+
+        this.inputRef = React.createRef();
+    }
 
     renderControl = params => {
         const { component } = this.props;
@@ -44,6 +46,7 @@ export default class Field extends Component {
         return (
             <div className={cx('field', className)}>
                 {hasLabel && (
+                    // eslint-disable-next-line jsx-a11y/label-has-for
                     <label htmlFor={id} className="field__label">
                         {label}
                     </label>

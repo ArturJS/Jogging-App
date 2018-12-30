@@ -35,6 +35,7 @@
         "db:migrate": "npx sequelize db:migrate",
         "db:create:dev": "npx cross-env NODE_ENV=development node ./scripts/tasks/db-create.js",
         "db:create:prod": "npx cross-env NODE_ENV=production node ./scripts/tasks/db-create.js",
+        "precommit": "lint-staged",
         "lint-staged": "npx lint-staged"
     },
     "lint-staged": {

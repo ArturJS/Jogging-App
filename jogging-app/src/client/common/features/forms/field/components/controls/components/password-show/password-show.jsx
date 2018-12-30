@@ -1,22 +1,28 @@
 import React from 'react';
 import cx from 'classnames';
 
-const passwordShow = ({ field, form, className, ...props }) => {
+const passwordShow = ({ field, form, className, ref, ...props }) => {
     let icon;
 
     const { errors, submitCount, touched } = form;
     const { name } = field;
     const hasError = !!errors[name] && (submitCount > 0 || touched[name]);
-    const inputRef = props.ref.current;
+    const { current: inputRef } = ref;
     const showPassword = () => {
         icon.classList.add('fa-eye');
         icon.classList.remove('fa-eye-slash');
-        inputRef && (inputRef.type = 'text');
+
+        if (inputRef) {
+            inputRef.type = 'text';
+        }
     };
     const hidePassword = () => {
         icon.classList.remove('fa-eye');
         icon.classList.add('fa-eye-slash');
-        inputRef && (inputRef.type = 'password');
+
+        if (inputRef) {
+            inputRef.type = 'password';
+        }
     };
 
     return (
@@ -48,6 +54,8 @@ const passwordShow = ({ field, form, className, ...props }) => {
                 onMouseUp={hidePassword}
                 onTouchEnd={hidePassword}
                 onMouseLeave={hidePassword}
+                role="button"
+                tabIndex="0"
             />
         </div>
     );

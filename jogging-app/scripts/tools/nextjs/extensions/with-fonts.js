@@ -1,7 +1,7 @@
 const createExtension = require('./utils/create-extension');
 
 module.exports = createExtension({
-    webpack(config, options) {
+    webpack(config) {
         config.module.rules.push(
             {
                 test: /\.woff2?(\?\S*)?$/,

@@ -30,6 +30,7 @@ export default class NavSubHeader extends Component {
         return (
             <ul className="nav-sub-header list-unstyled">
                 <li className="nav-item">
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <Link
                         className="nav-link unstyled-link"
                         route="records"
@@ -39,6 +40,7 @@ export default class NavSubHeader extends Component {
                     </Link>
                 </li>
                 <li className="nav-item">
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <Link
                         className="nav-link unstyled-link"
                         route="reports"

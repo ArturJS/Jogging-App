@@ -9,7 +9,7 @@ export default class DatePicker extends Component {
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         onChange: PropTypes.func.isRequired,
-        value: PropTypes.object
+        value: PropTypes.object // eslint-disable-line react/forbid-prop-types
     };
 
     static defaultProps = {
