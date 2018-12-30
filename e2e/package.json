@@ -1,0 +1,35 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "precommit": "lint-staged",
+    "postcommit": "git update-index --again",
+    "e2e": "npx cypress run --browser chrome",
+    "lint-staged": "npx lint-staged"
+  },
+  "lint-staged": {
+    "cypress/!(fixtures)/*.js": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "keywords": [],
+  "author": "ArturJS",
+  "license": "MIT",
+  "dependencies": {
+    "cypress": "^3.1.4"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.11.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-cypress": "^2.2.0",
+    "eslint-plugin-import": "^2.14.0",
+    "lint-staged": "^8.1.0",
+    "prettier": "^1.15.3"
+  }
+}
