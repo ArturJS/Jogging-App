@@ -1,5 +1,6 @@
 export class BasePage {
     resetDatabase({ query } = {}) {
+        // todo improve resetDatabase method
         cy.fixture('reset-all').then(resetAllPayload => {
             let body = resetAllPayload;
 
@@ -16,6 +17,10 @@ export class BasePage {
                 body
             });
         });
+    }
+
+    signInDefaultUser() {
+        // todo and use instead of `signInViaNetwork`
     }
 
     signInViaNetwork({ email, password }) {
