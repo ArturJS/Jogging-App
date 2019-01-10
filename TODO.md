@@ -2,9 +2,8 @@
 
 - E2E testing:
 
-  - [ ] Add more smoke tests:
-    - [ ] Check /reports page
-      - [ ] reset database, login, verify /records page, (do nothing / add / remove / update) record and then verify reports page
+  - [x] Add more smoke tests:
+    - [x] Check /reports page
   - [ ] Add business flow (aka regression) tests:
     - [ ] The same with testing of ui validation
       - [ ] (add / update / remove) record
