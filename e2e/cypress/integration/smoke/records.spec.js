@@ -4,7 +4,7 @@ context('Records', () => {
     const recordsPage = new RecordsPage();
 
     beforeEach(() => {
-        recordsPage.resetDatabaseAndRecords([]);
+        recordsPage.resetDatabase({ records: [] });
         recordsPage.signInViaNetwork({
             email: 'e2e-test@user.com',
             password: 'e2e123456'
@@ -44,7 +44,7 @@ context('Records', () => {
             time: 2460
         };
 
-        recordsPage.resetDatabaseAndRecords([initialRecord]);
+        recordsPage.resetDatabase({ records: [initialRecord] });
         recordsPage.signInViaNetwork({
             email: 'e2e-test@user.com',
             password: 'e2e123456'
@@ -79,7 +79,7 @@ context('Records', () => {
             time: 2460
         };
 
-        recordsPage.resetDatabaseAndRecords([initialRecord]);
+        recordsPage.resetDatabase({ records: [initialRecord] });
         recordsPage.signInViaNetwork({
             email: 'e2e-test@user.com',
             password: 'e2e123456'

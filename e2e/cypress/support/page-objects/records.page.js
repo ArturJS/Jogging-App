@@ -1,29 +1,6 @@
 import { BasePage } from './base.page';
 
 export class RecordsPage extends BasePage {
-    resetDatabaseAndRecords(records) {
-        // graphql doesn't allow double quotes around object property names
-        const recordsPayload = JSON.stringify(records).replace(/"/g, '');
-
-        super.resetDatabase({
-            query: `
-            mutation {
-                resetAll(allData: {
-                    users: [
-                        {
-                            firstName: "e2e_name", 
-                            lastName: "e2e_lastname", 
-                            email: "e2e-test@user.com", 
-                            password: "e2e123456", 
-                            records: ${recordsPayload}
-                        }
-                    ]
-                })
-            }
-            `
-        });
-    }
-
     addRecord({ date, distance, time }) {
         cy.get('.records-page .btn-add-record').click();
         this._editRecordForm({ date, distance, time });

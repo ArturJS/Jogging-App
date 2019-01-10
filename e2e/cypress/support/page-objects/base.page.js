@@ -1,25 +1,34 @@
 export class BasePage {
-    resetDatabase({ query } = {}) {
-        // todo improve resetDatabase method
-        cy.fixture('reset-all').then(resetAllPayload => {
-            let body = resetAllPayload;
+    resetDatabase({ records = [] } = {}) {
+        // graphql doesn't allow double quotes around object property names
+        const recordsPayload = JSON.stringify(records).replace(/"/g, '');
 
-            if (query) {
-                body = {
-                    ...body,
-                    query
-                };
+        cy.request({
+            method: 'POST',
+            url: '/graphql',
+            body: {
+                operationName: null,
+                variables: {},
+                query: `
+                    mutation {
+                        resetAll(allData: {
+                            users: [
+                                {
+                                    firstName: "e2e_name", 
+                                    lastName: "e2e_lastname", 
+                                    email: "e2e-test@user.com", 
+                                    password: "e2e123456", 
+                                    records: ${recordsPayload}
+                                }
+                            ]
+                        })
+                    }
+                `
             }
-
-            cy.request({
-                method: 'POST',
-                url: '/graphql',
-                body
-            });
         });
     }
 
-    signInDefaultUser() {
+    signIn() {
         // todo and use instead of `signInViaNetwork`
     }
 
