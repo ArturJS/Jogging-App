@@ -1,6 +1,7 @@
 @import "../references/references";
 
 .rc-time-picker {
+
   &-input {
     background-color: transparent;
     border: 0;
@@ -27,6 +28,7 @@
       flex-grow: 1;
       overflow-x: hidden;
 
+      // stylelint-disable-next-line max-nesting-depth
       li {
         padding: 0;
         text-align: center;

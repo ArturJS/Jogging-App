@@ -1,0 +1,4 @@
+{
+    "plugins": ["stylelint-order", "stylelint-scss"],
+    "extends": "stylelint-config-airbnb"
+}

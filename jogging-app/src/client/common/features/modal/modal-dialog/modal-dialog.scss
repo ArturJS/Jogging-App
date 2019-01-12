@@ -1,4 +1,4 @@
-@import '../../../styles/references/_references';
+@import "../../../styles/references/_references";
 
 .modal {
   $c-modal-bg: $c-desert-storm;
@@ -77,7 +77,7 @@
     justify-content: space-around;
 
     .btn {
-      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, .3);
       margin: 5px 0;
     }
   }
@@ -85,9 +85,11 @@
 
 .modal-info {
   font-size: 16px;
+
   @media (min-width: $tablet-width) {
     max-width: 450px;
   }
+
   .modal-body {
     max-width: 400px;
     text-align: center;
@@ -95,6 +97,7 @@
 }
 
 .modal-error {
+
   .modal-title {
     margin-bottom: 15px;
     color: #ffffff;
@@ -119,6 +122,7 @@
   }
 
   .buttons-group {
+
     .btn {
       width: 100%;
       margin: 5px 0;
@@ -127,9 +131,10 @@
 }
 
 .modal-show {
+
   &-appear {
-    opacity: 0.01;
-    transform: scale(0.5);
+    opacity: .01;
+    transform: scale(.5);
 
     &.modal-show-appear-active {
       opacity: 1;
@@ -143,8 +148,8 @@
     transform: scale(1);
 
     &.modal-show-exit-active {
-      opacity: 0.01;
-      transform: scale(0.5);
+      opacity: .01;
+      transform: scale(.5);
       transition: all 300ms ease-out;
     }
   }
@@ -165,7 +170,7 @@
   }
 
   &--after-open {
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: rgba(255, 255, 255, .75);
   }
 
   &--before-close {

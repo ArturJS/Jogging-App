@@ -5,20 +5,20 @@ $c-unstyled-link: $c-desert-storm;
 $c-link-hover: $c-lynch;
 
 a {
-	color: $c-link;
+  color: $c-link;
 }
 
 .link {
-	color: $c-link;
-	text-decoration: none;
-	transition: all 0.3s ease-out;
-	cursor: pointer;
+  color: $c-link;
+  text-decoration: none;
+  transition: all .3s ease-out;
+  cursor: pointer;
 
-	&:hover {
-		color: $c-link-hover;
-	}
+  &:hover {
+    color: $c-link-hover;
+  }
 }
 
 .unstyled-link {
-	text-decoration: none;
+  text-decoration: none;
 }

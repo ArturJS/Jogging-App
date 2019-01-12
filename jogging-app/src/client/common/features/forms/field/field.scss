@@ -1,4 +1,4 @@
-@import '../../../styles/references/_references';
+@import "../../../styles/references/_references";
 
 $c-field-error-border: $c-bittersweet;
 $c-field-error-color: $c-bittersweet;
@@ -13,7 +13,7 @@ $c-input-bg: $c-desert-storm;
 $c-input-border: $c-silver;
 $c-input-bg-disabled: $c-silver;
 $c-input-border-focus: $c-mine-shaft;
-$c-input-box-shadow-inset-focus: rgba($c-mine-shaft, 0.075);
+$c-input-box-shadow-inset-focus: rgba($c-mine-shaft, .075);
 $c-input-moz-focus-color: transparent;
 $c-input-moz-focus-shadow: $c-mine-shaft;
 
@@ -36,6 +36,7 @@ $font-size: 16px;
 }
 
 .field {
+
   .SingleDatePicker {
     padding: 0;
   }
@@ -57,9 +58,10 @@ $font-size: 16px;
     background-color: transparent;
 
     &_input {
-      padding-top: 0.5em;
+      padding-top: .5em;
       padding-bottom: 0;
 
+      // stylelint-disable-next-line max-nesting-depth
       &__focused {
         border: 0;
       }
@@ -68,6 +70,7 @@ $font-size: 16px;
 }
 
 input {
+
   &:-ms-input-placeholder {
     color: $c-input-placeholder;
   }
