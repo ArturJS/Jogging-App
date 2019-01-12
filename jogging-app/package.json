@@ -43,6 +43,10 @@
             "prettier --write",
             "eslint --fix",
             "git add"
+        ],
+        "src/**/*.scss": [
+            "stylelint --fix",
+            "git add"
         ]
     },
     "husky": {
@@ -197,7 +201,11 @@
         "eslint-plugin-react": "^7.11.1",
         "flow-bin": "^0.84.0",
         "lint-staged": "^7.3.0",
-        "prettier": "^1.14.3"
+        "prettier": "^1.14.3",
+        "stylelint": "^9.9.0",
+        "stylelint-config-airbnb": "0.0.0",
+        "stylelint-order": "^2.0.0",
+        "stylelint-scss": "^3.4.4"
     },
     "engines": {
         "npm": "5.7.1",
