@@ -1,4 +1,4 @@
-@import '../references/references';
+@import "../references/references";
 
 a.btn {
   text-decoration: none;
@@ -10,7 +10,7 @@ a.btn {
 
   $c-btn-border: $c-biscay;
   $c-btn-bg: $c-biscay;
-  $c-btn-bg-focus: rgba($c-biscay, 0.8);
+  $c-btn-bg-focus: rgba($c-biscay, .8);
 
   $c-btn-hover-bg: $c-lynch;
   $c-btn-hover-border: $c-lynch;
@@ -27,7 +27,7 @@ a.btn {
   $btn-height-small: 30px;
   $btn-height: 40px;
 
-  transition: all 0.3s ease-out;
+  transition: all .3s ease-out;
   outline: 0;
   border-radius: 4px;
   touch-action: manipulation;

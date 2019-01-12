@@ -1,43 +1,44 @@
 @import "../references/references";
 
 .pull-right {
-	float: right !important;
+  float: right !important;
 }
 
 .pull-left {
-	float: left !important;
+  float: left !important;
 }
 
 .hide {
-	display: none !important;
-	&-mobile {
-		@media (max-width: $tablet-width - 1) {
-			display: none !important;
-		}
-	}
+  display: none !important;
 
-	&-non-mobile {
-		@media (min-width: $tablet-width) {
-			display: none !important;
-		}
-	}
+  &-mobile {
+    @media (max-width: $tablet-width - 1) {
+      display: none !important;
+    }
+  }
+
+  &-non-mobile {
+    @media (min-width: $tablet-width) {
+      display: none !important;
+    }
+  }
 }
 
 .hidden {
-	visibility: hidden !important;
+  visibility: hidden !important;
 }
 
 .w100 {
-	width: 100%;
+  width: 100%;
 }
 
 .clearfix:after {
-	visibility: hidden;
-	display: block;
-	font-size: 0;
-	content: " ";
-	clear: both;
-	height: 0;
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
 }
 
 .text-center {
@@ -45,9 +46,9 @@
 }
 
 * html .clearfix {
-	zoom: 1;
+  zoom: 1;
 }
 
 *:first-child + html .clearfix {
-	zoom: 1;
+  zoom: 1;
 }
