@@ -23,7 +23,7 @@
 - Front-end development:
 
   - [ ] Add more flow types
-  - [ ] Integrate stylelint
+  - [x] Integrate stylelint
   - [ ] Split styles (vendor, main, theme)
   - [ ] Should we create separate (in `local_modules`) custom forms and modals?
   - [ ] Extract and isolate into separate HoC's and components with render props apollo-graphql related logic
