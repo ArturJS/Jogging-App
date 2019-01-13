@@ -1,1 +1,2 @@
-export { default, performRedirect } from './next-routes';
+export { performRedirect } from './utils';
+export { default } from './next-routes';
