@@ -4,7 +4,6 @@ import NextLink from 'next/link';
 import NextRouter from 'next/router';
 import _ from 'lodash';
 import cx from 'classnames';
-import { performRedirect } from './utils';
 import { Route } from './route';
 
 export class Routes {
@@ -14,7 +13,7 @@ export class Routes {
         this.Router = this.getRouter(Router);
     }
 
-    add({ name, pattern, page, onlyForAuthenticated, onlyForUnauthenticated }) {
+    add({ name, pattern, page, canActivate }) {
         let options;
 
         if (name instanceof Object) {
@@ -42,8 +41,7 @@ export class Routes {
         }
 
         _.extend(options, {
-            onlyForAuthenticated,
-            onlyForUnauthenticated
+            canActivate
         });
 
         this.routes.push(new Route(options));
@@ -116,18 +114,11 @@ export class Routes {
                 if (customHandler) {
                     customHandler({ req, res, route, query });
                 } else {
-                    const isAuthenticated = req.appMeta.isLoggedIn;
+                    const canActivate = (route.canActivate || []).every(guard =>
+                        guard({ req, res })
+                    );
 
-                    if (route.onlyForUnauthenticated && isAuthenticated) {
-                        const { redirectTo } = route.onlyForUnauthenticated;
-                        performRedirect({ req, res, redirectTo });
-
-                        return;
-                    }
-                    if (route.onlyForAuthenticated && !isAuthenticated) {
-                        const { redirectTo } = route.onlyForAuthenticated;
-                        performRedirect({ req, res, redirectTo });
-
+                    if (!canActivate) {
                         return;
                     }
 
@@ -185,15 +176,17 @@ export class Routes {
     }
 
     getRouter(Router) {
+        // only for client side
         const disallowTransition = routePath => {
             const { route } = this.match(routePath);
-            const { isAuthenticated } = Router;
 
-            return (
-                route &&
-                ((route.onlyForUnauthenticated && isAuthenticated) ||
-                    (route.onlyForAuthenticated && !isAuthenticated))
-            );
+            if (!route) {
+                return false;
+            }
+
+            const canActivate = route.canActivate.every(guard => guard());
+
+            return canActivate;
         };
         const wrap = method => (route, params, options) => {
             const {

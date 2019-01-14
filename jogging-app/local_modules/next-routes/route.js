@@ -2,13 +2,7 @@ import pathToRegexp from 'path-to-regexp';
 import { toQueryString } from './utils';
 
 export class Route {
-    constructor({
-        name,
-        pattern,
-        page = name,
-        onlyForUnauthenticated,
-        onlyForAuthenticated // todo validate incoming params
-    }) {
+    constructor({ name, pattern, page = name, canActivate }) {
         if (!name && !page) {
             throw new Error(`Missing page to render for route "${pattern}"`);
         }
@@ -19,8 +13,7 @@ export class Route {
         this.regex = pathToRegexp(this.pattern, (this.keys = []));
         this.keyNames = this.keys.map(key => key.name);
         this.toPath = pathToRegexp.compile(this.pattern);
-        this.onlyForUnauthenticated = onlyForUnauthenticated;
-        this.onlyForAuthenticated = onlyForAuthenticated;
+        this.canActivate = canActivate;
     }
 
     match(path) {
