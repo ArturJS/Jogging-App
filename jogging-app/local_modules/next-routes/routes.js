@@ -205,12 +205,6 @@ export class Routes {
         Router.pushRoute = wrap('push');
         Router.replaceRoute = wrap('replace');
         Router.prefetchRoute = wrap('prefetch');
-
-        Router.toggleAuth = isAuthenticated => {
-            Router.isAuthenticated = _.isBoolean(isAuthenticated)
-                ? isAuthenticated
-                : !Router.isAuthenticated;
-        };
         /* eslint-enable no-param-reassign */
 
         return Router;
