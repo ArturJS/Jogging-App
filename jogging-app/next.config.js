@@ -1,3 +1,3 @@
-const withAllExtensions = require('./scripts/tools/nextjs/extensions/with-all-extensions');
+const withAllExtensions = require('./scripts/tools/nextjs/extensions');
 
 module.exports = withAllExtensions();
