@@ -1,4 +1,4 @@
-import { authService } from '../services';
+import { authService } from 'shared/services';
 import { IS_LOGGED_IN } from './queries';
 
 export const setIsLoggedIn = isLoggedIn => (proxy, { data: success }) => {

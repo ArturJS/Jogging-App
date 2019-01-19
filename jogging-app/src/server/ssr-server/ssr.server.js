@@ -6,9 +6,8 @@ import Router from 'koa-router';
 import mount from 'koa-mount';
 import serveStatic from 'koa-static';
 import favicon from 'koa-favicon';
+import { authService } from 'shared/services';
 import config from '../common/config';
-// create /shared folder for authService
-import { authService } from '../../client/common/services';
 
 const dev = config.isDevelopment;
 const uiDirectory = path.resolve(__dirname, '../../client');

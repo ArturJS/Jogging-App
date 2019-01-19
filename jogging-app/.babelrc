@@ -22,11 +22,13 @@
         [
             "module-resolver",
             {
+                "extensions": [".js", ".jsx"],
                 "cwd": "babelrc",
-                "root": ["./"],
+                "root": ["."],
                 "alias": {
                     "next-routes": "./local_modules/next-routes",
-                    "routes": "./src/client/routes"
+                    "routes": "./src/shared/routes",
+                    "shared": "./src/shared"
                 }
             }
         ]

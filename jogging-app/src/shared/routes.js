@@ -1,5 +1,5 @@
 import nextRoutes from 'next-routes';
-import { authGuard, noAuthGuard } from './common/guards';
+import { authGuard, noAuthGuard } from './guards';
 
 const routes = nextRoutes();
 
