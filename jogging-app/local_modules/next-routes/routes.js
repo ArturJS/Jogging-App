@@ -6,11 +6,27 @@ import _ from 'lodash';
 import cx from 'classnames';
 import { Route } from './route';
 
+const isClient = process.browser;
+
+const disallowTransition = ({ match, routePath }) => {
+    const { route } = match(routePath);
+
+    if (!route) {
+        return false;
+    }
+
+    const canActivate = route.canActivate.every(guard => guard());
+
+    return canActivate;
+};
+
 export class Routes {
     constructor({ Link = NextLink, Router = NextRouter } = {}) {
         this.routes = [];
         this.Link = this.getLink(Link);
         this.Router = this.getRouter(Router);
+        this.match = this.match.bind(this);
+        this._initBrowserSubscriptions();
     }
 
     add({ name, pattern, page, canActivate }) {
@@ -176,25 +192,13 @@ export class Routes {
     }
 
     getRouter(Router) {
-        // only for client side
-        const disallowTransition = routePath => {
-            const { route } = this.match(routePath);
-
-            if (!route) {
-                return false;
-            }
-
-            const canActivate = route.canActivate.every(guard => guard());
-
-            return canActivate;
-        };
         const wrap = method => (route, params, options) => {
             const {
                 byName,
                 urls: { as, href }
             } = this.findAndGetUrls(route, params);
 
-            if (disallowTransition(route)) {
+            if (disallowTransition({ match: this.match, routePath: route })) {
                 return null;
             }
 
@@ -208,5 +212,30 @@ export class Routes {
         /* eslint-enable no-param-reassign */
 
         return Router;
+    }
+
+    _initBrowserSubscriptions() {
+        const initHistoryPopState = () => {
+            // todo find a better way of handling 'popstate'
+            // currently when using this.Router.beforePopState
+            // it leads to following error:
+            // "You should only use "next/router" inside the client side of your app."
+            window.addEventListener('popstate', () => {
+                const routePath = window.location.href;
+
+                if (disallowTransition({ match: this.match, routePath })) {
+                    // Have SSR render bad routes
+                    window.location.href = routePath;
+
+                    return false;
+                }
+
+                return true;
+            });
+        };
+
+        if (isClient) {
+            initHistoryPopState();
+        }
     }
 }
