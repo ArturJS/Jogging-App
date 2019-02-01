@@ -1,17 +1,19 @@
-import e2eTestsDAL from './e2e-tests.dal';
-import authBLL from '../auth/auth.bll';
-import recordsBLL from '../records/records.bll';
+export class E2ETestsBLL {
+    constructor(e2eTestsDAL, authBLL, recordsBLL) {
+        this._e2eTestsDAL = e2eTestsDAL;
+        this._authBLL = authBLL;
+        this._recordsBLL = recordsBLL;
+    }
 
-const e2eTestsBLL = {
     async dropAll() {
-        await e2eTestsDAL.dropAll();
-    },
+        await this._e2eTestsDAL.dropAll();
+    }
 
     async createAll({ users }) {
         // eslint-disable-next-line no-restricted-syntax
         for (const user of users) {
             // eslint-disable-next-line no-await-in-loop
-            const { id: userId } = await authBLL.createUser({
+            const { id: userId } = await this._authBLL.createUser({
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
@@ -22,7 +24,7 @@ const e2eTestsBLL = {
             // eslint-disable-next-line no-restricted-syntax
             for (const record of records) {
                 // eslint-disable-next-line no-await-in-loop
-                await recordsBLL.createRecord({
+                await this._recordsBLL.createRecord({
                     date: record.date,
                     distance: record.distance,
                     time: record.time,
@@ -31,6 +33,4 @@ const e2eTestsBLL = {
             }
         }
     }
-};
-
-export default e2eTestsBLL;
+}

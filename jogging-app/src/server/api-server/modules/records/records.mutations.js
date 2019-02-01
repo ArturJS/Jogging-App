@@ -1,10 +1,12 @@
 import { isAuthenticatedResolver } from '../acl';
-import recordsBLL from './records.bll';
+import { baseDIContainer } from '../../di/base-di-container';
+
+const recordsService = baseDIContainer.getRecordsService();
 
 export const addRecord = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
         const { record } = args;
-        const createdRecord = await recordsBLL.createRecord({
+        const createdRecord = await recordsService.createRecord({
             date: record.date,
             distance: record.distance,
             time: record.time,
@@ -18,7 +20,7 @@ export const addRecord = isAuthenticatedResolver.createResolver(
 export const updateRecord = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
         const { record, id } = args;
-        const updatedRecord = await recordsBLL.updateRecord({
+        const updatedRecord = await recordsService.updateRecord({
             id,
             date: record.date,
             distance: record.distance,
@@ -32,7 +34,7 @@ export const updateRecord = isAuthenticatedResolver.createResolver(
 
 export const deleteRecord = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
-        await recordsBLL.deleteRecord({
+        await recordsService.deleteRecord({
             id: args.id,
             userId: context.userId
         });

@@ -1,6 +1,6 @@
 import db from '../../models';
 
-const authDAL = {
+export class AuthDAL {
     async getUserByEmail(email) {
         const user = await db.User.findOne({ where: { email } });
 
@@ -11,13 +11,13 @@ const authDAL = {
             email: user.email,
             password: user.password
         };
-    },
+    }
 
     async hasUserWithEmail(email) {
         const usersCount = await db.User.count({ where: { email } });
 
         return usersCount > 0;
-    },
+    }
 
     async createUser({ firstName, lastName, email, password }) {
         const user = await db.User.create({
@@ -34,6 +34,4 @@ const authDAL = {
             email: user.email
         };
     }
-};
-
-export default authDAL;
+}
