@@ -4,6 +4,7 @@ import { isAuthenticatedResolver } from '../acl';
 export const userData = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
         const user = await db.User.find({
+            // todo use authService
             where: {
                 id: context.userId
             }

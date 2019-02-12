@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt-nodejs';
-import authDAL from './auth.dal';
 import { ErrorUserAlreadyExists, ErrorWrongCredentials } from './auth.errors';
 
 const mapUser = user => ({
@@ -20,9 +19,13 @@ const validatePassword = async ({ hashedPassword, password }) =>
         });
     });
 
-const authBLL = {
+export class AuthBLL {
+    constructor(authDAL) {
+        this._authDAL = authDAL;
+    }
+
     async getUser({ email, password }) {
-        const user = await authDAL.getUserByEmail(email);
+        const user = await this._authDAL.getUserByEmail(email);
 
         if (!user) {
             throw new ErrorWrongCredentials();
@@ -34,16 +37,16 @@ const authBLL = {
         });
 
         return mapUser(user);
-    },
+    }
 
     async createUser({ firstName, lastName, email, password }) {
-        const isAlreadyExists = await authDAL.hasUserWithEmail(email);
+        const isAlreadyExists = await this._authDAL.hasUserWithEmail(email);
 
         if (isAlreadyExists) {
             throw new ErrorUserAlreadyExists();
         }
 
-        const user = await authDAL.createUser({
+        const user = await this._authDAL.createUser({
             firstName,
             lastName,
             email,
@@ -52,6 +55,4 @@ const authBLL = {
 
         return mapUser(user);
     }
-};
-
-export default authBLL;
+}

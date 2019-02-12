@@ -9,7 +9,7 @@ const mapRecord = record => ({
     averageSpeed: record.averageSpeed
 });
 
-const recordsDAL = {
+export class RecordsDAL {
     async getAllRecords({ userId, startDate, endDate }) {
         const records = await db.Record.findAll({
             where: {
@@ -21,7 +21,7 @@ const recordsDAL = {
         });
 
         return records.map(mapRecord);
-    },
+    }
 
     async getRecordById({ id, userId }) {
         const record = await db.Record.findOne({
@@ -36,7 +36,7 @@ const recordsDAL = {
         }
 
         return mapRecord(record);
-    },
+    }
 
     async hasRecordByDate({ id, date, userId }) {
         const recordsCount = await db.Record.count({
@@ -50,7 +50,7 @@ const recordsDAL = {
         });
 
         return recordsCount > 0;
-    },
+    }
 
     async createRecord({ date, distance, time, averageSpeed, userId }) {
         const record = await db.Record.create({
@@ -62,7 +62,7 @@ const recordsDAL = {
         });
 
         return mapRecord(record);
-    },
+    }
 
     async updateRecord({ id, date, distance, time, averageSpeed, userId }) {
         const affectedRecords = await db.Record.update(
@@ -84,7 +84,7 @@ const recordsDAL = {
         const record = affectedRecords[1];
 
         return mapRecord(record);
-    },
+    }
 
     async deleteRecord({ id, userId }) {
         await db.Record.destroy({
@@ -94,6 +94,4 @@ const recordsDAL = {
             }
         });
     }
-};
-
-export default recordsDAL;
+}

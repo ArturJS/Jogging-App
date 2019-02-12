@@ -1,6 +1,5 @@
 import moment from 'moment';
 import _ from 'lodash';
-import recordsBLL from '../records/records.bll';
 
 const mapRecordsToReports = recordsList => {
     if (recordsList.length === 0) return [];
@@ -37,12 +36,14 @@ const mapRecordsToReports = recordsList => {
     return reportsList;
 };
 
-const reportsBLL = {
+export class ReportsBLL {
+    constructor(recordsBLL) {
+        this._recordsBLL = recordsBLL;
+    }
+
     async getReports({ userId }) {
-        const records = await recordsBLL.getAllRecords({ userId });
+        const records = await this._recordsBLL.getAllRecords({ userId });
 
         return mapRecordsToReports(records);
     }
-};
-
-export default reportsBLL;
+}

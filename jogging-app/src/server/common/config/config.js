@@ -1,6 +1,6 @@
-import { auth } from './components/auth';
-import { env } from './components/env';
-import { server } from './components/server';
+import { auth } from './modules/auth';
+import { env } from './modules/env';
+import { server } from './modules/server';
 
 const config = new Proxy(
     {

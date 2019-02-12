@@ -1,8 +1,10 @@
-import authBLL from './auth.bll';
+import { baseDIContainer } from '../../di/base-di-container';
+
+const authService = baseDIContainer.getAuthService();
 
 export const signIn = async (root, args, { auth }) => {
     const { email, password } = args;
-    const user = await authBLL.getUser({ email, password });
+    const user = await authService.getUser({ email, password });
 
     auth.login(user);
 
@@ -17,7 +19,7 @@ export const signOut = async (root, args, { auth }) => {
 
 export const signUp = async (root, args, { auth }) => {
     const { firstName, lastName, email, password } = args;
-    const user = await authBLL.createUser({
+    const user = await authService.createUser({
         firstName,
         lastName,
         email,

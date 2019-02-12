@@ -1,11 +1,13 @@
 import { isAuthenticatedResolver } from '../acl';
-import recordsBLL from './records.bll';
+import { baseDIContainer } from '../../di/base-di-container';
+
+const recordsService = baseDIContainer.getRecordsService();
 
 export const records = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
         const { filter: { startDate, endDate } = {} } = args;
         // eslint-disable-next-line no-shadow
-        const records = await recordsBLL.getAllRecords({
+        const records = await recordsService.getAllRecords({
             userId: context.userId,
             startDate,
             endDate
@@ -20,7 +22,7 @@ export const record = isAuthenticatedResolver.createResolver(
         const { id } = args;
         const { userId } = context;
         // eslint-disable-next-line no-shadow
-        const record = await recordsBLL.getRecord({
+        const record = await recordsService.getRecord({
             id,
             userId
         });

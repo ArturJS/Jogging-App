@@ -1,10 +1,12 @@
 import { isAuthenticatedResolver } from '../acl';
-import reportsBLL from './reports.bll';
+import { baseDIContainer } from '../../di/base-di-container';
+
+const recordsService = baseDIContainer.getReportsService();
 
 export const reports = isAuthenticatedResolver.createResolver(
     async (root, args, context) => {
         // eslint-disable-next-line no-shadow
-        const reports = reportsBLL.getReports({
+        const reports = recordsService.getReports({
             userId: context.userId
         });
 

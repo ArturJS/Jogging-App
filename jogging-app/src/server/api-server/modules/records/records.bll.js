@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import recordsDAL from './records.dal';
 import {
     ErrorRecordAlreadyExists,
     ErrorRecordNotFound
@@ -18,31 +17,35 @@ const mapRecord = record => ({
 const MAX_DATE = Number.MAX_SAFE_INTEGER;
 const MIN_DATE = -MAX_DATE;
 
-const recordsBLL = {
+export class RecordsBLL {
+    constructor(recordsDAL) {
+        this._recordsDAL = recordsDAL;
+    }
+
     async getAllRecords({ userId, startDate, endDate }) {
-        const records = await recordsDAL.getAllRecords({
+        const records = await this._recordsDAL.getAllRecords({
             userId,
             startDate: startDate || MIN_DATE,
             endDate: endDate || MAX_DATE
         });
 
         return _.sortBy(records, 'date').map(mapRecord);
-    },
+    }
 
     async getRecord({ id, userId }) {
-        const record = await recordsDAL.getRecord({ id, userId });
+        const record = await this._recordsDAL.getRecord({ id, userId });
 
         if (!record) {
             throw new ErrorRecordNotFound();
         }
 
         return mapRecord(record);
-    },
+    }
 
     async createRecord({ date, distance, time, userId }) {
         await this._validateDateIsUniq({ date, userId });
 
-        const record = await recordsDAL.createRecord({
+        const record = await this._recordsDAL.createRecord({
             date,
             distance,
             time,
@@ -51,12 +54,12 @@ const recordsBLL = {
         });
 
         return mapRecord(record);
-    },
+    }
 
     async updateRecord({ id, date, distance, time, userId }) {
         await this._validateDateIsUniq({ id, date, userId });
 
-        const record = await recordsDAL.updateRecord({
+        const record = await this._recordsDAL.updateRecord({
             id,
             date,
             distance,
@@ -66,14 +69,14 @@ const recordsBLL = {
         });
 
         return mapRecord(record);
-    },
+    }
 
     async deleteRecord({ id, userId }) {
-        await recordsDAL.deleteRecord({ id, userId });
-    },
+        await this._recordsDAL.deleteRecord({ id, userId });
+    }
 
     async _validateDateIsUniq({ id = null, date, userId }) {
-        const isTheSameRecord = await recordsDAL.hasRecordByDate({
+        const isTheSameRecord = await this._recordsDAL.hasRecordByDate({
             id,
             date,
             userId
@@ -83,6 +86,4 @@ const recordsBLL = {
             throw new ErrorRecordAlreadyExists();
         }
     }
-};
-
-export default recordsBLL;
+}

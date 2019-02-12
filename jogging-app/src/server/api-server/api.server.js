@@ -6,7 +6,7 @@ import { Strategy } from 'passport-local';
 import { ApolloServer } from 'apollo-server-koa';
 import noCache from 'koa-no-cache';
 import config from '../common/config';
-import graphqlSchema from './components/index';
+import graphqlSchema from './modules';
 import db from './models';
 
 const initPassport = app => {
