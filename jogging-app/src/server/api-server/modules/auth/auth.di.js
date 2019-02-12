@@ -6,7 +6,7 @@ const PRIVATE_DI_TYPES = {
     AuthDAL: Symbol('AuthDAL')
 };
 
-export const DI_TYPES = {
+export const AUTH_DI_TYPES = {
     AuthBLL: Symbol('AuthBLL')
 };
 
@@ -17,7 +17,7 @@ export const AuthDI = createDIModule({
             useClass: AuthDAL
         },
         {
-            type: DI_TYPES.AuthBLL,
+            type: AUTH_DI_TYPES.AuthBLL,
             useClass: AuthBLL,
             dependencies: [PRIVATE_DI_TYPES.AuthDAL]
         }

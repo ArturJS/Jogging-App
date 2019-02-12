@@ -6,7 +6,7 @@ const PRIVATE_DI_TYPES = {
     RecordsDAL: Symbol('RecordsDAL')
 };
 
-export const DI_TYPES = {
+export const RECORDS_DI_TYPES = {
     RecordsBLL: Symbol('RecordsBLL')
 };
 
@@ -17,7 +17,7 @@ export const RecordsDI = createDIModule({
             useClass: RecordsDAL
         },
         {
-            type: DI_TYPES.RecordsBLL,
+            type: RECORDS_DI_TYPES.RecordsBLL,
             useClass: RecordsBLL,
             dependencies: [PRIVATE_DI_TYPES.RecordsDAL]
         }
