@@ -6,6 +6,7 @@ import Router from 'koa-router';
 import mount from 'koa-mount';
 import serveStatic from 'koa-static';
 import favicon from 'koa-favicon';
+import { authService } from 'shared/services';
 import config from '../common/config';
 
 const dev = config.isDevelopment;
@@ -18,9 +19,12 @@ const server = new Koa();
 nextApp.prepare().then(() => {
     router.get('*', async ctx => {
         const baseUrl = `${ctx.protocol}://${ctx.host}`;
+        const isLoggedIn = ctx.isAuthenticated();
+
+        authService.setIsLoggedIn(isLoggedIn);
 
         ctx.req.appMeta = {
-            isLoggedIn: ctx.isAuthenticated(),
+            isLoggedIn,
             cookie: ctx.header.cookie,
             baseUrl,
             baseApiUrl: `${baseUrl}/graphql`

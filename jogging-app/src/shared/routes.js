@@ -1,4 +1,5 @@
 import nextRoutes from 'next-routes';
+import { authGuard, noAuthGuard } from './guards';
 
 const routes = nextRoutes();
 
@@ -6,23 +7,17 @@ routes
     .add({
         name: 'sign-up',
         pattern: '/sign-up',
-        onlyForUnauthenticated: {
-            redirectTo: '/records'
-        }
+        canActivate: [noAuthGuard({ redirectTo: '/records' })]
     })
     .add({
         name: 'records',
         pattern: '/records',
-        onlyForAuthenticated: {
-            redirectTo: '/sign-up'
-        }
+        canActivate: [authGuard({ redirectTo: '/sign-up' })]
     })
     .add({
         name: 'reports',
         pattern: '/reports',
-        onlyForAuthenticated: {
-            redirectTo: '/sign-up'
-        }
+        canActivate: [authGuard({ redirectTo: '/sign-up' })]
     });
 
 export default routes;
