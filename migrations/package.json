@@ -6,7 +6,9 @@
     "scripts": {
         "db:migrate": "npx knex migrate:latest",
         "db:seed": "npx knex seed:run",
-        "lint": "npx eslint ."
+        "lint": "npx eslint .",
+        "precommit": "npx lint-staged",
+        "postcommit": "git update-index --again"
     },
     "keywords": [],
     "author": "ArturJS",
@@ -24,6 +26,14 @@
         "eslint-config-import": "^0.13.0",
         "eslint-config-prettier": "^4.0.0",
         "eslint-plugin-import": "^2.16.0",
+        "lint-staged": "^8.1.4",
         "prettier": "^1.16.4"
+    },
+    "lint-staged": {
+        "*.js": [
+            "prettier --write",
+            "eslint --fix",
+            "git add"
+        ]
     }
 }
