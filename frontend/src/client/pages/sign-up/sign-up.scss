@@ -1,0 +1,26 @@
+@import "../../common/styles/references/references";
+
+.container {
+  margin: 15px auto;
+}
+
+.sign-up-page {
+
+  .sign-up-form {
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .buttons-group {
+    margin-top: 15px;
+  }
+
+  .btn {
+    width: 100%;
+
+    @media (min-width: $tablet-width) {
+      width: auto;
+    }
+  }
+}

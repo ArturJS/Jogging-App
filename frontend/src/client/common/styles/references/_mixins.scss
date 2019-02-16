@@ -1,0 +1,48 @@
+@import "colors";
+
+@import "variables";
+
+
+@mixin mobile {
+  @media (max-width: $tablet-width - 1) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: $tablet-width) and (max-width: $desktop-width - 1) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $desktop-width) and (max-width: $hi-res-width - 1) {
+    @content;
+  }
+}
+
+@mixin hi-res {
+  @media (min-width: $hi-res-width) {
+    @content;
+  }
+}
+
+@mixin page-max-width {
+  @media screen and (min-width: $tablet-width) {
+    margin: 0 auto;
+    width: 80%;
+  }
+}
+
+@mixin ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+@mixin ie-hack { // see also https://paper-leaf.com/blog/2014/09/targeting-ie-10-11-browsers-css/
+  // and https://stackoverflow.com/questions/18907131/detecting-ie11-using-css-capability-feature-detection#answer-35063378
+  @media all and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    @content;
+  }
+}

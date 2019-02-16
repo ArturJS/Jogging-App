@@ -1,0 +1,41 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "modules": "commonjs"
+            }
+        ],
+        "@babel/preset-react",
+        "@babel/preset-flow"
+    ],
+    "plugins": [
+        "import-graphql",
+        "lodash",
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-transform-react-display-name",
+        ["@babel/plugin-proposal-decorators", { "legacy": true }],
+        ["@babel/plugin-proposal-class-properties", { "loose": true }],
+        "@babel/plugin-proposal-export-namespace-from",
+        "@babel/plugin-proposal-optional-chaining",
+        "@babel/plugin-proposal-nullish-coalescing-operator",
+        [
+            "module-resolver",
+            {
+                "extensions": [".js", ".jsx"],
+                "cwd": "babelrc",
+                "root": ["."],
+                "alias": {
+                    "next-routes": "./local_modules/next-routes",
+                    "routes": "./src/shared/routes",
+                    "shared": "./src/shared"
+                }
+            }
+        ]
+    ],
+    "env": {
+        "development": {
+            "plugins": ["@babel/plugin-transform-flow-strip-types"]
+        }
+    }
+}

@@ -1,0 +1,38 @@
+@import "../references/references";
+
+.rc-time-picker {
+
+  &-input {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    font-size: 16px;
+  }
+
+  &-panel {
+    width: calc(100vw - 110px);
+
+    @media (min-width: $tablet-width) {
+      width: 292px;
+    }
+
+    &-inner {
+      width: 100%;
+    }
+
+    &-combobox {
+      display: flex;
+    }
+
+    &-select {
+      flex-grow: 1;
+      overflow-x: hidden;
+
+      // stylelint-disable-next-line max-nesting-depth
+      li {
+        padding: 0;
+        text-align: center;
+      }
+    }
+  }
+}

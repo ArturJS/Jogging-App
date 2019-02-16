@@ -1,0 +1,129 @@
+@import "../../../styles/references/_references";
+
+$c-field-error-border: $c-bittersweet;
+$c-field-error-color: $c-bittersweet;
+
+$c-label-color: $c-dusty-gray;
+
+$c-input-color: $c-mine-shaft;
+$c-input-select-color-hover: $c-boulder;
+$c-input-select-color-disabled: $c-boulder;
+$c-input-disable-color: $c-desert-storm;
+$c-input-bg: $c-desert-storm;
+$c-input-border: $c-silver;
+$c-input-bg-disabled: $c-silver;
+$c-input-border-focus: $c-mine-shaft;
+$c-input-box-shadow-inset-focus: rgba($c-mine-shaft, .075);
+$c-input-moz-focus-color: transparent;
+$c-input-moz-focus-shadow: $c-mine-shaft;
+
+$border-size: 1px;
+$font-size: 16px;
+
+.field {
+  flex-grow: 1;
+  text-align: right;
+}
+
+.field__label {
+  display: block;
+  text-align: left;
+  color: $c-label-color;
+}
+
+.field__error {
+  color: $c-field-error-color;
+}
+
+.field {
+
+  .SingleDatePicker {
+    padding: 0;
+  }
+
+  .SingleDatePickerInput {
+    width: 100%;
+    height: 38px;
+    background-color: transparent;
+    border: 0;
+  }
+
+  .SingleDatePicker_picker {
+    top: 40px !important; // necessary to override inline styles
+  }
+
+  .DateInput {
+    width: 100%;
+    padding: 0;
+    background-color: transparent;
+
+    &_input {
+      padding-top: .5em;
+      padding-bottom: 0;
+
+      // stylelint-disable-next-line max-nesting-depth
+      &__focused {
+        border: 0;
+      }
+    }
+  }
+}
+
+input {
+
+  &:-ms-input-placeholder {
+    color: $c-input-placeholder;
+  }
+
+  &::-ms-reveal,
+  &::-ms-clear {
+    display: none;
+  }
+}
+
+.field__control,
+.SingleDatePicker {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  font-size: $font-size;
+  color: $c-input-color;
+  background-color: $c-input-bg;
+  background-image: none;
+  border: $border-size solid $c-input-border;
+  border-radius: 3px;
+  font-family: sans-serif;
+  -webkit-appearance: none;
+  height: $input-height;
+
+  &:focus {
+    border-color: $c-input-border-focus;
+    outline: 0;
+  }
+
+  &::-ms-expand {
+    border: 0;
+    background-color: transparent;
+  }
+
+  &[disabled],
+  &[readonly] {
+    background-color: $c-input-bg-disabled;
+    opacity: 1; // iOS fix for unreadable disabled content; see https://github.com/twbs/bootstrap/issues/11655npm install google-libphonenumber --save
+  }
+
+  &[disabled] {
+    cursor: $cursor-disabled;
+  }
+
+  &::placeholder {
+    color: $c-input-placeholder;
+  }
+
+  &.field-error {
+    border-color: $c-field-error-color;
+    outline: 0;
+    -moz-appearance: none;
+    box-shadow: none;
+  }
+}
