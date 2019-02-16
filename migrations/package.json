@@ -1,0 +1,29 @@
+{
+    "name": "migrations",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "db:migrate": "npx knex migrate:latest",
+        "db:seed": "npx knex seed:run",
+        "lint": "npx eslint ."
+    },
+    "keywords": [],
+    "author": "ArturJS",
+    "license": "MIT",
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "dotenv-safe": "^6.1.0",
+        "joi": "^14.3.1",
+        "knex": "^0.16.3",
+        "pg": "^7.8.0"
+    },
+    "devDependencies": {
+        "eslint": "^5.13.0",
+        "eslint-config-airbnb-base": "^13.1.0",
+        "eslint-config-import": "^0.13.0",
+        "eslint-config-prettier": "^4.0.0",
+        "eslint-plugin-import": "^2.16.0",
+        "prettier": "^1.16.4"
+    }
+}
