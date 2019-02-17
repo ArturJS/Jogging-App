@@ -1,56 +1,63 @@
 version: '3'
 services:
-    jogging-app:
-        build:
-            context: ./jogging-app
-            dockerfile: Dockerfile
-        env_file: ./jogging-app/.env.e2e
-        environment:
-            - IS_E2E=true
-            - PORT=3000
-            - TZ=Europe/Samara
-        command: bash -c '
-            date &&
-            ./wait-for-it.sh postgres:5432 -t 30 &&
-            npm run db:migrate &&
-            node ./src/server/index.js'
-        networks:
-            internal-network:
-                aliases:
-                    - jogging.app
-        depends_on:
-            - postgres
+  jogging-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: ./.env.e2e
+    environment:
+      - IS_E2E=true
+      - PORT=3000
+      - TZ=Europe/Samara
+    ports:
+      - "3000:3000"
+    command: bash -c '
+      date &&
+      cd /backend &&
+      ./wait-for-it.sh postgres:5432 -t 30 &&
+      npm run db:migrate &&
+      cd /frontend &&
+      node ./src/server/index.js &
+      cd /backend &&
+      node ./src/index.js
+      '
+    networks:
+      internal-network:
+        aliases:
+          - jogging.app
+    depends_on:
+      - postgres
 
-    postgres:
-        image: ibmcom/isam-postgresql
-        environment:
-            - POSTGRES_DB=jogging-app
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=root
-            - PGDATA=/var/lib/postgresql/data/pgdata
-        networks:
-            internal-network:
-                aliases:
-                    - postgres
+  postgres:
+    image: ibmcom/isam-postgresql
+    environment:
+      - POSTGRES_DB=jogging-app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      internal-network:
+        aliases:
+          - postgres
 
-    cypress:
-        build:
-            context: ./e2e
-            dockerfile: Dockerfile
-        environment:
-            - CYPRESS_baseUrl=http://jogging.app:3000
-            - TZ=Europe/Samara
-        command: bash -c '
-            date &&
-            ./wait-for-it.sh jogging.app:3000 -t 30 &&
-            npm run e2e'
-        networks:
-            internal-network:
-                aliases:
-                    - cypress
-        depends_on:
-            - jogging-app
+  cypress:
+    build:
+      context: ./e2e
+      dockerfile: Dockerfile
+    environment:
+      - CYPRESS_baseUrl=http://jogging.app:3000
+      - TZ=Europe/Samara
+    command: bash -c '
+      date &&
+      ./wait-for-it.sh jogging.app:3000 -t 30 &&
+      npm run e2e'
+    networks:
+      internal-network:
+        aliases:
+          - cypress
+    depends_on:
+      - jogging-app
 
 networks:
-    internal-network:
-        driver: bridge
+  internal-network:
+    driver: bridge

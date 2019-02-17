@@ -1,11 +1,13 @@
 node_modules
 .env
 .gitignore
-Dockerfile
+Dockerfile*
+docker-compose*
 README.md
 .dockerignore
 .DS_Store
 .git
+.gitignore
 .tmp
 .idea
 .vscode
@@ -14,4 +16,7 @@ dist
 npm-debug.log
 coverage
 .next
-docker-compose.e2e.yml
+README.md
+LICENSE
+.vscode
+flow-typed

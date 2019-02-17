@@ -1,0 +1,125 @@
+{
+    "name": "jogging-app-backend",
+    "author": "ArturJS",
+    "license": "MIT",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "npx cross-env NODE_ENV=production node ./src/index.js",
+        "start:pm2": "npx pm2 start ./src/server/index.js",
+        "dev": "npx cross-env NODE_ENV=development node ./src/index.js",
+        "debug": "ndb cross-env NODE_ENV=development node ./src/index.js",
+        "flow": "npx flow",
+        "lint": "eslint -c .eslintrc '{src,scripts,local_modules}/**/*.{js,jsx,mjs}'",
+        "test": "jest --env=jsdom",
+        "test:coverage": "jest --env=jsdom --coverage",
+        "db:migrate": "npx sequelize db:migrate",
+        "db:create:dev": "npx cross-env NODE_ENV=development node ./scripts/tasks/db-create.js",
+        "db:create:prod": "npx cross-env NODE_ENV=production node ./scripts/tasks/db-create.js",
+        "precommit": "npm run flow && npm run lint-staged",
+        "lint-staged": "npx lint-staged"
+    },
+    "dependencies": {
+        "@babel/core": "^7.0.0",
+        "@babel/plugin-proposal-class-properties": "^7.0.0",
+        "@babel/plugin-proposal-decorators": "^7.0.0",
+        "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+        "@babel/plugin-proposal-nullish-coalescing-operator": "^7.0.0",
+        "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+        "@babel/plugin-transform-runtime": "^7.0.0",
+        "@babel/polyfill": "^7.0.0",
+        "@babel/preset-env": "^7.0.0",
+        "@babel/preset-flow": "^7.0.0",
+        "@babel/register": "^7.0.0",
+        "@babel/runtime": "^7.1.2",
+        "apollo-errors": "^1.9.0",
+        "apollo-resolvers": "^1.4.1",
+        "apollo-server-koa": "^2.1.0",
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-plugin-import-graphql": "^2.6.2",
+        "babel-plugin-lodash": "^3.3.4",
+        "babel-plugin-module-resolver": "^3.1.1",
+        "bcrypt-nodejs": "0.0.3",
+        "compression": "^1.7.3",
+        "cookie-parser": "1.4.3",
+        "core-js": "2.5.1",
+        "cross-env": "^5.2.0",
+        "dotenv-safe": "^6.0.0",
+        "find-up": "^3.0.0",
+        "graphql": "0.13.2",
+        "graphql-tools": "3.0.0",
+        "graphql-type-long": "^0.1.1",
+        "http-proxy": "^1.12.0",
+        "invariant": "^2.2.0",
+        "inversify": "^5.0.1",
+        "inversify-vanillajs-helpers": "^2.0.0",
+        "joi": "^14.0.4",
+        "koa": "^2.6.1",
+        "koa-bodyparser": "^4.2.1",
+        "koa-connect": "^2.0.1",
+        "koa-favicon": "^2.0.1",
+        "koa-mount": "^4.0.0",
+        "koa-no-cache": "^2.0.0",
+        "koa-passport": "^4.1.1",
+        "koa-router": "^7.4.0",
+        "koa-session": "^5.10.0",
+        "koa-static": "^5.0.0",
+        "lodash": "^4.17.11",
+        "moment": "^2.23.0",
+        "optimism": "^0.6.6",
+        "passport": "0.4.0",
+        "passport-local": "1.0.0",
+        "pg": "7.3.0",
+        "pg-hstore": "2.3.2",
+        "pirates": "^4.0.0",
+        "pm2": "^3.2.4",
+        "reflect-metadata": "^0.1.12",
+        "sequelize": "^4.42.0",
+        "sequelize-cli": "4.0.0",
+        "serialize-javascript": "^1.1.2",
+        "warning": "^2.1.0"
+    },
+    "devDependencies": {
+        "babel-eslint": "^10.0.1",
+        "eslint": "^5.8.0",
+        "eslint-config-airbnb-base": "^13.1.0",
+        "eslint-config-prettier": "^3.1.0",
+        "eslint-import-resolver-babel-module": "^5.0.0-beta.1",
+        "eslint-plugin-flowtype": "^3.1.4",
+        "eslint-plugin-import": "^2.14.0",
+        "eslint-plugin-jest": "^21.26.2",
+        "eslint-plugin-prettier": "^3.0.0",
+        "flow-bin": "^0.84.0",
+        "lint-staged": "^7.3.0",
+        "prettier": "^1.14.3"
+    },
+    "engines": {
+        "npm": "5.7.1",
+        "node": "8.9.1"
+    },
+    "lint-staged": {
+        "{src,scripts,local_modules}/**/*.{js,jsx,mjs}": [
+            "prettier --write",
+            "eslint --fix",
+            "git add"
+        ]
+    },
+    "jest": {
+        "collectCoverageFrom": [
+            "src/**/*.{js,jsx}",
+            "!src/**/*.test.{js,jsx}",
+            "!src/**/*index.{js,jsx}"
+        ],
+        "testPathIgnorePatterns": [
+            "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]"
+        ],
+        "testEnvironment": "node",
+        "testURL": "http://localhost",
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(jsx?)$",
+        "transform": {
+            "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest"
+        },
+        "transformIgnorePatterns": [
+            "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+        ]
+    }
+}
