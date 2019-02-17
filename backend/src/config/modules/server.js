@@ -16,5 +16,5 @@ if (error) {
 }
 
 export const server = {
-    port: PORT
+    port: +PORT + 1 // since frontend service is running on %PORT port
 };
