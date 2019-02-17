@@ -3,8 +3,6 @@ import next from 'next';
 import routes from 'routes';
 import Koa from 'koa';
 import Router from 'koa-router';
-// import mount from 'koa-mount';
-// import serveStatic from 'koa-static';
 // import favicon from 'koa-favicon';
 import { authService } from '../shared/services';
 import config from './config';
@@ -36,15 +34,9 @@ nextApp.prepare().then(() => {
     });
 
     server
-        // .use( // todo figure out why do we need this
+        // .use( // todo make favicon great again!
         //     favicon(
         //         path.resolve(__dirname, '../../..', 'static', 'favicon.ico')
-        //     )
-        // )
-        // .use(
-        //     mount(
-        //         '/static',
-        //         serveStatic(path.resolve(__dirname, '../../..', 'static'))
         //     )
         // )
         .use(
