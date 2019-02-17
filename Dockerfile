@@ -22,6 +22,6 @@ COPY --chown=node:node ./backend/package.json .
 COPY --chown=node:node ./backend/package-lock.json .
 RUN npm install --production
 COPY --chown=node:node ./backend/ ./
-COPY --from=frontend /frontend /frontend
+COPY --from=frontend --chown=node:node /frontend /frontend
 ENV DOCKER_BUILD=true
 ENV NODE_ENV=production
