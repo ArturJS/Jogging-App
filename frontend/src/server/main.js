@@ -2,6 +2,7 @@ import Koa from 'koa';
 import mount from 'koa-mount';
 // koa-compress not working due to https://github.com/zeit/next.js/tree/canary/examples/custom-server-koa
 import connect from 'koa-connect';
+import proxy from 'koa-proxy';
 import compression from './middlewares/compression';
 import config from './config';
 import { initHttpServer, initPassport } from './initializers';
@@ -29,7 +30,14 @@ if (config.isProduction) {
 
 initPassport(app);
 
-app.use(mount('/', ssrServer));
+app.use(
+    proxy({
+        host: 'http://127.0.0.1:3001/',
+        match: /graphql/,
+        followRedirect: false,
+        jar: true
+    })
+).use(mount('/', ssrServer));
 
 server.listen(config.port, err => {
     if (err) {
