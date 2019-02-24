@@ -19,6 +19,9 @@ const createConfig = ({ DATABASE_URL }) => ({
         },
         migrations: {
             directory: './src/migrations'
+        },
+        seeds: {
+            directory: './src/seeds'
         }
     }
 });
@@ -39,6 +42,11 @@ const validateConfig = config => {
                         })
                         .required(),
                     migrations: j
+                        .object({
+                            directory: j.string().required()
+                        })
+                        .required(),
+                    seeds: j
                         .object({
                             directory: j.string().required()
                         })

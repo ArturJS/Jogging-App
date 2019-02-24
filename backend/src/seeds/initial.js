@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt-nodejs');
 
 const flatten = (arr, depth = 1) =>
     arr.reduce(
