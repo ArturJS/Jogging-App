@@ -1,5 +1,4 @@
-import { Op } from 'sequelize';
-import db from '../../models';
+import { Record } from '../../db';
 
 const mapRecord = record => ({
     id: record.id,
@@ -10,26 +9,29 @@ const mapRecord = record => ({
 });
 
 export class RecordsDAL {
+    constructor() {
+        this._recordModel = Record;
+    }
+
     async getAllRecords({ userId, startDate, endDate }) {
-        const records = await db.Record.findAll({
-            where: {
-                userId,
-                date: {
-                    [Op.between]: [startDate, endDate]
-                }
-            }
-        });
+        const records = await this._recordModel
+            .query()
+            .where({
+                userId
+            })
+            .whereBetween('date', [startDate, endDate]);
 
         return records.map(mapRecord);
     }
 
     async getRecordById({ id, userId }) {
-        const record = await db.Record.findOne({
-            where: {
+        const record = await this._recordModel
+            .query()
+            .where({
                 id,
                 userId
-            }
-        });
+            })
+            .first();
 
         if (!record) {
             return null;
@@ -39,21 +41,20 @@ export class RecordsDAL {
     }
 
     async hasRecordByDate({ id, date, userId }) {
-        const recordsCount = await db.Record.count({
-            where: {
-                id: {
-                    [Op.not]: id
-                },
+        const recordsCount = await this._recordModel
+            .query()
+            .whereNot({ id })
+            .andWhere({
                 date,
                 userId
-            }
-        });
+            })
+            .count();
 
         return recordsCount > 0;
     }
 
     async createRecord({ date, distance, time, averageSpeed, userId }) {
-        const record = await db.Record.create({
+        const record = await this._recordModel.query().insert({
             date,
             distance,
             time,
@@ -65,33 +66,28 @@ export class RecordsDAL {
     }
 
     async updateRecord({ id, date, distance, time, averageSpeed, userId }) {
-        const affectedRecords = await db.Record.update(
-            {
+        const record = await this._recordModel
+            .query()
+            .where({ id, userId })
+            .update({
                 date,
                 distance,
                 time,
                 averageSpeed
-            },
-            {
-                where: {
-                    id,
-                    userId
-                },
-                returning: true,
-                plain: true
-            }
-        );
-        const record = affectedRecords[1];
+            })
+            .returning('*')
+            .first();
 
         return mapRecord(record);
     }
 
     async deleteRecord({ id, userId }) {
-        await db.Record.destroy({
-            where: {
+        await this._recordModel
+            .query()
+            .where({
                 id,
                 userId
-            }
-        });
+            })
+            .delete();
     }
 }

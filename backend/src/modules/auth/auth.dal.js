@@ -1,8 +1,19 @@
-import db from '../../models';
+import { User } from '../../db';
 
 export class AuthDAL {
+    constructor() {
+        this._userModel = User;
+    }
+
     async getUserByEmail(email) {
-        const user = await db.User.findOne({ where: { email } });
+        const user = await this._userModel
+            .query()
+            .where({ email })
+            .first();
+
+        if (!user) {
+            return null;
+        }
 
         return {
             id: user.id,
@@ -14,13 +25,17 @@ export class AuthDAL {
     }
 
     async hasUserWithEmail(email) {
-        const usersCount = await db.User.count({ where: { email } });
+        const { count: usersCount } = await this._userModel
+            .query()
+            .where({ email })
+            .count()
+            .first();
 
         return usersCount > 0;
     }
 
     async createUser({ firstName, lastName, email, password }) {
-        const user = await db.User.create({
+        const user = await this._userModel.query().insert({
             firstName,
             lastName,
             email,
