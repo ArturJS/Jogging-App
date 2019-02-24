@@ -1,11 +1,11 @@
-import db from '../../models';
+import { Base, Record, User } from '../../db';
 
 export class E2ETestsDAL {
     async dropAll() {
-        const tableNames = Object.values(db.sequelize.models).map(
+        const tableNames = [Record, User].map(
             ({ tableName }) => `public."${tableName}"`
         );
 
-        await db.sequelize.query(`TRUNCATE TABLE ${tableNames.join(', ')}`);
+        await Base.raw(`TRUNCATE TABLE ${tableNames.join(', ')}`);
     }
 }

@@ -1,5 +1,5 @@
-// flow-typed signature: f4490542210f56d64e3c60f4043dabb5
-// flow-typed version: dd8117f9f7/cookie-parser_v1.x.x/flow_>=v0.25.x
+// flow-typed signature: b8a1c1addc115f27a6f84f88f53b95ca
+// flow-typed version: c7321cc104/cookie-parser_v1.x.x/flow_>=v0.25.x <=v0.92.x
 
 /**
  * Flow libdef for 'cookie-parser'

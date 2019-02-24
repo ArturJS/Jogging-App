@@ -1,13 +1,3 @@
-type User {
-    firstName: String!
-    lastName: String!
-    email: String!
-}
-
-extend type Query {
-    userData: User
-}
-
 extend type Mutation {
     signIn(email: String!, password: String!): Boolean
 

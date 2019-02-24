@@ -9,13 +9,19 @@ const importDotEnv = () => {
 
     return process.env;
 };
-const createConfig = ({ DATABASE_URL, POOL_MIN, POOL_MAX }) => ({
+const createConfig = ({ DATABASE_URL }) => ({
     db: {
         client: 'pg',
         connection: DATABASE_URL,
         pool: {
-            min: +POOL_MIN,
-            max: +POOL_MAX
+            min: 1,
+            max: 10
+        },
+        migrations: {
+            directory: './src/migrations'
+        },
+        seeds: {
+            directory: './src/seeds'
         }
     }
 });
@@ -33,6 +39,16 @@ const validateConfig = config => {
                         .object({
                             min: j.number().required(),
                             max: j.number().required()
+                        })
+                        .required(),
+                    migrations: j
+                        .object({
+                            directory: j.string().required()
+                        })
+                        .required(),
+                    seeds: j
+                        .object({
+                            directory: j.string().required()
                         })
                         .required()
                 })
@@ -58,4 +74,4 @@ const createValidatedConfig = () => {
 
 const config = createValidatedConfig();
 
-module.exports = config;
+module.exports = config.db;

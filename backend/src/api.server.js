@@ -7,7 +7,9 @@ import { ApolloServer } from 'apollo-server-koa';
 import noCache from 'koa-no-cache';
 import config from './config';
 import graphqlSchema from './modules';
-import db from './models';
+import { baseDIContainer } from './di/base-di-container';
+
+const authService = baseDIContainer.getAuthService();
 
 const initPassport = app => {
     // Serialize Sessions
@@ -22,14 +24,14 @@ const initPassport = app => {
 
     // For Authentication Purposes
     passport.use(
-        new Strategy((username, password, done) => {
-            db.User.find({ where: { email: username } }).then(user => {
-                if (!user) {
-                    done(null, false);
-                }
+        new Strategy(async (email, password, done) => {
+            try {
+                const user = await authService.getUser({ email, password });
 
-                db.User.validPassword(password, user.password, done, user);
-            });
+                done(null, user);
+            } catch (err) {
+                done(null, false);
+            }
         })
     );
 

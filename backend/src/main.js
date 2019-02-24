@@ -1,11 +1,13 @@
 import Koa from 'koa';
-import mount from 'koa-mount';
 // koa-compress not working due to https://github.com/zeit/next.js/tree/canary/examples/custom-server-koa
 import connect from 'koa-connect';
 import compression from 'compression';
 import config from './config';
 import initHttpServer from './initializers/init-http-server';
+import connectToDatabase from './initializers/connect-to-database';
 import { initAPIServer } from './api.server';
+
+connectToDatabase();
 
 const app = new Koa();
 const server = initHttpServer(app.callback());
