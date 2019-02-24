@@ -10,7 +10,7 @@ services:
       - PORT=3000
       - TZ=Europe/Samara
     ports:
-      - "3000:3000"
+      - '3000:3000'
     command: bash -c '
       date &&
       cd /backend &&
@@ -50,7 +50,7 @@ services:
     command: bash -c '
       date &&
       ./wait-for-it.sh jogging.app:3000 -t 30 &&
-      npm run e2e'
+      npm start'
     networks:
       internal-network:
         aliases:

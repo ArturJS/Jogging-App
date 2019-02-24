@@ -6,7 +6,7 @@
   "scripts": {
     "precommit": "lint-staged",
     "postcommit": "git update-index --again",
-    "e2e": "npx cypress run --browser chrome",
+    "start": "npx cypress run --browser chrome",
     "lint-staged": "npx lint-staged"
   },
   "lint-staged": {
