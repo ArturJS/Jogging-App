@@ -13,8 +13,6 @@
         "test": "jest --env=jsdom",
         "test:coverage": "jest --env=jsdom --coverage",
         "db:migrate": "npx knex migrate:latest",
-        "db:create:dev": "npx cross-env NODE_ENV=development node ./scripts/tasks/db-create.js",
-        "db:create:prod": "npx cross-env NODE_ENV=production node ./scripts/tasks/db-create.js",
         "precommit": "npm run flow && npm run lint-staged",
         "lint-staged": "npx lint-staged"
     },
