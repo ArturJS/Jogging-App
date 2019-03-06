@@ -90,6 +90,7 @@
         "eslint-plugin-prettier": "^3.0.0",
         "flow-bin": "^0.84.0",
         "lint-staged": "^7.3.0",
+        "madge": "^3.4.4",
         "prettier": "^1.14.3"
     },
     "engines": {
@@ -100,6 +101,7 @@
         "{src,scripts,local_modules}/**/*.{js,jsx,mjs}": [
             "prettier --write",
             "eslint --fix",
+            "madge src/main.js --circular",
             "git add"
         ]
     },
