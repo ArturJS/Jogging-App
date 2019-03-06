@@ -1,5 +1,5 @@
 import baseResolver from '../base-resolver';
-import { baseDIContainer } from '../../di/base-di-container';
+import { baseDIContainer } from '../../di';
 
 const e2eTestsService = baseDIContainer.getE2ETestsService();
 

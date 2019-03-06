@@ -1,5 +1,5 @@
 import { isAuthenticatedResolver } from '../acl';
-import { baseDIContainer } from '../../di/base-di-container';
+import { baseDIContainer } from '../../di';
 
 const recordsService = baseDIContainer.getRecordsService();
 

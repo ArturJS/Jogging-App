@@ -1,4 +1,4 @@
-import { createDIModule } from '../../di/create-di-module';
+import { createDIModule } from 'di-utils';
 import { AuthDAL } from './auth.dal';
 import { AuthBLL } from './auth.bll';
 

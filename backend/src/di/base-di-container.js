@@ -1,4 +1,4 @@
-import 'reflect-metadata';
+import { createDIContainer } from 'di-utils';
 import { AuthDI, AUTH_DI_TYPES } from '../modules/auth/auth.di';
 import {
     E2ETestsDI,
@@ -6,7 +6,6 @@ import {
 } from '../modules/e2e-tests/e2e-tests.di';
 import { RecordsDI, RECORDS_DI_TYPES } from '../modules/records/records.di';
 import { ReportsDI, REPORTS_DI_TYPES } from '../modules/reports/reports.di';
-import { createDIContainer } from './create-di-container';
 
 const diContainer = createDIContainer({
     modules: [AuthDI, E2ETestsDI, RecordsDI, ReportsDI]

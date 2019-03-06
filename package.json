@@ -6,7 +6,7 @@
   "scripts": {
     "docker:rebuild:cypress": "docker-compose --file docker-compose.e2e.yml up --no-deps --build cypress",
     "e2e:ci": "docker-compose --file docker-compose.e2e.yml up --abort-on-container-exit",
-    "precommit": "cd e2e && npm run precommit && cd ../frontend && npm run precommit && cd ../backend && npm run precommit && cd ../migrations && npm run precommit"
+    "precommit": "cd e2e && npm run precommit && cd ../frontend && npm run precommit && cd ../backend && npm run precommit"
   },
   "repository": {
     "type": "git",
