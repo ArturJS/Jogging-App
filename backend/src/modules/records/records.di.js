@@ -1,4 +1,4 @@
-import { createDIModule } from '../../di/create-di-module';
+import { createDIModule } from 'di-utils';
 import { RecordsDAL } from './records.dal';
 import { RecordsBLL } from './records.bll';
 

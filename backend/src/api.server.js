@@ -7,7 +7,7 @@ import { ApolloServer } from 'apollo-server-koa';
 import noCache from 'koa-no-cache';
 import config from './config';
 import graphqlSchema from './modules';
-import { baseDIContainer } from './di/base-di-container';
+import { baseDIContainer } from './di';
 
 const authService = baseDIContainer.getAuthService();
 

@@ -1,4 +1,4 @@
-import { baseDIContainer } from '../../di/base-di-container';
+import { baseDIContainer } from '../../di';
 
 const authService = baseDIContainer.getAuthService();
 

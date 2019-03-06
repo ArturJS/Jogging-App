@@ -1,4 +1,4 @@
-import { createDIModule } from '../../di/create-di-module';
+import { createDIModule } from 'di-utils';
 import { AUTH_DI_TYPES } from '../auth/auth.di';
 import { RECORDS_DI_TYPES } from '../records/records.di';
 import { E2ETestsDAL } from './e2e-tests.dal';
