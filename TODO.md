@@ -33,10 +33,10 @@
 <br><br>
 
 - Back-end development:
-  - [ ] Integrate InversifyJS
+  - [x] Integrate InversifyJS
+  - [x] Replace `sequelize` with `knex` and `objection`
   - [ ] Add more flow types
   - [ ] Should we get rid of http/2 server implementation?
-  - [ ] Replace `sequelize` with `knex`
   - [ ] Add cursor based pagination
     - [ ] for records
     - [ ] for reports
@@ -46,5 +46,6 @@
 <br><br>
 
 - Other:
+  - [ ] Add mustistage build pipeline for Travis CI
   - [ ] Deploy app
   - [ ] Add Continuous Deployment (when all tests are passed and created new tag in github)
