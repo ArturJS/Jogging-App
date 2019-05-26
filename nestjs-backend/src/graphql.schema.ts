@@ -17,6 +17,12 @@ export class RecordInput {
 }
 
 export abstract class IMutation {
+    abstract signIn(email: string, password: string): boolean | Promise<boolean>;
+
+    abstract signUp(firstName: string, lastName: string, email: string, password: string): boolean | Promise<boolean>;
+
+    abstract signOut(): boolean | Promise<boolean>;
+
     abstract addRecord(record: RecordInput): Record | Promise<Record>;
 
     abstract updateRecord(id: number, record: RecordInput): Record | Promise<Record>;
