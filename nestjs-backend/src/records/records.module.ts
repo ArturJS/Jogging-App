@@ -4,5 +4,6 @@ import { RecordsResolvers } from './records.resolvers';
 
 @Module({
   providers: [RecordsService, RecordsResolvers],
+  exports: [RecordsService],
 })
 export class RecordsModule {}

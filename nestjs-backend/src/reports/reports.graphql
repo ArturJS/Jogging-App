@@ -1,0 +1,9 @@
+type Query {
+  reports: [Report]
+}
+
+type Report {
+  week: Int!
+  averageDistance: Float!
+  averageSpeed: Float!
+}

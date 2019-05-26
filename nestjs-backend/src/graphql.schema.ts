@@ -28,6 +28,8 @@ export abstract class IQuery {
     abstract records(filter?: FilterInput): Record[] | Promise<Record[]>;
 
     abstract record(id: number): Record | Promise<Record>;
+
+    abstract reports(): Report[] | Promise<Report[]>;
 }
 
 export class Record {
@@ -35,6 +37,12 @@ export class Record {
     date: Long;
     distance: number;
     time: number;
+    averageSpeed: number;
+}
+
+export class Report {
+    week: number;
+    averageDistance: number;
     averageSpeed: number;
 }
 
