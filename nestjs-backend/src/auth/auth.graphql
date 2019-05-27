@@ -1,0 +1,12 @@
+type Mutation {
+  signIn(email: String!, password: String!): Boolean
+
+  signUp(
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+  ): Boolean
+
+  signOut: Boolean
+}

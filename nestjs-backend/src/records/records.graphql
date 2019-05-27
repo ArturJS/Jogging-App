@@ -1,0 +1,31 @@
+type Query {
+  records(filter: FilterInput): [Record]
+  record(id: Int!): Record
+}
+
+type Mutation {
+  addRecord(record: RecordInput!): Record
+  updateRecord(id: Int!, record: RecordInput!): Record
+  deleteRecord(id: Int!): Boolean
+}
+
+scalar Long
+
+type Record {
+  id: Int!
+  date: Long!
+  distance: Float!
+  time: Int!
+  averageSpeed: Float!
+}
+
+input RecordInput {
+  date: Long!
+  distance: Float!
+  time: Int!
+}
+
+input FilterInput {
+  startDate: Long
+  endDate: Long
+}
