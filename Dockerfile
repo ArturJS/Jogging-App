@@ -1,4 +1,4 @@
-FROM node:8.10.0-slim as frontend
+FROM node:8 as frontend
 RUN apt-get update && apt-get install -y bash git openssl curl sudo
 WORKDIR /frontend
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
@@ -11,7 +11,7 @@ RUN npm install --production
 COPY --chown=node:node ./frontend/ ./
 RUN npm run build
 
-FROM node:8.10.0-slim
+FROM node:8
 RUN apt-get update && apt-get install -y bash git openssl curl sudo
 WORKDIR /backend
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
