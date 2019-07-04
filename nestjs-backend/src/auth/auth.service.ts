@@ -25,4 +25,6 @@ export class AuthService {
   }): Promise<boolean> {
     return true;
   }
+
+  async validateUser() {}
 }

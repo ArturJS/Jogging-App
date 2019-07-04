@@ -8,10 +8,11 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     GraphQLModule.forRoot({
       typePaths: ['./**/*.graphql'],
+      context: ({ req }) => ({ req }),
     }),
+    AuthModule,
     RecordsModule,
     ReportsModule,
-    AuthModule,
   ],
 })
 export class AppModule {}
