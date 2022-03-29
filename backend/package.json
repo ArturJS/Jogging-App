@@ -90,7 +90,7 @@
         "eslint-plugin-prettier": "^3.0.0",
         "flow-bin": "^0.84.0",
         "lint-staged": "^7.3.0",
-        "madge": "^3.4.4",
+        "madge": "^4.0.1",
         "prettier": "^1.14.3"
     },
     "engines": {
