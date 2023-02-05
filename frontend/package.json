@@ -73,7 +73,7 @@
         "koa-session": "^5.10.0",
         "lodash": "^4.17.21",
         "mini-css-extract-plugin": "^0.4.3",
-        "moment": "^2.29.2",
+        "moment": "^2.29.4",
         "next": "^12.1.0",
         "node-sass": "^7.0.0",
         "null-loader": "^0.1.1",
