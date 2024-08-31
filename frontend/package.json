@@ -108,7 +108,7 @@
         "unstated": "^2.1.1",
         "url-loader": "^1.0.1",
         "warning": "^2.1.0",
-        "webpack": "^5.93.0",
+        "webpack": "^5.94.0",
         "webpack-bundle-analyzer": "4.7.0",
         "webpack-runtime-analyzer": "1.5.0",
         "yup": "^0.26.6"
